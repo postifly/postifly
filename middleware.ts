@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   if (pathname === '/' ) {
     const url = request.nextUrl.clone();
-    url.pathname = '/en';
+    url.pathname = '/ka';
     return NextResponse.redirect(url);
   }
 
