@@ -129,13 +129,13 @@ export default function TariffsManager() {
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="border-b">
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Origin</th>
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Dest</th>
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Min kg</th>
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Max kg</th>
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Price / kg</th>
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Curr</th>
-              <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">Active</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Origin</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Dest</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Min kg</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Max kg</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Price / kg</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Curr</th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">Active</th>
               <th className="px-3 py-2" />
             </tr>
           </thead>

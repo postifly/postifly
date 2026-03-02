@@ -38,7 +38,7 @@ export default function AdminSidebar() {
                 className={`block py-2.5 px-2 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
                   isActive
                     ? 'border-black bg-black text-white'
-                    : 'border-transparent text-gray-700 hover:bg-gray-50 hover:text-black'
+                    : 'border-transparent text-black hover:bg-gray-50 hover:text-black'
                 }`}
               >
                 {item.label}

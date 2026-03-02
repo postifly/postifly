@@ -31,6 +31,15 @@ body {
   padding-top: 70px; /* Space for fixed header */
 }
 
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 
 
 h1 {
@@ -42,7 +51,7 @@ h1 {
 
 
 p {
-  font-size: 16px;
+ 
   font-weight: 500;
  
   text-align: justify;
@@ -308,7 +317,7 @@ button:not(.mobile-menu-button),
  
 
   border-radius: 8px;
-  font-size: 0.9rem;
+
   font-weight: 600;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   border: none;
@@ -321,6 +330,9 @@ button:not(.mobile-menu-button),
   padding: 0.6rem 3.5rem !important;
 }
 
+.local {
+  font-size: 20px !important;
+}
 
 /* Header Styles */
 .header {
@@ -416,7 +428,7 @@ button:not(.mobile-menu-button),
 .nav-link {
   color: rgba(255,255,255,0.9);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 20px;
   text-decoration: none;
   padding: 8px 12px;
   transition: 0.3s ease;
@@ -463,7 +475,7 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
   border: none;
   cursor: pointer;
   font-family: inherit;
-  font-size: inherit;
+ 
   font-weight: inherit;
   color: inherit;
 }
@@ -512,7 +524,7 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
   gap: 0.25rem;
 }
 .header-dropdown-nav .header-dropdown-menu.header-dropdown-menu-nav {
-  background: #000;
+  background: #ff4fd8;
   border-color: rgba(255, 255, 255, 0.15);
   top: 100%;
   right: -54px !important;
@@ -523,10 +535,12 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
 .header-dropdown-nav .header-dropdown-item.header-dropdown-item-nav {
   background: transparent;
   color: #fff;
+  font-style: bold !important ;
 }
-.header-dropdown-nav .header-dropdown-item.header-dropdown-item-nav:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: none;
+
+.header-dropdown-item-nav{
+  font-size: 18px !important  ;
+  
 }
 
 .header-dropdown-item {
@@ -537,7 +551,8 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
   background: #3A5BFF;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: #fff; 
+  font-style: bold !important ;
   font-size: 17px;
   font-weight: 400;
   padding: 0.75rem 0.9rem;

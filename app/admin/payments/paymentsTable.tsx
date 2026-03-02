@@ -57,12 +57,12 @@ export default function PaymentsTable() {
       <table className="min-w-full border-collapse">
         <thead>
           <tr className="border-b">
-            <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">თარიღი</th>
-            <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">მომხმარებელი</th>
-            <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">თანხა</th>
-            <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">სტატუსი</th>
-            <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">მეთოდი</th>
-            <th className="px-3 py-2 text-left text-[16px] font-semibold text-gray-700">ტრანზაქცია</th>
+            <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">თარიღი</th>
+            <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">მომხმარებელი</th>
+            <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">თანხა</th>
+            <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">სტატუსი</th>
+            <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">მეთოდი</th>
+            <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">ტრანზაქცია</th>
           </tr>
         </thead>
         <tbody>

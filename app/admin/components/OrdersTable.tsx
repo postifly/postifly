@@ -122,13 +122,13 @@ console.log(orders);
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">მომხმარებელი</th>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">ტიპი</th>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">წონა</th>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">სტატუსი</th>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">თანხა</th>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">თარიღი</th>
-              <th className="px-4 py-2 text-left text-[16px] font-semibold text-gray-700">მოქმედებები</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">მომხმარებელი</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">ტიპი</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">წონა</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">სტატუსი</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">თანხა</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">თარიღი</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">მოქმედებები</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">

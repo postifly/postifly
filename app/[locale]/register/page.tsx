@@ -219,7 +219,7 @@ const RegisterPage = () => {
                   type="button"
                   onClick={handleSendOtp}
                   disabled={otpCooldown > 0}
-                  className="px-4 py-2 rounded-md text-[14px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 rounded-md text-[16px] font-medium bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {otpCooldown > 0 ? `${otpCooldown} ${t('seconds')}` : t('sendCode')}
                 </button>

@@ -63,7 +63,7 @@ export default function SettingsPasswordForm() {
           </div>
         )}
         <div>
-          <label htmlFor="settings-currentPassword" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="settings-currentPassword" className="mb-1 block text-[14px] font-medium text-black">
             მიმდინარე პაროლი
           </label>
           <input
@@ -77,7 +77,7 @@ export default function SettingsPasswordForm() {
           />
         </div>
         <div>
-          <label htmlFor="settings-newPassword" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="settings-newPassword" className="mb-1 block text-[14px] font-medium text-black">
             ახალი პაროლი
           </label>
           <input
@@ -92,7 +92,7 @@ export default function SettingsPasswordForm() {
           />
         </div>
         <div>
-          <label htmlFor="settings-confirmPassword" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="settings-confirmPassword" className="mb-1 block text-[14px] font-medium text-black">
             ახალი პაროლი (კიდევ ერთხელ)
           </label>
           <input

@@ -54,11 +54,11 @@ export default async function DashboardPage({ params }: Props) {
             href="/dashboard/balance"
             className="mb-6 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-left transition-colors hover:bg-gray-100 sm:px-5 sm:py-4"
           >
-            <span className="text-[15px] font-medium text-gray-700 sm:text-[16px]">
+            <span className="md:text-[18px] font-medium text-black text-[16px]">
               {tBalance('currentBalance')}
             </span>
-            <span className="text-xl font-semibold text-gray-900 sm:text-2xl">
-              {balance.toFixed(2)} <span className="text-base font-medium text-gray-600 sm:text-lg">GEL</span>
+            <span className="text-[16px] md:text-[18px] font-semibold text-black">
+              {balance.toFixed(2)} <span className="text-base font-medium text-black sm:text-lg">GEL</span>
             </span>
           </Link>
           <UserOrdersTabs orders={formattedOrders} />

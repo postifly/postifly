@@ -32,7 +32,7 @@ export default async function DashboardBalancePage({ params }: Props) {
       <div className="mx-auto mt-24 w-full max-w-2xl px-4">
         <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="pb-6 border-b border-gray-200">
-            <Link href="/dashboard" className="text-[15px] font-medium text-gray-600 hover:text-black">
+            <Link href="/dashboard" className="text-[16px] md:text-[18px] font-medium text-black hover:text-black">
               ← {t('back')}
             </Link>
           </div>

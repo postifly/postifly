@@ -48,7 +48,7 @@ export default async function DashboardAddressesPage({ params }: Props) {
       <div className="mx-auto mt-16 sm:mt-20 md:mt-24 w-full max-w-3xl px-3 sm:px-4">
         <main className="rounded-xl sm:rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
           <div className="pb-4 sm:pb-6 border-b border-gray-200">
-            <Link href="/dashboard" className="text-[15px] font-medium text-gray-600 hover:text-black">
+            <Link href="/dashboard" className="text-[16px] md:text-[18px] font-medium text-black hover:text-black">
               ← {t('back')}
             </Link>
           </div>
@@ -82,19 +82,19 @@ export default async function DashboardAddressesPage({ params }: Props) {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">{tAddr('country')}</th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">{tAddr('city')}</th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">{tAddr('streetBuilding')}</th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">{tAddr('postalCode')}</th>
+                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('country')}</th>
+                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('city')}</th>
+                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('streetBuilding')}</th>
+                    <th scope="col" className="px-4 py-3 text-left text-[16px] md:text-[18px] font-medium text-black uppercase tracking-wider">{tAddr('postalCode')}</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {addressList.map((row, i) => (
                     <tr key={i}>
-                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{row.country}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{row.city}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{row.street}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{row.postalCode}</td>
+                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black font-medium">{row.country}</td>
+                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black font-medium">{row.city}</td>
+                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black">{row.street}</td>
+                      <td className="px-4 py-3 text-[16px] md:text-[18px] text-black font-medium">{row.postalCode}</td>
                     </tr>
                   ))}
                 </tbody>

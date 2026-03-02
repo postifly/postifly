@@ -165,10 +165,10 @@ export default function NewParcelPage() {
       <div className="mx-auto mt-24 w-full max-w-lg px-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-gray-900">{t('title')}</h1>
+            <h1 className="text-[16px] md:text-[18px] font-semibold text-black">{t('title')}</h1>
             <Link
               href="/dashboard"
-              className="text-[15px] font-medium text-gray-600 hover:text-black"
+              className="text-[16px] md:text-[18px] font-medium text-black hover:text-black"
             >
               ← {t('back')}
             </Link>
@@ -181,7 +181,7 @@ export default function NewParcelPage() {
               </div>
             )}
             <div>
-              <label htmlFor="customerName" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="customerName" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
                 {t('customerName')}
               </label>
               <input
@@ -196,7 +196,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="trackingNumber" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
                 {t('trackingCode')}
               </label>
               <input
@@ -211,7 +211,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="price" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="price" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('price')}
               </label>
               <input
@@ -227,7 +227,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="onlineShop" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="onlineShop" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('onlineShop')}
               </label>
               <input
@@ -242,7 +242,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="quantity" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('quantity')}
               </label>
               <input
@@ -258,7 +258,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div ref={countryRef} className="relative">
-              <label htmlFor="originCountry" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="originCountry" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('country')}
               </label>
               <input
@@ -323,7 +323,7 @@ export default function NewParcelPage() {
               )}
             </div>
             <div>
-              <label htmlFor="weight" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('weight')}
               </label>
               <input
@@ -338,7 +338,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="comment" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="comment" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('comment')}
               </label>
               <input
@@ -352,7 +352,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="description" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="description" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {t('description')}
               </label>
               <input
@@ -365,7 +365,7 @@ export default function NewParcelPage() {
               />
             </div>
             <div>
-              <label htmlFor="declarationFile" className="mb-1 block text-[14px] font-medium text-gray-700">
+              <label htmlFor="declarationFile" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {tDeclaration('pdfFile')}
               </label>
               <input
@@ -377,9 +377,9 @@ export default function NewParcelPage() {
                   const f = e.target.files?.[0] ?? null;
                   setFile(f);
                 }}
-                className="block w-full text-[14px] text-gray-700 file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[14px] file:font-medium file:text-gray-700 hover:file:bg-gray-50"
+                className="block w-full text-[15px] md:text-[18px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] md:text-[18px] file:font-medium file:text-black hover:file:bg-gray-50"
               />
-              <p className="mt-1 text-[13px] text-gray-500">{tDeclaration('maxFileSize')}</p>
+              <p className="mt-1 text-[16px] md:text-[20px] text-black font-medium">{tDeclaration('maxFileSize')}</p>
             </div>
             <div className="flex gap-3 pt-2">
               <button
@@ -392,7 +392,7 @@ export default function NewParcelPage() {
               </button>
               <Link
                 href="/dashboard"
-                className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-[15px] font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-[15px] font-medium text-black "
               >
                 {tCommon('cancel')}
               </Link>

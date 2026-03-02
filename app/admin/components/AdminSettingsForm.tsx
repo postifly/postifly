@@ -262,7 +262,7 @@ export default function AdminSettingsForm() {
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 hover:text-black"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-black hover:text-black"
                 aria-label={showCurrentPassword ? 'პაროლის დამალვა' : 'პაროლის ჩვენება'}
               >
                 {showCurrentPassword ? (
@@ -305,7 +305,7 @@ export default function AdminSettingsForm() {
               <button
                 type="button"
                 onClick={() => setShowNewPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 hover:text-black"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-black hover:text-black"
                 aria-label={showNewPassword ? 'პაროლის დამალვა' : 'პაროლის ჩვენება'}
               >
                 {showNewPassword ? (
@@ -344,7 +344,7 @@ export default function AdminSettingsForm() {
               <button
                 type="button"
                 onClick={() => setShowConfirmNewPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 hover:text-black"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-black hover:text-black"
                 aria-label={showConfirmNewPassword ? 'პაროლის დამალვა' : 'პაროლის ჩვენება'}
               >
                 {showConfirmNewPassword ? (

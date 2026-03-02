@@ -65,10 +65,10 @@ export default function UserOrdersTabs({ orders }: Props) {
         <table className="w-full divide-y divide-gray-200" style={{ minWidth: '28rem' }}>
           <thead className="bg-white">
             <tr>
-              <th className="px-4 py-3 text-left text-[14px] font-semibold text-gray-700">{t('ordersTable.type')}</th>
-              <th className="px-4 py-3 text-left text-[14px] font-semibold text-gray-700">{t('ordersTable.weight')}</th>
-              <th className="px-4 py-3 text-left text-[14px] font-semibold text-gray-700">{t('ordersTable.amount')}</th>
-              <th className="px-4 py-3 text-left text-[14px] font-semibold text-gray-700">{t('ordersTable.date')}</th>
+              <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">{t('ordersTable.type')}</th>
+              <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">{t('ordersTable.weight')}</th>
+              <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">{t('ordersTable.amount')}</th>
+              <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">{t('ordersTable.date')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">

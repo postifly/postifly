@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-
+import { useTranslations } from 'next-intl';
 type WebhookResponse = {
   threadId: string;
   messageId: string;
@@ -18,6 +18,7 @@ type ChatMessage = {
 const STORAGE_KEY = 'chat_thread_id';
 
 export default function ChatWidget() {
+  const t = useTranslations('chat');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -206,7 +207,7 @@ export default function ChatWidget() {
                 <div>
                
                   <p className="text-[12px] text-gray-200">
-                    გიპასუხებთ რაც შეიძლება სწრაფად.
+                    {t('answer')}
                   </p>
                 </div>
               </div>
@@ -214,7 +215,7 @@ export default function ChatWidget() {
                 type="button"
                 onClick={() => setOpen(false)}
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-sm text-gray-100 hover:bg-white/20"
-                aria-label="ჩატის დახურვა"
+                aria-label={t('close')}
               >
                 ×
               </button>
@@ -228,7 +229,7 @@ export default function ChatWidget() {
                 <div className="h-[250px] space-y-2 overflow-y-auto rounded-2xl border border-gray-200 bg-white/70 p-3">
                   {messages.length === 0 ? (
                     <p className="text-[12px] text-gray-600">
-                      ჯერ პასუხი არ არის. როგორც კი ადმინი მოგწერს, აქ გამოჩნდება.
+                      {t('noAnswer')}
                     </p>
                   ) : (
                     messages.map((m) => (
@@ -278,7 +279,7 @@ export default function ChatWidget() {
                   <>
                     <div className="grid grid-cols-2 gap-2">
                       <label className="space-y-1 text-[16px] text-gray-600">
-                        <span>სახელი</span>
+                        <span>{t('firstName')}</span>
                         <input
                           placeholder="მაგ. ნიკა"
                           id="chat-firstName"
@@ -289,7 +290,7 @@ export default function ChatWidget() {
                         />
                       </label>
                       <label className="space-y-1 text-[15px] text-gray-600">
-                        <span>გვარი</span>
+                        <span>{t('lastName')}</span>
                         <input
                           placeholder="გვარი"
                           id="chat-lastName"
@@ -303,7 +304,7 @@ export default function ChatWidget() {
 
                     <div className="grid grid-cols-2 gap-2">
                       <label className="space-y-1 text-[15px] text-gray-600">
-                        <span>ელფოსტა</span>
+                        <span>{t('email')}</span>
                         <input
                           placeholder="you@example.com"
                           id="chat-email"
@@ -314,7 +315,7 @@ export default function ChatWidget() {
                         />
                       </label>
                       <label className="space-y-1 text-[15px] text-gray-600">
-                        <span>ტელეფონი</span>
+                        <span>{t('phone')}</span>
                         <input
                           placeholder="(+995) 5XX XX XX XX"
                           id="chat-phone"
@@ -329,9 +330,9 @@ export default function ChatWidget() {
                 )}
 
                 <label className="space-y-1 text-[15px] text-gray-600">
-                  <span>შეტყობინება</span>
+                  <span>{t('message')}</span>
                   <textarea
-                    placeholder="მოგვწერე კითხვა ან პრობლემა..."
+                    placeholder={t('placeholder')}
                     id="chat-message"
                     rows={3}
                     value={message}
@@ -356,11 +357,11 @@ export default function ChatWidget() {
                             const data = await res.json();
                             if (!res.ok) {
                               throw new Error(
-                                data.error || 'დიალოგის დასრულება ვერ მოხერხდა'
+                                data.error || t('error')
                               );
                             }
                             setSuccess(
-                              'დიალოგი დასრულდა. სურვილის შემთხვევაში ახალი ჩათი დაიწყე.'
+                              t('success')
                             );
                             setMessages([]);
                             setThreadId(null);
@@ -371,21 +372,21 @@ export default function ChatWidget() {
                             setError(
                               e instanceof Error
                                 ? e.message
-                                : 'დიალოგის დასრულება ვერ მოხერხდა'
+                                : t('error')
                             );
                           }
                         }}
-                        className="rounded-full border border-gray-300 bg-white px-3 py-1 text-[11px] font-medium text-gray-700 hover:bg-gray-50"
+                        className="rounded-full border border-gray-300 bg-white px-3 py-1 text-[11px] md:text-[13px] font-medium text-black hover:bg-gray-50"
                       >
-                        დასრულება
+                        {t('close')}
                       </button>
                     )}
                     <button
                       type="submit"
                       disabled={loading}
-                      className="inline-flex items-center gap-1 rounded-full bg-black px-4 py-1.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-1 rounded-full bg-black px-4 py-1.5 text-[13px] md:text-[15px] font-semibold text-white shadow-sm transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      {loading ? 'იგზავნება...' : 'გაგზავნა'}
+                      {loading ? t('loading') : t('send')}
                     </button>
                   </div>
                 </div>
@@ -399,11 +400,11 @@ export default function ChatWidget() {
       <button
         type="button"
         onClick={handleToggleOpen}
-        className="pointer-events-auto chatbutton p-12 inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-black px-4 text-[14px] text-white shadow-xl shadow-black/20 transition hover:bg-gray-900 md:h-12 md:px-6 md:text-[15px]"
-        aria-label="ჩათი ადმინისტრატორთან"
+        className="pointer-events-auto chatbutton p-12 inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#3a5bff] px-4 text-[14px] md:text-[16px] text-white shadow-xl shadow-black/20 transition hover:bg-gray-900 md:h-12 md:px-6 md:text-[15px]"
+        aria-label={t('title')}
       >
         <span className="flex h-7 w-7 items-center justify-center rounded-full  text-[15px]">
-          💬 {open ? 'დახურვა' : 'ჩათის დაწყება'}
+          💬 {open ? t('close') : t('start')}
         </span>
         
       </button>

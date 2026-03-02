@@ -174,7 +174,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          <div className="rounded-md -space-y-px">
+          <div className="rounded-md flex flex-col space-y-4">
             <div>
               <label htmlFor="email" className="sr-only">{t('email')}</label>
               <input
@@ -185,9 +185,9 @@ const LoginPage = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                className={`appearance-none relative block w-full px-3 py-2 border rounded-md ${
                   errors.email ? 'border-red-300 text-black' : 'border-gray-300 text-black'
-                } placeholder-gray-500 rounded-t-md focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm`}
+                } placeholder-gray-500 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm`}
                 placeholder={t('email')}
               />
               {errors.email && (
@@ -205,9 +205,9 @@ const LoginPage = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 pr-10 border ${
+                className={`appearance-none relative block w-full px-3 py-2 pr-10 border rounded-md ${
                   errors.password ? 'border-red-300 text-black' : 'border-gray-300 text-black'
-                } placeholder-gray-500 rounded-b-md focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-[16px]`}
+                } placeholder-gray-500 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-[16px]`}
                 placeholder={t('password')}
               />
               <button
@@ -236,7 +236,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-[#3a5bff]  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? tCommon('loading') : t('signIn')}
             </button>
@@ -251,7 +251,7 @@ const LoginPage = () => {
                 setResetError('');
                 setResetSuccess(false);
               }}
-              className="text-[14px] font-medium text-gray-600 hover:text-black hover:underline"
+              className="text-[16px] py-2 px-4 bg-[#3a5bff] md:text-[18px] font-medium text-white  hover:underline"
             >
               {t('forgotPassword')}
             </button>
@@ -260,7 +260,7 @@ const LoginPage = () => {
 
         {showResetForm && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center px-4 pb-4 pt-16 sm:p-4 bg-black/50 overflow-y-auto no-scrollbar"
             onClick={(e) => {
               if (e.target === e.currentTarget) {
                 setShowResetForm(false);
@@ -273,7 +273,12 @@ const LoginPage = () => {
               }
             }}
           >
-            <div className="relative w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            
+          <div className="mt-[100px]">
+            <div
+              className="relative w-full max-w-md rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-xl my-0 sm:my-6 max-h-[85vh] overflow-y-auto no-scrollbar"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
                 type="button"
                 onClick={() => {
@@ -319,7 +324,7 @@ const LoginPage = () => {
                   </div>
                 )}
                 <div>
-                  <label htmlFor="resetPhone" className="mb-1 block text-[14px] font-medium text-gray-700">
+                  <label htmlFor="resetPhone" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
                     {t('resetPhone')}
                   </label>
                   <div className="flex gap-2">
@@ -342,7 +347,7 @@ const LoginPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="resetOtpCode" className="mb-1 block text-[14px] font-medium text-gray-700">
+                  <label htmlFor="resetOtpCode" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
                     {t('resetOtpCode')}
                   </label>
                   <input
@@ -357,7 +362,7 @@ const LoginPage = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="resetNewPassword" className="mb-1 block text-[14px] font-medium text-gray-700">
+                  <label htmlFor="resetNewPassword" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
                     {t('resetNewPassword')}
                   </label>
                   <div className="relative">
@@ -372,7 +377,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-black"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-black hover:text-black"
                     >
                     {showNewPassword ? (
                       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -388,7 +393,7 @@ const LoginPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="resetConfirmPassword" className="mb-1 block text-[14px] font-medium text-gray-700">
+                  <label htmlFor="resetConfirmPassword" className="mb-1 block text-[15px] md:text-[18px] font-medium text-black">
                     {t('resetConfirmPassword')}
                   </label>
                   <div className="relative">
@@ -403,7 +408,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-black"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-black hover:text-black"
                     >
                     {showConfirmPassword ? (
                       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -436,13 +441,14 @@ const LoginPage = () => {
                       setResetNewPassword('');
                       setResetConfirmPassword('');
                     }}
-                    className="rounded-md border border-gray-300 bg-white py-2 px-4 text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+                    className="rounded-md border border-gray-300 bg-white py-2 px-4 text-[16px] font-medium text-black hover:bg-gray-50"
                   >
                     {t('backToLogin')}
                   </button>
                 </div>
               </form>
             )}
+            </div>
             </div>
           </div>
         )}

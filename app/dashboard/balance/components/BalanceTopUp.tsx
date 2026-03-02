@@ -76,7 +76,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
             </div>
           )}
           <div>
-            <label htmlFor="balance-amount" className="mb-1 block text-[14px] font-medium text-gray-700">
+            <label htmlFor="balance-amount" className="mb-1 block text-[14px] md:text-[16px] font-medium text-black">
               {t('amount')}
             </label>
             <input
@@ -95,7 +95,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
                 key={q}
                 type="button"
                 onClick={() => setAmount(String(q))}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-[14px] font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-[14px] md:text-[16px] font-medium text-black hover:bg-gray-50"
               >
                 {q} GEL
               </button>
@@ -104,7 +104,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-[#3a5bff] text-white px-5 py-2.5 text-[15px] font-semibold   focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70"
+            className="rounded-lg bg-[#3a5bff] text-white px-5 py-2.5 text-[15px] md:text-[17px] font-semibold   focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70"
           >
             {loading ? tCommon('sending') : t('topUpButton')}
           </button>

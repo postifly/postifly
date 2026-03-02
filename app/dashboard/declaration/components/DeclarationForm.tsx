@@ -99,7 +99,7 @@ export default function DeclarationForm() {
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="decl-firstName" className="mb-1 block text-[14px] font-medium text-gray-700">
+            <label htmlFor="decl-firstName" className="mb-1 block text-[14px] font-medium text-black">
               {t('firstName')} *
             </label>
             <input
@@ -113,7 +113,7 @@ export default function DeclarationForm() {
             />
           </div>
           <div>
-            <label htmlFor="decl-lastName" className="mb-1 block text-[14px] font-medium text-gray-700">
+            <label htmlFor="decl-lastName" className="mb-1 block text-[14px] font-medium text-black">
               {t('lastName')} *
             </label>
             <input
@@ -128,7 +128,7 @@ export default function DeclarationForm() {
           </div>
         </div>
         <div>
-          <label htmlFor="decl-trackingCode" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="decl-trackingCode" className="mb-1 block text-[14px] font-medium text-black">
             {t('trackingCode')}
           </label>
           <input
@@ -142,7 +142,7 @@ export default function DeclarationForm() {
           />
         </div>
         <div>
-          <label htmlFor="decl-price" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="decl-price" className="mb-1 block text-[14px] font-medium text-black">
             {t('price')}
           </label>
           <input
@@ -157,7 +157,7 @@ export default function DeclarationForm() {
           />
         </div>
         <div>
-          <label htmlFor="decl-file" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="decl-file" className="mb-1 block text-[14px] font-medium text-black">
             {t('pdfFile')}
           </label>
           <input

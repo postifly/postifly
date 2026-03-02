@@ -69,7 +69,7 @@ function TrackingContent() {
             <h1 className="text-xl font-semibold text-gray-900">თრექინგი</h1>
             <Link
               href="/dashboard"
-              className="text-[15px] font-medium text-gray-600 hover:text-black"
+              className="text-[15px] font-medium hover:text-black"
             >
               ← დაბრუნება
             </Link>
@@ -107,7 +107,7 @@ function TrackingContent() {
               </div>
               {result.tracking.length > 0 && (
                 <div>
-                  <h2 className="mb-2 text-[14px] font-semibold text-gray-700">ისტორია</h2>
+                  <h2 className="mb-2 text-[14px] font-semibold text-black">ისტორია</h2>
                   <ul className="space-y-2">
                     {result.tracking.map((t, i) => (
                       <li

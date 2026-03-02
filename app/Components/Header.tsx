@@ -132,14 +132,25 @@ const Header = () => {
                 </Link>
                 <div className="header-dropdown-menu header-dropdown-menu-nav" role="menu">
                   {item.children.map((child) => (
+                     <button
+                     type="button"
+                     key={child.href}
+                     className="header-dropdown-item text-white"
+                     role="menuitem"
+                     onClick={async () => {
+                       setIsAccountMenuOpen(false);
+                       await signOut({ callbackUrl: '/' });
+                     }}
+                   >
                     <Link
-                      key={child.href}
+                     
                       href={child.href}
                       className="header-dropdown-item header-dropdown-item-nav"
                       role="menuitem"
                     >
                       {getLabel(child.labelKey)}
                     </Link>
+                    </button>
                   ))}
                 </div>
               </div>

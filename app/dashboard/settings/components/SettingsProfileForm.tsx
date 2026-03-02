@@ -66,7 +66,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
           </div>
         )}
         <div>
-          <label htmlFor="settings-email" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="settings-email" className="mb-1 block text-[14px] font-medium text-black">
             ელფოსტა
           </label>
           <input
@@ -74,13 +74,13 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
             type="email"
             value={initialProfile.email}
             readOnly
-            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2.5 text-[15px] text-gray-600 cursor-not-allowed"
+            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2.5 text-[15px] cursor-not-allowed"
           />
           <p className="mt-1 text-[13px] text-gray-500">ელფოსტის შეცვლა მხარდაჭერილი არ არის</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="settings-firstName" className="mb-1 block text-[14px] font-medium text-gray-700">
+            <label htmlFor="settings-firstName" className="mb-1 block text-[14px] font-medium text-black">
               სახელი
             </label>
             <input
@@ -93,7 +93,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
             />
           </div>
           <div>
-            <label htmlFor="settings-lastName" className="mb-1 block text-[14px] font-medium text-gray-700">
+            <label htmlFor="settings-lastName" className="mb-1 block text-[14px] font-medium text-black">
               გვარი
             </label>
             <input
@@ -107,7 +107,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
           </div>
         </div>
         <div>
-          <label htmlFor="settings-phone" className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label htmlFor="settings-phone" className="mb-1 block text-[14px] font-medium text-black">
             ტელეფონი
           </label>
           <input
@@ -123,14 +123,14 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
           )}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-medium text-gray-700">
+          <label className="mb-1 block text-[14px] font-medium text-black">
             პირადი ნომერი
           </label>
           <input
             type="text"
             value={initialProfile.personalIdNumber}
             readOnly
-            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2.5 text-[15px] text-gray-600 cursor-not-allowed"
+            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2.5 text-[15px] cursor-not-allowed"
           />
         </div>
         <button

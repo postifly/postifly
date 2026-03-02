@@ -21,6 +21,16 @@
     "myCabinet": "My Cabinet",
     "adminPanel": "Admin Panel"
   },
+  "chat": {
+    "start": "Start chat",
+    "title": "Chat with admin",
+    "placeholder": "Enter your message...",
+    "send": "Send",
+    "close": "Close",
+    "loading": "Loading...",
+    "sending": "Sending...",
+    "error": "Error"
+  },
   "header": {
     "services": "Services",
     "onlineShopping": "Online Shopping",

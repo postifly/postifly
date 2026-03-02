@@ -166,7 +166,7 @@ export default function ChatAdmin() {
         <button
           type="button"
           onClick={loadThreads}
-          className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
+          className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-medium text-black shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
         >
           ↻ განახლება
         </button>
@@ -212,7 +212,7 @@ export default function ChatAdmin() {
                           {t.firstName} {t.lastName}
                         </span>
                         <span
-                          className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                          className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[16px] font-medium ${
                             t.status === 'open'
                               ? 'bg-emerald-50 text-emerald-700'
                               : 'bg-gray-100 text-gray-600'
@@ -221,9 +221,9 @@ export default function ChatAdmin() {
                           {t.status === 'open' ? 'ღია' : 'დახურული'}
                         </span>
                       </div>
-                      <p className="truncate text-xs text-gray-500">{t.email}</p>
-                      <p className="truncate text-xs text-gray-500">{t.phone}</p>
-                      <p className="mt-1 text-[11px] text-gray-400">{t.createdAt}</p>
+                      <p className="truncate text-[16px] text-black font-medium">{t.email}</p>
+                      <p className="truncate text-[16px] text-black font-medium">{t.phone}</p>
+                      <p className="mt-1 text-[16px] text-black font-medium">{t.createdAt}</p>
                     </div>
                   </button>
                 </li>
@@ -276,7 +276,7 @@ export default function ChatAdmin() {
                     type="button"
                     onClick={handleCloseThread}
                     disabled={actionLoading || selectedThread.status === 'closed'}
-                    className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-black shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     დასრულება
                   </button>
@@ -294,9 +294,9 @@ export default function ChatAdmin() {
               {/* Messages */}
               <div className="flex-1 space-y-2 overflow-y-auto bg-gray-50 px-4 py-4">
                 {loadingMessages ? (
-                  <p className="text-sm text-gray-700">შეტყობინებები იტვირთება...</p>
+                  <p className="text-sm text-black">შეტყობინებები იტვირთება...</p>
                 ) : messages.length === 0 ? (
-                  <p className="text-sm text-gray-700">ჯერჯერობით შეტყობინება არ არის.</p>
+                  <p className="text-sm text-black">ჯერჯერობით შეტყობინება არ არის.</p>
                 ) : (
                   messages.map((m) => (
                     <div

@@ -22,15 +22,15 @@ export default function OrderStatusTabNav({ activeTab, onTabChange, getCount }: 
             key={tab.key}
             type="button"
             onClick={() => onTabChange(tab.key)}
-            className={`flex items-center gap-4 px-4 py-3 text-[15px] font-semibold transition-colors rounded-t-lg border-b-2 -mb-px shrink-0 ${
+            className={`flex items-center gap-4 px-4 py-3 text-[16px] md:text-[18px] font-semibold transition-colors rounded-t-lg border-b-2 -mb-px shrink-0 ${
               isActive
                 ? 'bg-black text-white border-black'
-                : 'border-transparent text-gray-600 hover:text-black hover:bg-gray-50'
+                : 'border-transparent text-black hover:text-black hover:bg-gray-50'
             }`}
           >
             <span className="whitespace-nowrap">{label}</span>
             <span
-              className={`inline-flex min-w-[1.5rem] justify-center rounded-full px-2 py-0.5 text-[13px] font-bold shrink-0 ${
+              className={`inline-flex min-w-[1.5rem] justify-center rounded-full px-2 py-0.5 text-[16px] md:text-[18px] font-bold shrink-0 ${
                 isActive ? 'bg-[#3a5bff] text-white' : 'bg-gray-200 text-gray-600'
               }`}
             >

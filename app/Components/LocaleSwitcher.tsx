@@ -40,7 +40,7 @@ export default function LocaleSwitcher() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] font-medium text-white bg-transparent hover:bg-white/10 transition-colors"
+        className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[16px] md:text-[20px] font-medium text-white bg-transparent hover:bg-white/10 transition-colors"
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label="Switch language"
@@ -75,12 +75,12 @@ export default function LocaleSwitcher() {
                 role="option"
                 aria-selected={isSelected}
                 onClick={() => switchLocale(loc)}
-                className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] font-medium transition-colors ${
+                className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[16px] md:text-[20px] font-medium transition-colors ${
                   isSelected ? 'bg-white/15 text-white' : 'text-white hover:bg-white/10'
                 }`}
               >
                 <Flag className="w-5 h-[10px] object-cover rounded-sm shrink-0" title={label} />
-                <span>{label}</span>
+                <span className='font-medium local'>{label}</span>
               </button>
             );
           })}
