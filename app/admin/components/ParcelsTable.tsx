@@ -40,6 +40,21 @@ const STATUS_OPTIONS = [
   { value: 'cancelled', label: 'გაუქმებული' },
 ];
 
+const formatPhone = (phone?: string | null) => {
+  if (!phone) return '—';
+  const digits = phone.replace(/\D/g, '');
+  // Georgian phone, store internally as 995 + 9 digits (e.g. 995599542624)
+  if (digits.startsWith('995') && digits.length === 12) {
+    const local = digits.slice(3); // 9 digits
+    return `+995 ${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`;
+  }
+  // If only local 9‑digit number like 599542624
+  if (digits.length === 9 && digits.startsWith('5')) {
+    return `+995 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+  return digits;
+};
+
 export default function ParcelsTable({ parcels: initialParcels, currentStatus, onParcelUpdated }: ParcelsTableProps) {
   const [parcels, setParcels] = useState(initialParcels);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -167,7 +182,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
 
                 <span className="text-gray-500">ტელფონი</span>
                 <span className="text-black">
-                  {parcel.user.phone || '—'}
+                  {formatPhone(parcel.user.phone)}
                 </span>
 
                 <span className="text-gray-500">ქალაქი</span>
@@ -309,7 +324,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                           </span>
 
                           <span className="text-gray-500">ტელფონი</span>
-                          <span>{parcel.user.phone || '—'}</span>
+                          <span>{formatPhone(parcel.user.phone)}</span>
 
                           <span className="text-gray-500">ქალაქი</span>
                           <span>{parcel.user.city || '—'}</span>
