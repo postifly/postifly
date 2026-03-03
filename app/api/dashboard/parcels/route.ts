@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import { z } from 'zod';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import { utapi } from '../../../../lib/uploadthing';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,16 +102,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const dir = path.join(process.cwd(), 'public', 'uploads', 'parcels', userId);
-    await mkdir(dir, { recursive: true });
+    const uploadResult = await utapi.uploadFiles(file);
 
-    const safeId = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    const fileName = `${safeId}.pdf`;
-    const filePath = path.join(dir, fileName);
-    const bytes = await file.arrayBuffer();
-    await writeFile(filePath, Buffer.from(bytes));
+    if (uploadResult.error || !uploadResult.data?.url) {
+      console.error('UploadThing error (parcel PDF):', uploadResult.error);
+      return NextResponse.json(
+        { error: 'ფაილის ატვირთვისას მოხდა შეცდომა' },
+        { status: 500 },
+      );
+    }
 
-    const relativePath = `/uploads/parcels/${userId}/${fileName}`;
+    const fileUrl = uploadResult.data.url;
 
     const parcel = await prisma.parcel.create({
       data: {
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
         weight: parsed.weight ?? null,
         description: parsed.description?.trim() ?? null,
         currency: 'GEL',
-        filePath: relativePath,
+        filePath: fileUrl,
       },
     });
 
