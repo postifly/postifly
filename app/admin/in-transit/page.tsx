@@ -1,11 +1,11 @@
 import AdminShell from '../components/AdminShell';
 import prisma from '../../../lib/prisma';
-import OrdersManager from './components/OrdersManager';
+import ParcelsManager from '../components/ParcelsManager';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminInTransitPage() {
-  const orders = await prisma.order.findMany({
+  const parcels = await prisma.parcel.findMany({
     where: {
       status: 'in_transit',
     },
@@ -17,25 +17,26 @@ export default async function AdminInTransitPage() {
           email: true,
           firstName: true,
           lastName: true,
+          phone: true,
+          city: true,
+          address: true,
         },
       },
     },
   });
 
-  // Format dates on server side
-  const formattedOrders = orders.map((order) => ({
-    ...order,
-    createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),
-    currency: order.currency || 'GEL',
+  const formattedParcels = parcels.map((parcel) => ({
+    ...parcel,
+    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
   }));
 
   return (
     <AdminShell
       title="გზაში"
-      description="გზაში მყოფი Order-ების მართვა."
+      description="გზაში მყოფი ამანათების მართვა."
     >
       <div className="space-y-6">
-        <OrdersManager initialOrders={formattedOrders} />
+        <ParcelsManager initialParcels={formattedParcels} currentStatus="in_transit" />
       </div>
     </AdminShell>
   );

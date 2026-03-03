@@ -1,9 +1,9 @@
 import AdminShell from '../components/AdminShell';
 import prisma from '../../../lib/prisma';
-import OrdersManager from '../components/OrdersManager';
+import ParcelsManager from '../components/ParcelsManager';
 
 export default async function AdminDeliveredPage() {
-  const orders = await prisma.order.findMany({
+  const parcels = await prisma.parcel.findMany({
     where: {
       status: 'delivered',
     },
@@ -15,25 +15,26 @@ export default async function AdminDeliveredPage() {
           email: true,
           firstName: true,
           lastName: true,
+          phone: true,
+          city: true,
+          address: true,
         },
       },
     },
   });
 
-  // Format dates on server side
-  const formattedOrders = orders.map((order) => ({
-    ...order,
-    createdAt: new Date(order.createdAt).toLocaleDateString('ka-GE'),
-    currency: order.currency || 'GEL',
+  const formattedParcels = parcels.map((parcel) => ({
+    ...parcel,
+    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
   }));
 
   return (
     <AdminShell
       title="გაცემული"
-      description="გაცემული Order-ების მართვა."
+      description="გაცემული ამანათების მართვა."
     >
       <div className="space-y-6">
-        <OrdersManager initialOrders={formattedOrders} currentStatus="delivered" />
+        <ParcelsManager initialParcels={formattedParcels} currentStatus="delivered" />
       </div>
     </AdminShell>
   );

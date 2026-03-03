@@ -11,14 +11,15 @@ type AdminNavItem = {
 
 const items: AdminNavItem[] = [
   { label: 'მომხმარებლები', href: '/admin/users' },
+  { label: 'შემოსული', href: '/admin/incoming' },
   { label: 'გზაში', href: '/admin/in-transit' },
   { label: 'საწყობში', href: '/admin/warehouse' },
+  { label: 'რეგიონი', href: '/admin/regions' },
   { label: 'გაჩერებული', href: '/admin/stopped' },
   { label: 'გაცემული', href: '/admin/delivered' },
   { label: 'გადახდები', href: '/admin/payments' },
   { label: 'ტარიფების შეცვლა', href: '/admin/tariffs' },
   { label: 'ჩათი', href: '/admin/chat' },
-  { label: 'რეგიონი', href: '/admin/regions' },
   { label: 'პარამეტრები', href: '/admin/settings' },
 ];
 

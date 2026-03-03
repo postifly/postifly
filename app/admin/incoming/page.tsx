@@ -2,10 +2,12 @@ import AdminShell from '../components/AdminShell';
 import prisma from '../../../lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
 
-export default async function AdminStoppedPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function AdminIncomingPage() {
   const parcels = await prisma.parcel.findMany({
     where: {
-      status: 'cancelled',
+      status: 'pending',
     },
     orderBy: { createdAt: 'desc' },
     include: {
@@ -30,11 +32,11 @@ export default async function AdminStoppedPage() {
 
   return (
     <AdminShell
-      title="გაჩერებული"
-      description="გაჩერებული ამანათების მართვა."
+      title="შემოსული"
+      description="შემოსული მომხმარებლის ამანათების მართვა."
     >
       <div className="space-y-6">
-        <ParcelsManager initialParcels={formattedParcels} currentStatus="cancelled" />
+        <ParcelsManager initialParcels={formattedParcels} currentStatus="pending" />
       </div>
     </AdminShell>
   );
