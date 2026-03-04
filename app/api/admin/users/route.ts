@@ -24,6 +24,7 @@ export async function GET() {
         lastName: true,
         role: true,
         createdAt: true,
+        poNumber: true,
       },
     });
 

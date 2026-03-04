@@ -21,7 +21,7 @@ const createParcelSchema = z.object({
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'ქვეყანა აუცილებელია' }),
   comment: z.string().optional(),
   weight: z.number().min(0).optional(),
-  description: z.string().optional(),
+  description: z.string().min(1, 'აღწერა აუცილებელია'),
 });
 
 export async function POST(request: NextRequest) {
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       originCountry: originCountry || undefined,
       comment: comment || undefined,
       weight: Number.isNaN(weight) ? undefined : weight,
-      description: description || undefined,
+      description,
     });
 
     const userId = session.user.id;

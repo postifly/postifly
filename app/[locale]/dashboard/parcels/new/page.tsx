@@ -95,6 +95,10 @@ export default function NewParcelPage() {
       setError(t('countryRequired'));
       return;
     }
+    if (!description.trim()) {
+      setError('აღწერა აუცილებელია');
+      return;
+    }
     if (!file) {
       setError(tDeclaration('fileRequired'));
       return;
@@ -135,7 +139,7 @@ export default function NewParcelPage() {
       formData.append('originCountry', originCountry.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
       if (weight.trim()) formData.append('weight', String(w));
-      if (description.trim()) formData.append('description', description.trim());
+      formData.append('description', description.trim());
       formData.append('file', file);
 
       const res = await fetch('/api/dashboard/parcels', {
@@ -186,7 +190,7 @@ export default function NewParcelPage() {
                 required
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('customerNamePlaceholder')}
                 suppressHydrationWarning
               />
@@ -201,7 +205,7 @@ export default function NewParcelPage() {
                 required
                 value={trackingNumber}
                 onChange={(e) => setTrackingNumber(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('trackingPlaceholder')}
                 suppressHydrationWarning
               />
@@ -217,7 +221,7 @@ export default function NewParcelPage() {
                 required
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('pricePlaceholder')}
                 suppressHydrationWarning
               />
@@ -232,7 +236,7 @@ export default function NewParcelPage() {
                 required
                 value={onlineShop}
                 onChange={(e) => setOnlineShop(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('onlineShopPlaceholder')}
                 suppressHydrationWarning
               />
@@ -248,7 +252,7 @@ export default function NewParcelPage() {
                 required
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('quantityPlaceholder')}
                 suppressHydrationWarning
               />
@@ -270,7 +274,7 @@ export default function NewParcelPage() {
               <button
                 type="button"
                 onClick={() => setCountryOpen((o) => !o)}
-                className="flex w-full items-center gap-3 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="flex w-full items-center gap-3 rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-left text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
                 aria-expanded={countryOpen}
                 aria-haspopup="listbox"
                 aria-label={t('country')}
@@ -328,8 +332,24 @@ export default function NewParcelPage() {
                 inputMode="decimal"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('weightPlaceholder')}
+                suppressHydrationWarning
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="description"
+                className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
+              >
+                {t('description')}
+              </label>
+              <textarea
+                id="description"
+                required
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
                 suppressHydrationWarning
               />
             </div>
@@ -344,26 +364,12 @@ export default function NewParcelPage() {
                 id="comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
+                className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
                 placeholder={t('commentPlaceholder')}
                 suppressHydrationWarning
               />
             </div>
-            <div>
-              <label
-                htmlFor="description"
-                className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
-              >
-                {t('description')}
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
-                suppressHydrationWarning
-              />
-            </div>
+
             <div>
               <label htmlFor="declarationFile" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
                 {tDeclaration('pdfFile')}

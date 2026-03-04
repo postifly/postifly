@@ -199,7 +199,7 @@ const Header = () => {
             src="/logo.jpg"
             alt="Logo"
             width={110}
-            height={110}
+            height={1130}
             className="rounded-full"
             priority
             unoptimized
@@ -208,7 +208,7 @@ const Header = () => {
               display: 'block',
               visibility: 'visible',
               width: '100px',
-              height: '100px',
+              height: '130px',
               objectFit: 'contain',
             }}
           />

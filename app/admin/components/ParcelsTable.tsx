@@ -217,7 +217,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
 
               <div className="flex items-center justify-between gap-3">
                 <span className="text-[13px] text-gray-500">სტატუსი</span>
-                <div className="flex flex-1 items-center gap-2">
+                <div className="flex flex-1 flex-col md:flex-row items-center gap-2">
                   <select
                     value={parcel.status}
                     onChange={(e) => handleStatusChange(parcel.id, e.target.value)}

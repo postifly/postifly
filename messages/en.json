@@ -267,7 +267,7 @@
     "senderAddressPlaceholder": "Full address (optional)",
     "weight": "Weight (kg)",
     "weightPlaceholder": "0",
-    "description": "Description (optional)",
+    "description": "Description ",
     "submit": "Add",
     "weightError": "Weight must be a positive number",
     "priceError": "Price is required and must be positive",
