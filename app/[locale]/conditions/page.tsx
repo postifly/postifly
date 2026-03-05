@@ -2,10 +2,12 @@ import React from 'react';
 
 type Props = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ section?: string }>;
 };
 
-export default async function ConditionsPage({ params }: Props) {
+export default async function ConditionsPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  const { section } = await searchParams;
   const isKa = locale === 'ka';
 
   const pageTitle = isKa ? 'მომსახურების პირობები' : 'Service conditions';
@@ -104,6 +106,12 @@ export default async function ConditionsPage({ params }: Props) {
       },
     ];
 
+  const activeSectionId = section;
+  const visibleSections =
+    activeSectionId && sections.some((s) => s.id === activeSectionId)
+      ? sections.filter((s) => s.id === activeSectionId)
+      : sections;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <section
@@ -120,7 +128,7 @@ export default async function ConditionsPage({ params }: Props) {
           </div>
 
           <div className="space-y-6 md:space-y-7 text-black md:text-[16px] text-[14px] leading-relaxed">
-            {sections.map((section, index) => (
+            {visibleSections.map((section, index) => (
               <article
                 key={section.id}
                 id={section.id}

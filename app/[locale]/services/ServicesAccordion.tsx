@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 type Props = {
   isKa: boolean;
+  activeServiceId?: string;
 };
 
 type ServiceItem = {
@@ -14,7 +15,7 @@ type ServiceItem = {
   content: string;
 };
 
-export default function ServicesAccordion({ isKa }: Props) {
+export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const t = useTranslations("home");
 
@@ -47,6 +48,11 @@ export default function ServicesAccordion({ isKa }: Props) {
     setOpenIndex((current) => (current === index ? null : index));
   };
 
+  const visibleServices =
+    activeServiceId && services.some((s) => s.id === activeServiceId)
+      ? services.filter((s) => s.id === activeServiceId)
+      : services;
+
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-0">
       <div className="relative mb-8 md:mb-10">
@@ -59,8 +65,10 @@ export default function ServicesAccordion({ isKa }: Props) {
       </div>
 
       <div className="space-y-3 md:space-y-4">
-        {services.map((service, index) => {
-          const isOpen = openIndex === index;
+        {visibleServices.map((service) => {
+          const indexInAll = services.findIndex((s) => s.id === service.id);
+          const number = indexInAll + 1;
+          const isOpen = activeServiceId ? true : openIndex === indexInAll;
 
           return (
             <motion.div
@@ -74,7 +82,7 @@ export default function ServicesAccordion({ isKa }: Props) {
             >
               <button
                 type="button"
-                onClick={() => handleToggle(index)}
+                onClick={() => handleToggle(indexInAll)}
                 className="w-full flex items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left"
               >
                 <div className="flex items-center gap-3">
@@ -86,7 +94,7 @@ export default function ServicesAccordion({ isKa }: Props) {
                     }`}
                     aria-hidden="true"
                   >
-                    {index + 1}
+                    {number}
                   </span>
                   <span className="text-black md:text-[18px] text-[15px] font-semibold group-hover:text-purple-700 transition-colors duration-150">
                     {service.title}

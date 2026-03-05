@@ -13,20 +13,20 @@ type NavItem =
   | { type: 'dropdown'; href: string; labelKey: string; children: NavLinkItem[] };
 
 const servicesLinks: NavLinkItem[] = [
-  { href: '/services#service1', labelKey: 'header.onlineShopping' },
-  { href: '/services#service2', labelKey: 'header.commercialExport' },
-  { href: '/services#service3', labelKey: 'header.customsBroker' },
-  { href: '/services#service4', labelKey: 'header.courier' },
+  { href: '/services?service=service1', labelKey: 'header.onlineShopping' },
+  { href: '/services?service=service2', labelKey: 'header.commercialExport' },
+  { href: '/services?service=service3', labelKey: 'header.customsBroker' },
+  { href: '/services?service=service4', labelKey: 'header.courier' },
 ];
 
 const conditionsLinks: NavLinkItem[] = [
-  { href: '/conditions#provider-duties', labelKey: 'header.providerDuties' },
-  { href: '/conditions#customer-duties', labelKey: 'header.customerDuties' },
-  { href: '/conditions#calculation-rules', labelKey: 'header.calculationRules' },
-  { href: '/conditions#declaration-service', labelKey: 'header.declarationService' },
-  { href: '/conditions#third-party-pickup', labelKey: 'header.thirdPartyPickup' },
-  { href: '/conditions#confidentiality', labelKey: 'header.confidentiality' },
-  { href: '/conditions#declarant-service', labelKey: 'header.declarantService' },
+  { href: '/conditions?section=provider-duties', labelKey: 'header.providerDuties' },
+  { href: '/conditions?section=customer-duties', labelKey: 'header.customerDuties' },
+  { href: '/conditions?section=calculation-rules', labelKey: 'header.calculationRules' },
+  { href: '/conditions?section=declaration-service', labelKey: 'header.declarationService' },
+  { href: '/conditions?section=third-party-pickup', labelKey: 'header.thirdPartyPickup' },
+  { href: '/conditions?section=confidentiality', labelKey: 'header.confidentiality' },
+  { href: '/conditions?section=declarant-service', labelKey: 'header.declarantService' },
 ];
 
 

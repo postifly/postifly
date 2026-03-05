@@ -33,7 +33,7 @@ export default function How({ isKa }: Props) {
         " The courier will deliver the arrived parcel to your address free of charge.",
       ];
 
-  const thanks = isKa ? "მადლობა ნდობისთვის💜" : "Thank you for your trust💜";
+ 
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -45,7 +45,7 @@ export default function How({ isKa }: Props) {
           isKa={isKa}
          
           steps={steps}
-          thanks={thanks}
+         
         />
       </section>
     </div>

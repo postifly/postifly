@@ -8,14 +8,14 @@ type Props = {
   isKa: boolean;
 
   steps: string[];
-  thanks: string;
+ 
 };
 
 export default function HowToSubscribeSection({
   isKa,
  
   steps,
-  thanks,
+
 }: Props) {
   return (
     <div className="max-w-5xl mx-auto">
