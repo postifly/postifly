@@ -27,13 +27,13 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
     },
     {
       id: "service2",
-      title: t("service2"),
-      content: t("service2Content"),
+      title: t("service3"),
+      content: t("service3Content"),
     },
     {
       id: "service3",
-      title: t("service3"),
-      content: t("service3Content"),
+      title: t("service2"),
+      content: t("service2Content"),
     },
     {
       id: "service4",
@@ -86,16 +86,7 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
                 className="w-full flex items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left"
               >
                 <div className="flex items-center gap-3">
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm transition-all duration-200 ${
-                      isOpen
-                        ? "bg-gradient-to-br from-purple-600 to-pink-500 scale-105"
-                        : "bg-gradient-to-br from-purple-500 to-indigo-500 group-hover:scale-105"
-                    }`}
-                    aria-hidden="true"
-                  >
-                    {number}
-                  </span>
+               
                   <span className="text-black md:text-[18px] text-[15px] font-semibold group-hover:text-purple-700 transition-colors duration-150">
                     {service.title}
                   </span>

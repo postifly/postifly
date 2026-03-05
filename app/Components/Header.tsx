@@ -14,7 +14,7 @@ type NavItem =
 
 const servicesLinks: NavLinkItem[] = [
   { href: '/services?service=service1', labelKey: 'header.onlineShopping' },
-  { href: '/services?service=service2', labelKey: 'header.commercialExport' },
+ 
   { href: '/services?service=service3', labelKey: 'header.customsBroker' },
   { href: '/services?service=service4', labelKey: 'header.courier' },
 ];
@@ -212,7 +212,7 @@ const Header = () => {
               objectFit: 'contain',
             }}
           />
-          <h1 className="text-white md:text-[20px] text-[16px] font-bold">Postify</h1>
+          <h1 className="text-[#3A5BFF] md:text-[25px] text-[18px] font-bold">Postify</h1>
         </Link>
 
         {/* Desktop nav in the top row */}
