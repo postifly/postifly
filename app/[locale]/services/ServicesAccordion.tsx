@@ -74,7 +74,13 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              
+              <div className="w-full flex items-center justify-between gap-3 px-4 md:px-6 py-3.5 md:py-4 text-left">
+                <div className="flex items-center gap-3">
+                  <span className="text-black md:text-[18px] text-[15px] font-semibold">
+                     {service.title}
+                  </span>
+                </div>
+              </div>
 
               <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-black/80 md:text-[16px] text-[14px] leading-relaxed border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
                 {service.content}
