@@ -2,12 +2,22 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type AdminNavItem = {
   label: string;
   href: string;
   description?: string;
+};
+
+type ChatThreadSummary = {
+  id: string;
+  status: string;
+};
+
+type ChatMessage = {
+  id: string;
+  sender: 'USER' | 'ADMIN';
 };
 
 const items: AdminNavItem[] = [
@@ -28,6 +38,74 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [chatCounts, setChatCounts] = useState<{
+    open: number;
+    awaitingReply: number;
+  } | null>(null);
+  const [chatLoading, setChatLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadChatCounts = async () => {
+      try {
+        setChatLoading(true);
+        const res = await fetch('/api/admin/chat/threads');
+        const data = await res.json();
+        const threads: ChatThreadSummary[] = Array.isArray(data.threads)
+          ? data.threads
+          : [];
+
+        const openThreads = threads.filter((t) => t.status === 'open');
+
+        const awaitingReplyIds = new Set<string>();
+
+        await Promise.all(
+          openThreads.map(async (thread) => {
+            try {
+              const resMessages = await fetch(
+                `/api/admin/chat/threads/${thread.id}`,
+              );
+              const dataMessages = await resMessages.json();
+              const messages: ChatMessage[] = Array.isArray(
+                dataMessages.messages,
+              )
+                ? dataMessages.messages
+                : [];
+
+              const last = messages[messages.length - 1];
+              if (last && last.sender === 'USER') {
+                awaitingReplyIds.add(thread.id);
+              }
+            } catch {
+              // ignore single-thread errors
+            }
+          }),
+        );
+
+        if (!cancelled) {
+          setChatCounts({
+            open: openThreads.length,
+            awaitingReply: awaitingReplyIds.size,
+          });
+        }
+      } catch {
+        if (!cancelled) {
+          setChatCounts(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setChatLoading(false);
+        }
+      }
+    };
+
+    void loadChatCounts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const currentItem =
     items.find((item) => pathname === item.href) ?? items[0];
@@ -43,7 +121,19 @@ export default function AdminSidebar() {
           aria-expanded={open}
           aria-haspopup="true"
         >
-          <span>{currentItem.label}</span>
+          <span className="flex items-center gap-2">
+            <span>{currentItem.label}</span>
+            {currentItem.href === '/admin/chat' && (chatCounts || chatLoading) ? (
+              <span className="flex items-center gap-1 text-xs">
+                <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
+                  გაუხსნელი: {chatCounts?.open ?? '...'}
+                </span>
+                <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
+                  უპასუხებელი: {chatCounts?.awaitingReply ?? '...'}
+                </span>
+              </span>
+            ) : null}
+          </span>
           <span
             className={`text-black transition-transform ${
               open ? 'rotate-180' : ''
@@ -71,7 +161,19 @@ export default function AdminSidebar() {
                         : 'text-black hover:bg-gray-50'
                     }`}
                   >
-                    {item.label}
+                    <span className="flex items-center justify-between gap-2">
+                      <span>{item.label}</span>
+                      {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
+                        <span className="ml-auto flex items-center gap-1 text-xs">
+                          <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
+                            გაუხსნელი: {chatCounts?.open ?? '...'}
+                          </span>
+                          <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] text-black">
+                            უპასუხებელი: {chatCounts?.awaitingReply ?? '...'}
+                          </span>
+                        </span>
+                      ) : null}
+                    </span>
                   </button>
                 );
               })}
@@ -96,7 +198,17 @@ export default function AdminSidebar() {
                       : 'border-transparent text-black hover:bg-gray-50 hover:text-black'
                   }`}
                 >
-                  {item.label}
+                  <span className="flex items-center justify-between gap-2">
+                    <span>{item.label}</span>
+                    {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
+                      <span className="ml-auto flex items-center gap-1 text-xs">
+                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px]">
+                          {chatCounts?.open ?? '...'}
+                        </span>
+                       
+                      </span>
+                    ) : null}
+                  </span>
                 </Link>
               );
             })}
@@ -106,4 +218,3 @@ export default function AdminSidebar() {
     </div>
   );
 }
-
