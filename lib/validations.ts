@@ -36,5 +36,23 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'პაროლი აუცილებელია'),
 });
 
+// Admin: create user manually (no OTP)
+export const adminCreateUserSchema = z.object({
+  email: z.string().email('არასწორი ელფოსტა'),
+  password: z.string().min(6, 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო'),
+  firstName: z.string().min(1, 'სახელი აუცილებელია').optional(),
+  lastName: z.string().min(1, 'გვარი აუცილებელია').optional(),
+  phone: z.string().min(9, 'მინიმუმ 9 ციფრი').optional().or(z.literal('')),
+  personalIdNumber: z
+    .string()
+    .min(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
+    .max(11, 'პირადობის ნომერი უნდა იყოს 11 ციფრი')
+    .regex(/^\d+$/, 'პირადობის ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
+  city: z.string().optional(),
+  address: z.string().optional(),
+  role: z.enum(['USER', 'ADMIN']).default('USER'),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>;

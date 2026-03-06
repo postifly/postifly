@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
+import { Link } from '@/i18n/navigation';
 
 type User = {
   id: string;
@@ -235,6 +236,15 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
           <p className="text-[16px] text-red-800">{error}</p>
         </div>
       ) : null}
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <Link
+          href="/admin/users/new"
+          className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-[16px] font-semibold text-black hover:bg-gray-50"
+        >
+          ახალი მომხმარებელი
+        </Link>
+      </div>
 
       <div className="mb-4 grid gap-3 rounded-2xl border border-gray-200 bg-white p-4 md:grid-cols-3">
         <div>
