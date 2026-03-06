@@ -24,6 +24,7 @@ export default async function DashboardPage() {
     trackingNumber: parcel.trackingNumber,
     status: parcel.status,
     price: parcel.price,
+    shippingAmount: parcel.shippingAmount ?? null,
     currency: parcel.currency || 'GEL',
     weight: parcel.weight != null ? `${parcel.weight} kg` : '',
     originCountry: parcel.originCountry || null,

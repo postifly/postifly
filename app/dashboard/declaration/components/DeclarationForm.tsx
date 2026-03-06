@@ -169,11 +169,11 @@ export default function DeclarationForm() {
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black file:mr-3 file:rounded file:border-0 file:bg-amber-100 file:px-3 file:py-1.5 file:text-[14px] file:font-semibold file:text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
           {file && (
-            <p className="mt-1 text-[13px] text-gray-500">
+            <p className="mt-1 text-[13px] text-black">
               {t('selected')}: {file.name} ({(file.size / 1024).toFixed(1)} KB)
             </p>
           )}
-          <p className="mt-1 text-[13px] text-gray-500">{t('maxFileSize')}</p>
+          <p className="mt-1 text-[13px] text-black">{t('maxFileSize')}</p>
         </div>
         <button
           type="submit"

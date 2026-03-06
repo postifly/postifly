@@ -76,7 +76,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
             readOnly
             className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2.5 text-[15px] cursor-not-allowed"
           />
-          <p className="mt-1 text-[13px] text-gray-500">ელფოსტის შეცვლა მხარდაჭერილი არ არის</p>
+          <p className="mt-1 text-[13px] text-black">ელფოსტის შეცვლა მხარდაჭერილი არ არის</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>

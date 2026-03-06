@@ -152,7 +152,7 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
                   <td className="px-4 py-2 text-[16px] text-black">
                     {order.user.email}
                     {(order.user.firstName || order.user.lastName) && (
-                      <span className="block text-sm text-gray-500">
+                      <span className="block text-sm text-black">
                         {order.user.firstName} {order.user.lastName}
                       </span>
                     )}

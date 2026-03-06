@@ -90,7 +90,7 @@ model Parcel {
 
   // Required for creation
   customerName    String   // მომხმარებლის სახელი
-  price           Float    // ფასი
+  price           Float    // ნაყიდი ნივთის ღირებულება (რამდენი ღირდა)
   onlineShop      String   // ონლაინ მაღაზია
   quantity        Int      // ამანათის რაოდენობა
   comment         String? // კომენტარი (optional)
@@ -113,6 +113,7 @@ model Parcel {
 
   // Pricing
   currency        String   @default("GEL")
+  shippingAmount   Float?   // გადასახდელი (წონა × ტარიფი) - რას გადაიხდის მომხმარებელი
   filePath        String   // stored path to uploaded declaration PDF
 
   // Customs

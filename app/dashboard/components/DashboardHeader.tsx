@@ -45,7 +45,7 @@ export default function DashboardHeader() {
             aria-haspopup="true"
           >
             <span className="whitespace-nowrap">{tCommon('menu')}</span>
-            <svg className={`w-5 h-5 shrink-0 text-gray-500 transition-transform ${navOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
+            <svg className={`w-5 h-5 shrink-0 text-black transition-transform ${navOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>

@@ -74,7 +74,7 @@ export default function UserOrdersTabs({ orders }: Props) {
           <tbody className="divide-y divide-gray-100 bg-white">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-[15px] text-gray-500">
+                <td colSpan={4} className="px-4 py-8 text-center text-[15px] text-black">
                   {t('noOrdersInStatus')}
                 </td>
               </tr>
@@ -99,7 +99,7 @@ export default function UserOrdersTabs({ orders }: Props) {
       {/* Mobile: cards */}
       <div className="md:hidden rounded-b-xl border border-gray-200 border-t-0 bg-gray-50/80 overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="px-4 py-8 text-center text-[15px] text-gray-500 bg-white">
+          <div className="px-4 py-8 text-center text-[15px] text-black bg-white">
             {t('noOrdersInStatus')}
           </div>
         ) : (
@@ -107,13 +107,13 @@ export default function UserOrdersTabs({ orders }: Props) {
             {filtered.map((order) => (
               <li key={order.id} className="p-4">
                 <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-[14px]">
-                  <span className="text-gray-500">{t('ordersTable.type')}</span>
+                    <span className="text-black">{t('ordersTable.type')}</span>
                   <span className="text-black font-medium">{getTypeLabel(order.type)}</span>
-                  <span className="text-gray-500">{t('ordersTable.weight')}</span>
+                  <span className="text-black">{t('ordersTable.weight')}</span>
                   <span className="text-black">{order.weight || '—'}</span>
-                  <span className="text-gray-500">{t('ordersTable.amount')}</span>
+                  <span className="text-black">{t('ordersTable.amount')}</span>
                   <span className="text-black font-medium">{order.totalAmount.toFixed(2)} {order.currency}</span>
-                  <span className="text-gray-500">{t('ordersTable.date')}</span>
+                  <span className="text-black">{t('ordersTable.date')}</span>
                   <span className="text-black">{order.createdAt}</span>
                 </div>
               </li>

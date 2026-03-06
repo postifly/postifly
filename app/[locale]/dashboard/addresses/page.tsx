@@ -59,19 +59,19 @@ export default async function DashboardAddressesPage({ params }: Props) {
               {addressList.map((row, i) => (
                 <div key={i} className="rounded-lg border border-gray-200 bg-gray-50/50 p-3 text-sm">
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-gray-500 shrink-0">{tAddr('country')}</span>
+                    <span className="text-black shrink-0">{tAddr('country')}</span>
                     <span className="text-gray-900 text-right">{row.country}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-gray-500 shrink-0">{tAddr('city')}</span>
+                    <span className="text-black shrink-0">{tAddr('city')}</span>
                     <span className="text-gray-900 text-right">{row.city}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-gray-500 shrink-0">{tAddr('street')}</span>
+                    <span className="text-black shrink-0">{tAddr('street')}</span>
                     <span className="text-gray-900 text-right break-all">{row.street}</span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-gray-500 shrink-0">{tAddr('postalCode')}</span>
+                    <span className="text-black shrink-0">{tAddr('postalCode')}</span>
                     <span className="text-gray-900 font-medium">{row.postalCode}</span>
                   </div>
                 </div>

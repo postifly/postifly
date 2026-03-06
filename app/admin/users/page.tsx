@@ -10,6 +10,7 @@ export default async function AdminUsersPage() {
       email: true,
       firstName: true,
       lastName: true,
+      address: true,
       role: true,
       createdAt: true,
       poNumber: true,

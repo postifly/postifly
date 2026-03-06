@@ -159,7 +159,7 @@ export default function ChatAdmin() {
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h1 className="text-lg font-semibold text-gray-900">ჩათის მართვა</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-black">
             იხილე შეკითხვები და უპასუხე მომხმარებლებს რეალურ დროში.
           </p>
         </div>
@@ -177,17 +177,17 @@ export default function ChatAdmin() {
         <div className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
             <h2 className="text-sm font-semibold text-gray-900">დიალოგები</h2>
-            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-black">
               {threads.length} მომხმარებელი
             </span>
           </div>
           {loadingThreads ? (
             <div className="flex flex-1 items-center justify-center px-4 py-6">
-              <p className="text-sm text-gray-600">ჩათები იტვირთება...</p>
+              <p className="text-sm text-black">ჩათები იტვირთება...</p>
             </div>
           ) : threads.length === 0 ? (
             <div className="flex flex-1 items-center justify-center px-4 py-6">
-              <p className="text-sm text-gray-600">ჯერ არცერთი ჩათი არ არის.</p>
+              <p className="text-sm text-black">ჯერ არცერთი ჩათი არ არის.</p>
             </div>
           ) : (
             <ul className="flex-1 divide-y divide-gray-100 overflow-y-auto">
@@ -215,7 +215,7 @@ export default function ChatAdmin() {
                           className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[16px] font-medium ${
                             t.status === 'open'
                               ? 'bg-emerald-50 text-emerald-700'
-                              : 'bg-gray-100 text-gray-600'
+                              : 'bg-gray-100 text-black'
                           }`}
                         >
                           {t.status === 'open' ? 'ღია' : 'დახურული'}
@@ -246,7 +246,7 @@ export default function ChatAdmin() {
                 💬
               </div>
               <p className="text-sm font-medium text-gray-800">აირჩიეთ ჩათი მარცხენა მხრიდან.</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-black">
                 იხილავთ მომხმარებლის ისტორიას და შეძლებთ პასუხის გაგზავნას.
               </p>
             </div>
@@ -258,7 +258,7 @@ export default function ChatAdmin() {
                   <p className="truncate text-sm font-semibold text-gray-900">
                     {selectedThread.firstName} {selectedThread.lastName}
                   </p>
-                  <p className="truncate text-xs text-gray-500">
+                  <p className="truncate text-xs text-black">
                     {selectedThread.email} · {selectedThread.phone}
                   </p>
                 </div>
@@ -267,7 +267,7 @@ export default function ChatAdmin() {
                     className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium ${
                       selectedThread.status === 'open'
                         ? 'bg-emerald-50 text-emerald-700'
-                        : 'bg-gray-100 text-gray-600'
+                        : 'bg-gray-100 text-black'
                     }`}
                   >
                     {selectedThread.status === 'open' ? 'აქტიური დიალოგი' : 'დახურული დიალოგი'}
@@ -315,7 +315,7 @@ export default function ChatAdmin() {
                         <p className="whitespace-pre-wrap break-words">{m.text}</p>
                         <p
                           className={`mt-1 text-right text-[11px] ${
-                            m.sender === 'ADMIN' ? 'text-gray-300' : 'text-gray-400'
+                            m.sender === 'ADMIN' ? 'text-gray-300' : 'text-black'
                           }`}
                         >
                           {m.createdAt}

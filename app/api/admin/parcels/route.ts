@@ -15,16 +15,28 @@ const updateParcelStatusSchema = z.object({
 
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
 
+const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
+  uk: 'GB',
+  us: 'US',
+  cn: 'CN',
+  it: 'IT',
+  gr: 'GR',
+  es: 'ES',
+  fr: 'FR',
+  de: 'DE',
+  tr: 'TR',
+};
+
 const createParcelSchema = z.object({
   userEmail: z.string().email('User email is invalid'),
   customerName: z.string().min(1, 'Customer name is required'),
   trackingNumber: z.string().min(1, 'Tracking number is required'),
-  price: z.number().min(0, 'Price is required'),
+  price: z.number().min(0, 'Item value is required'),
   onlineShop: z.string().min(1, 'Online shop is required'),
   quantity: z.number().int().min(1, 'Quantity must be at least 1'),
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'Origin country is required' }),
   comment: z.string().optional(),
-  weight: z.number().min(0).optional(),
+  weight: z.number().min(0.001, 'Weight is required'),
   description: z.string().min(1, 'Description is required'),
 });
 
@@ -138,6 +150,25 @@ export async function POST(request: NextRequest) {
       description,
     });
 
+    const tariffCountry = FORM_TO_TARIFF_COUNTRY[parsed.originCountry];
+    const tariff = await prisma.tariff.findFirst({
+      where: {
+        originCountry: tariffCountry,
+        destinationCountry: 'GE',
+        isActive: true,
+        minWeight: { lte: parsed.weight },
+        OR: [{ maxWeight: null }, { maxWeight: { gte: parsed.weight } }],
+      },
+      orderBy: { minWeight: 'desc' },
+    });
+    if (!tariff) {
+      return NextResponse.json(
+        { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ შეამოწმოთ ტარიფები.' },
+        { status: 400 }
+      );
+    }
+    const shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
+
     const user = await prisma.user.findUnique({
       where: { email: parsed.userEmail },
       select: { id: true },
@@ -185,11 +216,12 @@ export async function POST(request: NextRequest) {
         customerName: parsed.customerName.trim(),
         trackingNumber: parsed.trackingNumber.trim(),
         price: parsed.price,
+        shippingAmount,
         onlineShop: parsed.onlineShop.trim(),
         quantity: parsed.quantity,
         originCountry: parsed.originCountry,
         comment: parsed.comment?.trim() ?? null,
-        weight: parsed.weight ?? null,
+        weight: parsed.weight,
         description: parsed.description?.trim() ?? null,
         currency: 'GEL',
         filePath: fileUrl,

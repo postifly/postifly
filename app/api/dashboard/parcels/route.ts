@@ -12,15 +12,27 @@ const ALLOWED_TYPE = 'application/pdf';
 
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
 
+const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
+  uk: 'GB',
+  us: 'US',
+  cn: 'CN',
+  it: 'IT',
+  gr: 'GR',
+  es: 'ES',
+  fr: 'FR',
+  de: 'DE',
+  tr: 'TR',
+};
+
 const createParcelSchema = z.object({
   customerName: z.string().min(1, 'მომხმარებლის სახელი აუცილებელია'),
   trackingNumber: z.string().min(1, 'თრექინგ კოდი აუცილებელია'),
-  price: z.number().min(0, 'ფასი აუცილებელია'),
+  price: z.number().min(0, 'ნაყიდი ნივთის ღირებულება აუცილებელია'),
   onlineShop: z.string().min(1, 'ონლაინ მაღაზია აუცილებელია'),
   quantity: z.number().int().min(1, 'ამანათის რაოდენობა აუცილებელია'),
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'ქვეყანა აუცილებელია' }),
   comment: z.string().optional(),
-  weight: z.number().min(0).optional(),
+  weight: z.number().min(0.001, 'წონა აუცილებელია და უნდა იყოს მეტი 0-ზე'),
   description: z.string().min(1, 'აღწერა აუცილებელია'),
 });
 
@@ -75,7 +87,7 @@ export async function POST(request: NextRequest) {
     const parsed = createParcelSchema.parse({
       customerName,
       trackingNumber,
-      price,
+      price: Number.isNaN(price) ? undefined : price,
       onlineShop,
       quantity,
       originCountry: originCountry || undefined,
@@ -83,6 +95,28 @@ export async function POST(request: NextRequest) {
       weight: Number.isNaN(weight) ? undefined : weight,
       description,
     });
+
+    const tariffCountry = FORM_TO_TARIFF_COUNTRY[parsed.originCountry];
+    const tariff = await prisma.tariff.findFirst({
+      where: {
+        originCountry: tariffCountry,
+        destinationCountry: 'GE',
+        isActive: true,
+        minWeight: { lte: parsed.weight },
+        OR: [
+          { maxWeight: null },
+          { maxWeight: { gte: parsed.weight } },
+        ],
+      },
+      orderBy: { minWeight: 'desc' },
+    });
+    if (!tariff) {
+      return NextResponse.json(
+        { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ დაუკავშირდეთ ადმინისტრაციას.' },
+        { status: 400 },
+      );
+    }
+    const shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
 
     const userId = session.user.id;
 
@@ -120,11 +154,12 @@ export async function POST(request: NextRequest) {
         customerName: parsed.customerName.trim(),
         trackingNumber: parsed.trackingNumber.trim(),
         price: parsed.price,
+        shippingAmount,
         onlineShop: parsed.onlineShop.trim(),
         quantity: parsed.quantity,
         originCountry: parsed.originCountry,
         comment: parsed.comment?.trim() ?? null,
-        weight: parsed.weight ?? null,
+        weight: parsed.weight,
         description: parsed.description?.trim() ?? null,
         currency: 'GEL',
         filePath: fileUrl,

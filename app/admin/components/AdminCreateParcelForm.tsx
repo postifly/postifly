@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
 import { useTranslations } from 'next-intl';
@@ -46,6 +46,29 @@ const ORIGIN_COUNTRIES: { code: string }[] = [
   { code: 'tr' },
 ];
 
+const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
+  uk: 'GB',
+  us: 'US',
+  cn: 'CN',
+  it: 'IT',
+  gr: 'GR',
+  es: 'ES',
+  fr: 'FR',
+  de: 'DE',
+  tr: 'TR',
+};
+
+type TariffRow = {
+  id: string;
+  originCountry: string;
+  destinationCountry: string;
+  minWeight: number;
+  maxWeight: number | null;
+  pricePerKg: number;
+  currency: string;
+  isActive: boolean;
+};
+
 export default function AdminCreateParcelForm() {
   const router = useRouter();
   const t = useTranslations('adminParcels');
@@ -70,6 +93,54 @@ export default function AdminCreateParcelForm() {
 
   const [countryOpen, setCountryOpen] = useState(false);
   const countryRef = useRef<HTMLDivElement | null>(null);
+  const [tariffs, setTariffs] = useState<TariffRow[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/tariffs', {
+          method: 'GET',
+          cache: 'no-store',
+          credentials: 'include',
+          headers: { 'Cache-Control': 'no-cache' },
+        });
+        const data = await res.json();
+        if (!res.ok) return;
+        const list = Array.isArray(data.tariffs) ? (data.tariffs as TariffRow[]) : [];
+        if (!cancelled) setTariffs(list);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const calculated = useMemo(() => {
+    if (!originCountry.trim() || !weight.trim()) return null;
+    const w = parseFloat(weight.replace(',', '.'));
+    if (Number.isNaN(w) || w <= 0) return null;
+
+    const dbCountry = FORM_TO_TARIFF_COUNTRY[originCountry];
+    if (!dbCountry) return null;
+
+    const match = tariffs
+      .filter(
+        (x) =>
+          x.isActive &&
+          x.destinationCountry === 'GE' &&
+          x.originCountry === dbCountry &&
+          x.minWeight <= w &&
+          (x.maxWeight == null || x.maxWeight >= w),
+      )
+      .sort((a, b) => b.minWeight - a.minWeight)[0];
+
+    if (!match) return null;
+    const shippingAmount = Math.round(w * match.pricePerKg * 100) / 100;
+    return { shippingAmount, pricePerKg: match.pricePerKg };
+  }, [originCountry, weight, tariffs]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -119,7 +190,7 @@ export default function AdminCreateParcelForm() {
 
     const priceNum = parseFloat(price.replace(',', '.'));
     const quantityNum = parseInt(quantity, 10);
-    const w = weight ? parseFloat(weight.replace(',', '.')) : undefined;
+    const w = weight ? parseFloat(weight.replace(',', '.')) : NaN;
 
     if (Number.isNaN(priceNum) || priceNum < 0) {
       setError(t('priceInvalid'));
@@ -131,7 +202,7 @@ export default function AdminCreateParcelForm() {
       return;
     }
 
-    if (w !== undefined && (Number.isNaN(w) || w < 0)) {
+    if (Number.isNaN(w) || w <= 0) {
       setError(t('weightInvalid'));
       return;
     }
@@ -148,7 +219,7 @@ export default function AdminCreateParcelForm() {
       formData.append('quantity', String(quantityNum));
       formData.append('originCountry', originCountry.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
-      if (weight.trim()) formData.append('weight', String(w));
+      formData.append('weight', String(w));
       formData.append('description', description.trim());
       formData.append('file', file);
 
@@ -166,18 +237,7 @@ export default function AdminCreateParcelForm() {
       }
 
       setSuccess(t('createSuccess'));
-      setUserEmail('');
-      setCustomerName('');
-      setTrackingNumber('');
-      setPrice('');
-      setOnlineShop('');
-      setQuantity('1');
-      setOriginCountry('');
-      setComment('');
-      setWeight('');
-      setDescription('');
-      setFile(null);
-
+      router.push('/admin/incoming');
       router.refresh();
     } catch {
       setError(tCommon('networkError'));
@@ -260,6 +320,7 @@ export default function AdminCreateParcelForm() {
               className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('pricePlaceholder')}
             />
+          
           </div>
 
           <div>
@@ -325,9 +386,9 @@ export default function AdminCreateParcelForm() {
                   <span>{tAddresses(originCountry as 'uk')}</span>
                 </>
               ) : (
-                <span className="text-gray-500">{t('originCountryPlaceholder')}</span>
+                <span className="text-black">{t('originCountryPlaceholder')}</span>
               )}
-              <span className="ml-auto text-gray-400">{countryOpen ? '▲' : '▼'}</span>
+              <span className="ml-auto text-black">{countryOpen ? '▲' : '▼'}</span>
             </button>
             {countryOpen && (
               <ul
@@ -363,16 +424,23 @@ export default function AdminCreateParcelForm() {
 
           <div>
             <label className="mb-1 block text-[15px] font-semibold text-black">
-              {t('weight')}
+              {t('weight')} *
             </label>
             <input
               type="text"
               inputMode="decimal"
+              required
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               className="w-full placeholder:font-bold placeholder:text-black placeholder:text-[16px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('weightPlaceholder')}
             />
+            {calculated != null && (
+              <p className="mt-1 text-[14px] text-black">
+                {t('shippingAmountLabel')}: {calculated.shippingAmount.toFixed(2)} GEL{' '}
+                <span className="text-black">({calculated.pricePerKg.toFixed(2)} GEL/kg)</span>
+              </p>
+            )}
           </div>
         </div>
 
@@ -420,7 +488,7 @@ export default function AdminCreateParcelForm() {
             }}
             className="block w-full text-[15px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] file:font-medium file:text-black hover:file:bg-gray-50"
           />
-          <p className="mt-1 text-[14px] text-gray-600">
+          <p className="mt-1 text-[14px] text-black">
             {t('pdfHelp')}
           </p>
         </div>

@@ -12,6 +12,7 @@ export default async function AdminUsersPageLocale(_props: Props) {
       email: true,
       firstName: true,
       lastName: true,
+      address: true,
       role: true,
       createdAt: true,
       poNumber: true,

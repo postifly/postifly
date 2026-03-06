@@ -45,7 +45,7 @@ export default function AdminSidebar() {
         >
           <span>{currentItem.label}</span>
           <span
-            className={`text-gray-500 transition-transform ${
+            className={`text-black transition-transform ${
               open ? 'rotate-180' : ''
             }`}
           >

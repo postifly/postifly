@@ -76,7 +76,7 @@ function TrackingContent() {
           </div>
 
           {!code ? (
-            <p className="text-[15px] text-gray-500">
+            <p className="text-[15px] text-black">
               გამოიყენეთ დაშბორდის ველი თრექინგ კოდის საძიებლად ან{' '}
               <Link href="/dashboard" className="text-amber-600 hover:underline">
                 დაშბორდი
@@ -84,7 +84,7 @@ function TrackingContent() {
               .
             </p>
           ) : loading ? (
-            <p className="text-[15px] text-gray-500">იტვირთება...</p>
+            <p className="text-[15px] text-black">იტვირთება...</p>
           ) : error ? (
             <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-800">
               {error}
@@ -93,15 +93,15 @@ function TrackingContent() {
             <div className="space-y-4">
               <div className="rounded-lg border border-gray-200 bg-gray-50/80 p-4">
                 <div className="grid grid-cols-2 gap-2 text-[14px]">
-                  <span className="text-gray-500">თრექინგ კოდი</span>
+                  <span className="text-black">თრექინგ კოდი</span>
                   <span className="font-medium text-black">{result.trackingNumber}</span>
-                  <span className="text-gray-500">სტატუსი</span>
+                  <span className="text-black">სტატუსი</span>
                   <span className="font-medium text-black">
                     {STATUS_LABELS[result.status] || result.status}
                   </span>
-                  <span className="text-gray-500">წონა</span>
+                  <span className="text-black">წონა</span>
                   <span className="text-black">{result.weight} kg</span>
-                  <span className="text-gray-500">ქვეყანა</span>
+                  <span className="text-black">ქვეყანა</span>
                   <span className="text-black">{result.originCountry}</span>
                 </div>
               </div>
@@ -118,7 +118,7 @@ function TrackingContent() {
                           {STATUS_LABELS[t.status] || t.status}
                         </span>
                         {t.location && <span className="text-gray-600">{t.location}</span>}
-                        {t.description && <span className="text-gray-500">{t.description}</span>}
+                        {t.description && <span className="text-black">{t.description}</span>}
                         <span className="ml-auto text-gray-400">
                           {new Date(t.createdAt).toLocaleDateString('ka-GE')}
                         </span>
@@ -137,7 +137,7 @@ function TrackingContent() {
 
 export default function DashboardTrackingPage() {
   return (
-    <Suspense fallback={<div className=" bg-gray-100 py-8 flex items-center justify-center"><p className="text-gray-500">იტვირთება...</p></div>}>
+    <Suspense fallback={<div className=" bg-gray-100 py-8 flex items-center justify-center"><p className="text-black">იტვირთება...</p></div>}>
       <TrackingContent />
     </Suspense>
   );

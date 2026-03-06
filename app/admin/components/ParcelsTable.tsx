@@ -7,6 +7,7 @@ type Parcel = {
   trackingNumber: string;
   status: string;
   price: number;
+  shippingAmount?: number | null;
   currency: string;
   weight: number | null;
   originCountry: string | null;
@@ -157,45 +158,45 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                     {parcel.user.email}
                   </p>
                 </div>
-                <div className="text-right text-[13px] text-gray-500">
+                <div className="text-right text-[13px] text-black">
                   <p>{parcel.createdAt}</p>
                   <p>{parcel.originCountry || '—'}</p>
                 </div>
               </div>
 
-              <div className="mb-3 grid grid-cols-2 gap-2 text-[13px] text-gray-700">
-                <span className="text-gray-500">თრექინგი</span>
+                <div className="mb-3 grid grid-cols-2 gap-2 text-[13px] text-black">
+                <span className="text-black">თრექინგი</span>
                 <span className="text-black">{parcel.trackingNumber}</span>
 
-                <span className="text-gray-500">რაოდენობა</span>
+                <span className="text-black">რაოდენობა</span>
                 <span className="text-black">{parcel.quantity}</span>
 
-                <span className="text-gray-500">წონა</span>
+                <span className="text-black">წონა</span>
                 <span className="text-black">
                   {parcel.weight != null ? `${parcel.weight} kg` : '—'}
                 </span>
 
-                <span className="text-gray-500">თანხა</span>
+                <span className="text-black">თანხა</span>
                 <span className="text-black">
-                  {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
+                  {(parcel.shippingAmount ?? parcel.price).toFixed(2)} {parcel.currency || 'GEL'}
                 </span>
 
-                <span className="text-gray-500">ტელფონი</span>
+                <span className="text-black">ტელფონი</span>
                 <span className="text-black">
                   {formatPhone(parcel.user.phone)}
                 </span>
 
-                <span className="text-gray-500">ქალაქი</span>
+                <span className="text-black">ქალაქი</span>
                 <span className="text-black">
                   {parcel.user.city || '—'}
                 </span>
 
-                <span className="text-gray-500">ქუჩა</span>
+                <span className="text-black">ქუჩა</span>
                 <span className="text-black">
                   {parcel.user.address || '—'}
                 </span>
 
-                <span className="text-gray-500">ფაილი</span>
+                <span className="text-black">ფაილი</span>
                 <span className="flex flex-wrap gap-2">
                   <a
                     href={parcel.filePath}
@@ -216,7 +217,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
               </div>
 
               <div className="flex items-center justify-between gap-3">
-                <span className="text-[13px] text-gray-500">სტატუსი</span>
+                <span className="text-[13px] text-black">სტატუსი</span>
                 <div className="flex flex-1 flex-col md:flex-row items-center gap-2">
                   <select
                     value={parcel.status}
@@ -273,7 +274,7 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                     <td className="px-4 py-2 align-top text-[16px] text-black">
                       {parcel.user.email}
                       {(parcel.user.firstName || parcel.user.lastName) && (
-                        <span className="block text-sm text-gray-500">
+                        <span className="block text-sm text-black">
                           {parcel.user.firstName} {parcel.user.lastName}
                         </span>
                       )}
@@ -299,40 +300,40 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                   </tr>
                   {expandedId === parcel.id && (
                     <tr className="bg-gray-50">
-                      <td colSpan={2} className="px-4 pb-4 pt-0 text-[14px] text-black">
+                      <td colSpan={2} className="px-4 pb-4 pt-0 text-black text-[14px] md:text-[18px]">
                         <div className="grid grid-cols-2 gap-2 pt-2">
-                          <span className="text-gray-500">კლიენტი</span>
+                            <span className="text-black">კლიენტი</span>
                           <span>{parcel.customerName}</span>
 
-                          <span className="text-gray-500">თრექინგი</span>
+                          <span className="text-black">თრექინგი</span>
                           <span>{parcel.trackingNumber}</span>
 
-                          <span className="text-gray-500">რაოდენობა</span>
+                          <span className="text-black">რაოდენობა</span>
                           <span>{parcel.quantity}</span>
 
-                          <span className="text-gray-500">ქვეყანა</span>
+                          <span className="text-black">ქვეყანა</span>
                           <span>{parcel.originCountry || '—'}</span>
 
-                          <span className="text-gray-500">წონა</span>
+                          <span className="text-black">წონა</span>
                           <span>
                             {parcel.weight != null ? `${parcel.weight} kg` : '—'}
                           </span>
 
-                          <span className="text-gray-500">თანხა</span>
+                          <span className="text-black">თანხა</span>
                           <span>
-                            {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
+                            {(parcel.shippingAmount ?? parcel.price).toFixed(2)} {parcel.currency || 'GEL'}
                           </span>
 
-                          <span className="text-gray-500">ტელფონი</span>
+                          <span className="text-black">ტელფონი</span>
                           <span>{formatPhone(parcel.user.phone)}</span>
 
-                          <span className="text-gray-500">ქალაქი</span>
+                          <span className="text-black">ქალაქი</span>
                           <span>{parcel.user.city || '—'}</span>
 
-                          <span className="text-gray-500">ქუჩა</span>
+                          <span className="text-black">ქუჩა</span>
                           <span>{parcel.user.address || '—'}</span>
 
-                          <span className="text-gray-500">ფაილი</span>
+                          <span className="text-black">ფაილი</span>
                           <span className="flex flex-wrap gap-2">
                             <a
                               href={parcel.filePath}
@@ -351,10 +352,10 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                             </a>
                           </span>
 
-                          <span className="text-gray-500">თარიღი</span>
+                          <span className="text-black">თარიღი</span>
                           <span>{parcel.createdAt}</span>
 
-                          <span className="text-gray-500">სტატუსი</span>
+                          <span className="text-black">სტატუსი</span>
                           <span className="flex items-center gap-2">
                             <select
                               value={parcel.status}

@@ -61,19 +61,19 @@ export default async function DashboardAddressesPage() {
               {addressList.map((row, i) => (
                 <div key={i} className="rounded-lg border border-gray-200 bg-gray-50/50 p-3 text-sm">
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-gray-500 shrink-0">ქვეყანა</span>
+                    <span className="text-black shrink-0">ქვეყანა</span>
                     <span className="text-gray-900 text-right">{row.country}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-gray-500 shrink-0">ქალაქი</span>
+                    <span className="text-black shrink-0">ქალაქი</span>
                     <span className="text-gray-900 text-right">{row.city}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-gray-500 shrink-0">ქუჩა </span>
+                    <span className="text-black shrink-0">ქუჩა </span>
                     <span className="text-gray-900 text-right break-all">{row.street}</span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-gray-500 shrink-0">ინდექსი</span>
+                    <span className="text-black shrink-0">ინდექსი</span>
                     <span className="text-gray-900 font-medium">{row.postalCode}</span>
                   </div>
                 </div>

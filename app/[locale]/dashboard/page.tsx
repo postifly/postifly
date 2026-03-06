@@ -39,6 +39,7 @@ export default async function DashboardPage({ params }: Props) {
     trackingNumber: parcel.trackingNumber,
     status: parcel.status,
     price: parcel.price,
+    shippingAmount: parcel.shippingAmount ?? null,
     currency: parcel.currency || 'GEL',
     weight: parcel.weight != null ? `${parcel.weight} kg` : '',
     originCountry: parcel.originCountry || null,
@@ -48,7 +49,7 @@ export default async function DashboardPage({ params }: Props) {
   }));
 
   return (
-    <div className=" bg-gray-100 py-8">
+    <div className=" bg-gray-100 min-h-screen py-8">
       <div className="mx-auto mt-24 w-full max-w-7xl px-4">
         <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <DashboardHeader />

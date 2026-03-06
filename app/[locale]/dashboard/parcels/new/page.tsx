@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import {
@@ -73,7 +73,31 @@ export default function NewParcelPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
+  const [tariffs, setTariffs] = useState<Record<string, number>>({});
   const countryRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/dashboard/tariffs', { cache: 'no-store', credentials: 'include' });
+        const data = await res.json();
+        if (res.ok && data.tariffs && !cancelled) setTariffs(data.tariffs);
+      } catch {
+        // ignore
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const calculatedPrice = useMemo(() => {
+    if (!originCountry || !weight.trim()) return null;
+    const w = parseFloat(weight.replace(',', '.'));
+    if (Number.isNaN(w) || w <= 0) return null;
+    const pricePerKg = tariffs[originCountry];
+    if (pricePerKg == null) return null;
+    return Math.round(w * pricePerKg * 100) / 100;
+  }, [originCountry, weight, tariffs]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -114,8 +138,8 @@ export default function NewParcelPage() {
 
     const priceNum = parseFloat(price.replace(',', '.'));
     const quantityNum = parseInt(quantity, 10);
-    const w = weight ? parseFloat(weight.replace(',', '.')) : undefined;
-    if (isNaN(priceNum) || priceNum < 0) {
+    const w = weight ? parseFloat(weight.replace(',', '.')) : NaN;
+    if (Number.isNaN(priceNum) || priceNum < 0) {
       setError(t('priceError'));
       return;
     }
@@ -123,7 +147,7 @@ export default function NewParcelPage() {
       setError(t('quantityError'));
       return;
     }
-    if (w !== undefined && (isNaN(w) || w < 0)) {
+    if (Number.isNaN(w) || w <= 0) {
       setError(t('weightError'));
       return;
     }
@@ -138,7 +162,7 @@ export default function NewParcelPage() {
       formData.append('quantity', String(quantityNum));
       formData.append('originCountry', originCountry.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
-      if (weight.trim()) formData.append('weight', String(w));
+      formData.append('weight', String(w));
       formData.append('description', description.trim());
       formData.append('file', file);
 
@@ -212,7 +236,7 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="price" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('price')}
+                {t('itemValue')}
               </label>
               <input
                 id="price"
@@ -225,6 +249,7 @@ export default function NewParcelPage() {
                 placeholder={t('pricePlaceholder')}
                 suppressHydrationWarning
               />
+          
             </div>
             <div>
               <label htmlFor="onlineShop" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
@@ -290,7 +315,7 @@ export default function NewParcelPage() {
                     <span>{tAddresses(originCountry as 'uk')}</span>
                   </>
                 ) : (
-                  <span className="text-gray-500">{t('countryPlaceholder')}</span>
+                  <span className="text-black">{t('countryPlaceholder')}</span>
                 )}
                 <span className="ml-auto text-gray-400">{countryOpen ? '▲' : '▼'}</span>
               </button>
@@ -324,18 +349,24 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('weight')}
+                {t('weight')} *
               </label>
               <input
                 id="weight"
                 type="text"
                 inputMode="decimal"
+                required
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 className="w-full rounded-lg placeholder:font-bold placeholder:text-black placeholder:text-[16px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('weightPlaceholder')}
                 suppressHydrationWarning
               />
+              {calculatedPrice != null && (
+                <p className="mt-1.5 text-[15px] font-medium text-black">
+                  {t('calculatedPrice')}: {calculatedPrice.toFixed(2)} GEL
+                </p>
+              )}
             </div>
             <div>
               <label
