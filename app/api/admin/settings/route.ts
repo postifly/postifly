@@ -10,6 +10,9 @@ const updateAdminSettingsSchema = z
     email: z.string().email('არასწორი ელფოსტა').optional(),
     firstName: z.string().min(1, 'სახელი აუცილებელია').optional(),
     lastName: z.string().min(1, 'გვარი აუცილებელია').optional(),
+    city: z.string().max(200).optional().nullable(),
+    address: z.string().max(500).optional().nullable(),
+    personalIdNumber: z.string().min(1, 'პირადობის ნომერი აუცილებელია').max(50).optional(),
     currentPassword: z.string().min(1, 'მიმდინარე პაროლი აუცილებელია').optional(),
     newPassword: z.string().min(6, 'ახალი პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო').optional(),
     confirmNewPassword: z.string().min(1, 'გაიმეორეთ ახალი პაროლი').optional(),
@@ -56,7 +59,7 @@ export async function PUT(request: NextRequest) {
 
     const currentUser = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { id: true, email: true, password: true },
+      select: { id: true, email: true, password: true, personalIdNumber: true },
     });
 
     if (!currentUser) {
@@ -84,16 +87,38 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    // Personal ID number uniqueness check (if changed)
+    if (
+      data.personalIdNumber != null &&
+      data.personalIdNumber !== (currentUser.personalIdNumber ?? '')
+    ) {
+      const existing = await prisma.user.findUnique({
+        where: { personalIdNumber: data.personalIdNumber },
+      });
+      if (existing) {
+        return NextResponse.json(
+          { error: 'ეს პირადობის ნომერი უკვე გამოყენებულია', field: 'personalIdNumber' },
+          { status: 400 }
+        );
+      }
+    }
+
     const updateData: {
       email?: string;
       firstName?: string | null;
       lastName?: string | null;
+      city?: string | null;
+      address?: string | null;
+      personalIdNumber?: string;
       password?: string;
     } = {};
 
     if (typeof data.email === 'string') updateData.email = data.email;
     if (typeof data.firstName === 'string') updateData.firstName = data.firstName;
     if (typeof data.lastName === 'string') updateData.lastName = data.lastName;
+    if (data.city !== undefined) updateData.city = data.city ?? null;
+    if (data.address !== undefined) updateData.address = data.address ?? null;
+    if (typeof data.personalIdNumber === 'string') updateData.personalIdNumber = data.personalIdNumber;
 
     if (data.newPassword) {
       updateData.password = await bcrypt.hash(data.newPassword, 10);

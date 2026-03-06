@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { signOut } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 
 type AdminMeResponse = {
   user: {
@@ -10,10 +11,26 @@ type AdminMeResponse = {
     firstName: string | null;
     lastName: string | null;
     role: string;
+    city: string | null;
+    address: string | null;
+    personalIdNumber: string;
   };
 };
 
-type FieldErrors = Partial<Record<'email' | 'firstName' | 'lastName' | 'currentPassword' | 'newPassword' | 'confirmNewPassword', string>>;
+type FieldErrors = Partial<
+  Record<
+    | 'email'
+    | 'firstName'
+    | 'lastName'
+    | 'city'
+    | 'address'
+    | 'personalIdNumber'
+    | 'currentPassword'
+    | 'newPassword'
+    | 'confirmNewPassword',
+    string
+  >
+>;
 type FieldKey = keyof FieldErrors;
 
 function isFieldKey(x: unknown): x is FieldKey {
@@ -21,6 +38,9 @@ function isFieldKey(x: unknown): x is FieldKey {
     x === 'email' ||
     x === 'firstName' ||
     x === 'lastName' ||
+    x === 'city' ||
+    x === 'address' ||
+    x === 'personalIdNumber' ||
     x === 'currentPassword' ||
     x === 'newPassword' ||
     x === 'confirmNewPassword'
@@ -28,6 +48,8 @@ function isFieldKey(x: unknown): x is FieldKey {
 }
 
 export default function AdminSettingsForm() {
+  const t = useTranslations('settings');
+  const tCommon = useTranslations('common');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string>('');
@@ -37,6 +59,9 @@ export default function AdminSettingsForm() {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [personalIdNumber, setPersonalIdNumber] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -44,32 +69,74 @@ export default function AdminSettingsForm() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
+  const [initialEmail, setInitialEmail] = useState('');
+  const [initialFirstName, setInitialFirstName] = useState('');
+  const [initialLastName, setInitialLastName] = useState('');
+  const [initialCity, setInitialCity] = useState('');
+  const [initialAddress, setInitialAddress] = useState('');
+  const [initialPersonalIdNumber, setInitialPersonalIdNumber] = useState('');
+
   const dirty = useMemo(() => {
-    return (
-      email.trim().length > 0 ||
-      firstName.trim().length > 0 ||
-      lastName.trim().length > 0 ||
+    const profileChanged =
+      email.trim() !== initialEmail ||
+      firstName.trim() !== initialFirstName ||
+      lastName.trim() !== initialLastName ||
+      city.trim() !== initialCity ||
+      address.trim() !== initialAddress ||
+      personalIdNumber.trim() !== initialPersonalIdNumber;
+    const passwordFilled =
       currentPassword.length > 0 ||
       newPassword.length > 0 ||
-      confirmNewPassword.length > 0
-    );
-  }, [email, firstName, lastName, currentPassword, newPassword, confirmNewPassword]);
+      confirmNewPassword.length > 0;
+    return profileChanged || passwordFilled;
+  }, [
+    email,
+    firstName,
+    lastName,
+    city,
+    address,
+    personalIdNumber,
+    initialEmail,
+    initialFirstName,
+    initialLastName,
+    initialCity,
+    initialAddress,
+    initialPersonalIdNumber,
+    currentPassword,
+    newPassword,
+    confirmNewPassword,
+  ]);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         const res = await fetch('/api/admin/me', { method: 'GET' });
-        if (!res.ok) throw new Error('ვერ მოხერხდა მონაცემების წამოღება');
+        if (!res.ok) throw new Error(t('fetchError'));
         const data = (await res.json()) as AdminMeResponse;
         if (!mounted) return;
 
-        setEmail(data.user.email ?? '');
-        setFirstName(data.user.firstName ?? '');
-        setLastName(data.user.lastName ?? '');
+        const e = data.user.email ?? '';
+        const f = data.user.firstName ?? '';
+        const l = data.user.lastName ?? '';
+        const c = data.user.city ?? '';
+        const a = data.user.address ?? '';
+        const p = data.user.personalIdNumber ?? '';
+        setEmail(e);
+        setFirstName(f);
+        setLastName(l);
+        setCity(c);
+        setAddress(a);
+        setPersonalIdNumber(p);
+        setInitialEmail(e);
+        setInitialFirstName(f);
+        setInitialLastName(l);
+        setInitialCity(c);
+        setInitialAddress(a);
+        setInitialPersonalIdNumber(p);
       } catch {
         if (!mounted) return;
-        setErrorMessage('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+        setErrorMessage(t('loadError'));
       } finally {
         if (!mounted) return;
         setLoading(false);
@@ -78,7 +145,7 @@ export default function AdminSettingsForm() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [t]);
 
   const clearMessages = () => {
     setMessage('');
@@ -105,6 +172,9 @@ export default function AdminSettingsForm() {
         email: email.trim(),
         firstName: firstName.trim() || undefined,
         lastName: lastName.trim() || undefined,
+        city: city.trim() || null,
+        address: address.trim() || null,
+        personalIdNumber: personalIdNumber.trim() || undefined,
         currentPassword: currentPassword || undefined,
         newPassword: newPassword || undefined,
         confirmNewPassword: confirmNewPassword || undefined,
@@ -132,34 +202,41 @@ export default function AdminSettingsForm() {
             if (isFieldKey(key)) fe[key] = String((d as { message?: unknown })?.message ?? '');
           }
           setFieldErrors(fe);
-          setErrorMessage(data.error || 'ვალიდაციის შეცდომა');
+          setErrorMessage(data.error || t('validationError'));
         } else {
-          setErrorMessage(data?.error || 'დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+          setErrorMessage(data?.error || t('saveError'));
         }
         return;
       }
 
-      setMessage(data?.message || 'განახლდა');
+      setMessage(data?.message || t('updated'));
 
       // Clear password fields after success
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
 
+      // Sync initial values so dirty resets until user edits again
+      setInitialEmail(email.trim());
+      setInitialFirstName(firstName.trim());
+      setInitialLastName(lastName.trim());
+      setInitialCity(city.trim());
+      setInitialAddress(address.trim());
+      setInitialPersonalIdNumber(personalIdNumber.trim());
+
       if (data?.requiresReauth) {
-        // to ensure session token/email stays consistent
-        setMessage('პარამეტრები განახლდა. უსაფრთხოებისთვის გთხოვთ ხელახლა შეხვიდეთ.');
+        setMessage(t('reauthMessage'));
         await signOut({ callbackUrl: '/login' });
       }
     } catch {
-      setErrorMessage('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+      setErrorMessage(t('saveError'));
     } finally {
       setSaving(false);
     }
   };
 
   if (loading) {
-    return <p className="text-[16px] text-black">იტვირთება...</p>;
+    return <p className="text-[16px] text-black">{tCommon('loading')}</p>;
   }
 
   return (
@@ -178,7 +255,7 @@ export default function AdminSettingsForm() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-[16px] font-medium text-black mb-1" htmlFor="firstName">
-            სახელი
+            {t('firstName')}
           </label>
           <input
             id="firstName"
@@ -197,7 +274,7 @@ export default function AdminSettingsForm() {
 
         <div>
           <label className="block text-[16px] font-medium text-black mb-1" htmlFor="lastName">
-            გვარი
+            {t('lastName')}
           </label>
           <input
             id="lastName"
@@ -215,9 +292,70 @@ export default function AdminSettingsForm() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="block text-[16px] font-medium text-black mb-1" htmlFor="city">
+            {t('city')}
+          </label>
+          <input
+            id="city"
+            value={city}
+            onChange={(e) => {
+              setCity(e.target.value);
+              clearFieldError('city');
+              clearMessages();
+            }}
+            className={`w-full rounded-md border px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-black ${
+              fieldErrors.city ? 'border-red-300' : 'border-gray-300'
+            }`}
+          />
+          {fieldErrors.city ? <p className="mt-1 text-[16px] text-red-600">{fieldErrors.city}</p> : null}
+        </div>
+
+        <div>
+          <label className="block text-[16px] font-medium text-black mb-1" htmlFor="address">
+            {t('address')}
+          </label>
+          <input
+            id="address"
+            value={address}
+            onChange={(e) => {
+              setAddress(e.target.value);
+              clearFieldError('address');
+              clearMessages();
+            }}
+            className={`w-full rounded-md border px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-black ${
+              fieldErrors.address ? 'border-red-300' : 'border-gray-300'
+            }`}
+          />
+          {fieldErrors.address ? <p className="mt-1 text-[16px] text-red-600">{fieldErrors.address}</p> : null}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[16px] font-medium text-black mb-1" htmlFor="personalIdNumber">
+          {t('personalIdNumber')}
+        </label>
+        <input
+          id="personalIdNumber"
+          value={personalIdNumber}
+          onChange={(e) => {
+            setPersonalIdNumber(e.target.value);
+            clearFieldError('personalIdNumber');
+            clearMessages();
+          }}
+          className={`w-full rounded-md border px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-black ${
+            fieldErrors.personalIdNumber ? 'border-red-300' : 'border-gray-300'
+          }`}
+        />
+        {fieldErrors.personalIdNumber ? (
+          <p className="mt-1 text-[16px] text-red-600">{fieldErrors.personalIdNumber}</p>
+        ) : null}
+      </div>
+
       <div>
         <label className="block text-[16px] font-medium text-black mb-1" htmlFor="email">
-          ელფოსტა
+          {t('email')}
         </label>
         <input
           id="email"
@@ -233,17 +371,17 @@ export default function AdminSettingsForm() {
           }`}
         />
         {fieldErrors.email ? <p className="mt-1 text-[16px] text-red-600">{fieldErrors.email}</p> : null}
-        <p className="mt-1 text-[16px] text-black">ელფოსტის შეცვლისთვის საჭიროა მიმდინარე პაროლი.</p>
+        <p className="mt-1 text-[16px] text-black">{t('emailHint')}</p>
       </div>
 
       <div className="rounded-2xl border border-gray-200 p-4">
-        <p className="text-[16px] font-semibold text-black">პაროლის შეცვლა</p>
-        <p className="mt-1 text-[16px] text-black">თუ პაროლს ცვლი, შეავსე ყველა ქვედა ველი.</p>
+        <p className="text-[16px] font-semibold text-black">{t('changePassword')}</p>
+        <p className="mt-1 text-[16px] text-black">{t('changePasswordIntro')}</p>
 
         <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-[16px] font-medium text-black mb-1" htmlFor="currentPassword">
-              მიმდინარე პაროლი
+              {t('currentPassword')}
             </label>
             <div className="relative">
               <input
@@ -263,7 +401,7 @@ export default function AdminSettingsForm() {
                 type="button"
                 onClick={() => setShowCurrentPassword((v) => !v)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-black hover:text-black"
-                aria-label={showCurrentPassword ? 'პაროლის დამალვა' : 'პაროლის ჩვენება'}
+                aria-label={showCurrentPassword ? t('hidePassword') : t('showPassword')}
               >
                 {showCurrentPassword ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -286,7 +424,7 @@ export default function AdminSettingsForm() {
 
           <div>
             <label className="block text-[16px] font-medium text-black mb-1" htmlFor="newPassword">
-              ახალი პაროლი
+              {t('newPassword')}
             </label>
             <div className="relative">
               <input
@@ -306,7 +444,7 @@ export default function AdminSettingsForm() {
                 type="button"
                 onClick={() => setShowNewPassword((v) => !v)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-black hover:text-black"
-                aria-label={showNewPassword ? 'პაროლის დამალვა' : 'პაროლის ჩვენება'}
+                aria-label={showNewPassword ? t('hidePassword') : t('showPassword')}
               >
                 {showNewPassword ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -325,7 +463,7 @@ export default function AdminSettingsForm() {
 
           <div>
             <label className="block text-[16px] font-medium text-black mb-1" htmlFor="confirmNewPassword">
-              გაიმეორეთ ახალი პაროლი
+              {t('confirmPassword')}
             </label>
             <div className="relative">
               <input
@@ -345,7 +483,7 @@ export default function AdminSettingsForm() {
                 type="button"
                 onClick={() => setShowConfirmNewPassword((v) => !v)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-black hover:text-black"
-                aria-label={showConfirmNewPassword ? 'პაროლის დამალვა' : 'პაროლის ჩვენება'}
+                aria-label={showConfirmNewPassword ? t('hidePassword') : t('showPassword')}
               >
                 {showConfirmNewPassword ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -372,7 +510,7 @@ export default function AdminSettingsForm() {
           disabled={saving || !dirty}
           className="rounded-md bg-black px-4 py-2 text-[16px] font-semibold text-white disabled:opacity-50"
         >
-          {saving ? 'ინახება...' : 'შენახვა'}
+          {saving ? t('saving') : tCommon('save')}
         </button>
       </div>
     </form>

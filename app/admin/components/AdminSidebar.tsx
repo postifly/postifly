@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 type AdminNavItem = {
   label: string;
@@ -20,21 +21,21 @@ type ChatMessage = {
   sender: 'USER' | 'ADMIN';
 };
 
-const items: AdminNavItem[] = [
-  { label: 'მომხმარებლები', href: '/admin/users' },
-  { label: 'შემოსული', href: '/admin/incoming' },
-  { label: 'გზაში', href: '/admin/in-transit' },
-  { label: 'საწყობში', href: '/admin/warehouse' },
-  { label: 'რეგიონი', href: '/admin/regions' },
-  { label: 'გაჩერებული', href: '/admin/stopped' },
-  { label: 'გაცემული', href: '/admin/delivered' },
-  { label: 'გადახდები', href: '/admin/payments' },
-  { label: 'ტარიფების შეცვლა', href: '/admin/tariffs' },
-  { label: 'ჩათი', href: '/admin/chat' },
-  { label: 'პარამეტრები', href: '/admin/settings' },
-];
-
 export default function AdminSidebar() {
+  const t = useTranslations('adminsidebar');
+  const items: AdminNavItem[] = [
+    { label: t('users'), href: '/admin/users' },
+    { label: t('incoming'), href: '/admin/incoming' },
+    { label: t('inTransit'), href: '/admin/in-transit' },
+    { label: t('warehouse'), href: '/admin/warehouse' },
+    { label: t('regions'), href: '/admin/regions' },
+    { label: t('stopped'), href: '/admin/stopped' },
+    { label: t('delivered'), href: '/admin/delivered' },
+    { label: t('payments'), href: '/admin/payments' },
+    { label: t('editTariffs'), href: '/admin/tariffs' },
+    { label: t('chat'), href: '/admin/chat' },
+    { label: t('settings'), href: '/admin/settings' },
+  ];
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);

@@ -5,7 +5,7 @@ export default async function AdminSettingsPage() {
   return (
     <AdminShell
       title="პარამეტრები"
-      description="შეცვალეთ თქვენი მონაცემები (ელფოსტა, სახელი/გვარი, პაროლი)."
+      description=""
     >
       <AdminSettingsForm />
     </AdminShell>
