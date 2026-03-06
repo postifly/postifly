@@ -131,7 +131,7 @@ export default async function ConditionsPage({ params, searchParams }: Props) {
                 <div className="flex items-start gap-3 md:gap-4">
                   
                   <div className="flex-1">
-                    <h2 className="font-semibold mb-2 md:mb-3 text-[16px] md:text-[20px] text-gray-900">
+                    <h2 className="font-semibold mb-2 md:mb-3 text-[16px] md:text-[20px] text-gray-900 text-left">
                       {section.title}
                     </h2>
                     <p className="text-gray-700 whitespace-pre-line">
