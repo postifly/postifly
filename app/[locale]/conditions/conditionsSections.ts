@@ -15,7 +15,7 @@ export const sectionsKa: SectionItem[] = [
     id: "customer-duties",
     title: "დამკვეთის უფლება-მოვალეობები",
     content:
-      'დამკვეთი ვალდებულია შემსრულებლის ვებ გვერდზე ( www.....) მოახდინოს ამანათის სწორად დეკლარირება, დამკვეთის პირად კაბინეტში ამანათის თრექინგ კოდის ასახვიდან არაუგვიანეს 3 კალენდარულ დღეში; დამკვეთი ვალდებულია დაფაროს ამანათის ტრანსპორტირების საფასური ნივთის გატანის წინ; დამკვეთი ვალდებულია ამანათის გატანამდე შეამოწმოს ნივთი, წინააღმდეგ შემთხვევაში, ამანათის გატანის შემდეგ პრეტენზიები არ მიიღება.',
+      'დამკვეთი ვალდებულია შემსრულებლის ვებ გვერდზე www.posstify.ge მოახდინოს ამანათის სწორად დეკლარირება, დამკვეთის პირად კაბინეტში ამანათის თრექინგ კოდის ასახვიდან არაუგვიანეს 3 კალენდარულ დღეში; დამკვეთი ვალდებულია დაფაროს ამანათის ტრანსპორტირების საფასური ნივთის გატანის წინ; დამკვეთი ვალდებულია ამანათის გატანამდე შეამოწმოს ნივთი, წინააღმდეგ შემთხვევაში, ამანათის გატანის შემდეგ პრეტენზიები არ მიიღება.',
   },
   {
     id: "calculation-rules",
@@ -60,7 +60,7 @@ export const sectionsEn: SectionItem[] = [
     id: "customer-duties",
     title: "Customer's Rights and Obligations",
     content:
-      "The customer is obliged to correctly declare the parcel on the provider's website (www.....) in their personal account no later than 3 calendar days after the parcel's tracking code appears; the customer must pay the parcel transportation fee before collecting the item; the customer must check the item before collecting the parcel, otherwise no claims will be accepted after collection.",
+      "The customer is obliged to correctly declare the parcel on the provider's website www.posstify.ge in their personal account no later than 3 calendar days after the parcel's tracking code appears; the customer must pay the parcel transportation fee before collecting the item; the customer must check the item before collecting the parcel, otherwise no claims will be accepted after collection.",
   },
   {
     id: "calculation-rules",
