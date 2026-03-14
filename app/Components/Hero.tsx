@@ -136,7 +136,7 @@ const Hero = () => {
               {text.line2 && (
                 <>
                   <br />
-                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
+                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white ">
                     {text.line2}
                   </span>
                 </>
@@ -144,7 +144,7 @@ const Hero = () => {
               {text.line3 && (
                 <>
                   <br />
-                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
+                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white ">
                     {text.line3}
                   </span>
                 </>
@@ -152,7 +152,7 @@ const Hero = () => {
               {text.line4 && (
                 <>
                   <br />
-                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white tracking-[5px]">
+                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white ">
                     {text.line4}
                   </span>
                 </>

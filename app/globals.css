@@ -1,3 +1,4 @@
+@import url("//cdn.web-fonts.ge/fonts/bpg-banner/css/bpg-banner.min.css");
 @import "tailwindcss";
 
 :root {
@@ -8,7 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-montserrat);
+  --font-sans: "BPG Banner", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,13 +20,13 @@
 }
 
 * {
-  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-family: "BPG Banner", sans-serif;
 }
 
 body {
   background: white;
 
-  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-family: "BPG Banner", sans-serif;
   overflow-x: hidden;
   width: 100%;
   padding-top: 70px; /* Space for fixed header */
