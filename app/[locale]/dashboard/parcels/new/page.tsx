@@ -185,7 +185,7 @@ export default function NewParcelPage() {
   }
 
   return (
-    <div className=" bg-gray-100 py-8">
+    <div className="  bg py-8">
       <div className="mx-auto mt-24 w-full max-w-lg px-4">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-6 flex items-center justify-between">
