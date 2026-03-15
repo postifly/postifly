@@ -116,7 +116,7 @@ const Hero = () => {
   };
 
   return (
-    <div ref={containerRef} className="hero-parallax-container">
+    <div ref={containerRef} className=" bg-[#010002] hero-parallax-container">
       {/* Dark Overlay */}
   
       
