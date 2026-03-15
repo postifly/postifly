@@ -112,7 +112,7 @@ export default function AdminSidebar() {
     items.find((item) => pathname === item.href) ?? items[0];
 
   return (
-    <div className="w-full lg:w-56 shrink-0 min-w-0">
+    <div className="w-full lg:w-48 shrink-0 min-w-0">
       {/* Mobile: dropdown menu */}
       <div className="mb-4 lg:hidden">
         <button

@@ -64,11 +64,9 @@ export default function Tariffs() {
 
   return (
     <motion.section
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={viewport}
-      transition={{ duration: 0.6 }}
-      className="relative w-full overflow-hidden bg py-10 sm:py-14 md:py-24"
+   
+    
+      className="relative w-full overflow-hidden bg-[#010002] py-10 sm:py-14 md:py-24"
     >
       {/* Soft top glow — same family as bg, slightly lifted */}
       <div
