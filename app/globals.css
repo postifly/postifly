@@ -303,10 +303,7 @@ img {
 /* Global Button Styles */
 button:not(.mobile-menu-button),
 .button {
-  border: 1px solid black !important;
- 
 
-  border-radius: 8px;
 
   font-weight: 600;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
