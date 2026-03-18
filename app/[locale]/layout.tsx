@@ -18,8 +18,8 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: 'Postify',
-  description: 'Postify',
+  title: 'Postifly',
+  description: 'Postifly',
   icons: {
     icon: [
       { url: '/logo.jpg', type: 'image/jpeg' },

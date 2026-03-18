@@ -144,7 +144,7 @@ const Hero = () => {
       
       {/* Hero Text — იცვლება ყოველ 3 წამში */}
       <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-32 md:-translate-y-16">
-        <div className="relative pl-6 md:pl-12 lg:pl-20 pr-4 max-w-4xl">
+        <div className="relative pl-6 md:pl-12 lg:pl-15 pr-4 max-w-4xl">
           <div className="mb-4 md:mb-6 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-4">
             <Image
               src="/guide.png"
@@ -156,7 +156,7 @@ const Hero = () => {
               priority
             />
             <div className="min-w-0 w-full md:w-auto">
-              <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
+              <h1 className="mt-3 mb-3 md:mt-2 text-white text-[clamp(14px,4.2vw,18px)] md:text-[25px] font-semibold text-center md:text-left whitespace-nowrap">
                 რთულია გამოწერის პროცესი? დარეკე და გადააბარე!!!
               </h1>
               <div className="mt-1 md:mt-3 flex flex-wrap justify-center gap-2 md:grid md:grid-cols-5 md:justify-items-start md:gap-2">
