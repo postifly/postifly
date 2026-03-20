@@ -27,17 +27,56 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
-const TARIFF_ROWS = [
-  { countryKey: 'uk' as const, countryCode: 'GB', pricePerKg: 4.5, deliveryDaysPrefix: '5-7' },
-  { countryKey: 'us' as const, countryCode: 'US', pricePerKg: 5.5, deliveryDaysPrefix: '7-10' },
-  { countryKey: 'cn' as const, countryCode: 'CN', pricePerKg: 3.2, deliveryDaysPrefix: '10-14' },
-  { countryKey: 'it' as const, countryCode: 'IT', pricePerKg: 4.0, deliveryDaysPrefix: '5-7' },
-  { countryKey: 'gr' as const, countryCode: 'GR', pricePerKg: 3.8, deliveryDaysPrefix: '5-7' },
-  { countryKey: 'es' as const, countryCode: 'ES', pricePerKg: 4.2, deliveryDaysPrefix: '5-7' },
-  { countryKey: 'fr' as const, countryCode: 'FR', pricePerKg: 4.0, deliveryDaysPrefix: '5-7' },
-  { countryKey: 'de' as const, countryCode: 'DE', pricePerKg: 3.9, deliveryDaysPrefix: '5-7' },
-  { countryKey: 'tr' as const, countryCode: 'TR', pricePerKg: 2.8, deliveryDaysPrefix: '3-5' },
-] as const;
+type DeliveryNoteKey = 'tariffAirShipping';
+
+type TariffRow = {
+  countryKey: string;
+  countryCode: string;
+  pricePerKg: number;
+  deliveryDaysPrefix: string;
+  currencySymbol: string;
+  deliveryNoteKey?: DeliveryNoteKey;
+};
+
+const TARIFF_ROWS: TariffRow[] = [
+  { countryKey: 'uk' as const, countryCode: 'GB', pricePerKg: 4.5, deliveryDaysPrefix: '5-7', currencySymbol: '$' },
+  { countryKey: 'us' as const, countryCode: 'US', pricePerKg: 5.5, deliveryDaysPrefix: '7-10', currencySymbol: '$' },
+  { countryKey: 'cn' as const, countryCode: 'CN', pricePerKg: 3.2, deliveryDaysPrefix: '10-14', currencySymbol: '$' },
+  {
+    countryKey: 'it' as const,
+    countryCode: 'IT',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '1-3',
+    currencySymbol: '€',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  { countryKey: 'gr' as const, countryCode: 'GR', pricePerKg: 3.8, deliveryDaysPrefix: '5-7', currencySymbol: '$' },
+  {
+    countryKey: 'es' as const,
+    countryCode: 'ES',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '1-3',
+    currencySymbol: '€',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  {
+    countryKey: 'fr' as const,
+    countryCode: 'FR',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '1-3',
+    currencySymbol: '€',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  {
+    countryKey: 'de' as const,
+    countryCode: 'DE',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '1-3',
+    currencySymbol: '€',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  { countryKey: 'tr' as const, countryCode: 'TR', pricePerKg: 2.8, deliveryDaysPrefix: '3-5', currencySymbol: '$' },
+];
 
 const viewport = { once: true, amount: 0.15, margin: '-60px 0px -60px 0px' };
 
@@ -124,7 +163,10 @@ export default function Tariffs() {
               >
                 {TARIFF_ROWS.map((row, i) => {
                   const countryName = tAddr(row.countryKey);
-                  const deliveryDays = `${row.deliveryDaysPrefix} ${t('tariffDeliveryDays')}`;
+                  const deliveryDaysLabel = t('tariffDeliveryDays').trim();
+                  const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
+                  const deliveryNote = row.deliveryNoteKey ? ` ${t(row.deliveryNoteKey)}` : '';
+                  const deliveryText = `${deliveryDays}${deliveryNote}`;
                   return (
                     <motion.tr
                       key={row.countryCode}
@@ -148,12 +190,16 @@ export default function Tariffs() {
                         </span>
                       </td>
 
-                      <td className="px-3 py-2.5 text-center text-xs text-zinc-400 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
-                        {deliveryDays}
+                      <td
+                        className={`px-3 py-2.5 text-center text-xs text-zinc-400 sm:px-4 sm:py-3 md:px-8 md:py-4 whitespace-nowrap ${
+                          row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
+                        }`}
+                      >
+                        <span className="whitespace-nowrap">{deliveryText}</span>
                       </td>
 
                       <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold text-emerald-400/95 tabular-nums sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
-                        $ {row.pricePerKg.toFixed(2)}
+                        {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                       </td>
                     </motion.tr>
                   );

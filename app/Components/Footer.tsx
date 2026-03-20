@@ -2,20 +2,65 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-
+import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 const Footer = () => {
   const t = useTranslations('footer');
-  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-black  md:mt-0 py-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-black text-[16px]">
-            <p suppressHydrationWarning>© {currentYear} {t('rights')}</p>
+    <footer
+      className="w-full py-8 md:py-10 border-t border-white/10"
+      style={{
+        background: 'linear-gradient(90deg, #FF4FD8, #3A5BFF, #8A3CFF, #FF4FD8)',
+      }}
+    >
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div className="flex flex-col gap-4">
+              <h2 className="text-white text-[16px] font-semibold">
+                {t('contactUsTitle')}
+              </h2>
+            <div className="flex items-center  gap-3">
+              <a
+                href="https://wa.me/995591357357"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-[#25D366] hover:bg-[#1faa4a] border border-white/20 w-11 h-11 transition-colors"
+                aria-label="WhatsApp"
+              >
+                {/* WhatsApp icon */}
+                <FaWhatsapp className="text-white text-[22px]" />
+              </a>
+
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-[#1877F2] hover:bg-[#0f65d8] border border-white/20 w-11 h-11 transition-colors"
+                aria-label="Facebook"
+              >
+                {/* Facebook icon */}
+                <FaFacebook className="text-white text-[22px]" />
+              </a>
+            </div>
           </div>
-          <div className="text-black text-[16px]">
-            <p>{t('madeWith')}</p>
+
+          <div className="text-white/90 text-[14px] leading-relaxed md:justify-self-end md:text-right">
+            <div className="font-semibold text-[16px] md:text-[18px] mb-1">{t('contactsTitle')}</div>
+            <div>
+              {t('addressLabel')}: {t('addressValue')}
+            </div>
+            <div className="mt-1">
+              {t('phoneLabel')}:{" "}
+              <a
+                className="underline decoration-white/40 hover:decoration-white/80"
+                href={`tel:${t('phoneValue').replace(/\\s+/g, '')}`}
+              >
+                {t('phoneValue')}
+              </a>
+            </div>
+            <div className="mt-1">
+              {t('hoursLabel')}: {t('hoursValue')}
+            </div>
           </div>
         </div>
       </div>

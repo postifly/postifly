@@ -42,7 +42,15 @@
     "close": "Close",
     "loading": "Loading...",
     "sending": "Sending...",
-    "error": "Error"
+    "error": "Error",
+    "answer": "Answer",
+    "noAnswer": "No messages yet",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "success": "Success"
   },
   "header": {
     "services": "Services",
@@ -80,7 +88,15 @@
   },
   "footer": {
     "rights": "All rights reserved",
-    "madeWith": "Made with care"
+    "madeWith": "Made with care",
+    "contactUsTitle": "Contact us:",
+    "contactsTitle": "Contacts",
+    "addressLabel": "Office address",
+    "addressValue": "0160 Tbilisi, Yuri Gagarin street 4/4a",
+    "phoneLabel": "Phone",
+    "phoneValue": "591 357 357",
+    "hoursLabel": "Working hours",
+    "hoursValue": "Every day 11:00 – 19:00"
   },
   "about": {
     "title": "About us",
@@ -113,7 +129,8 @@
     "tariffCountry": "Country",
     "tariffDelivery": "Delivery",
     "tariffPrice": "Price",
-    "tariffDeliveryDays": "days"
+    "tariffDeliveryDays": "days",
+    "tariffAirShipping": "(air shipping)"
   },
   "login": {
     "title": "Login",

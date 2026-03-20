@@ -25,7 +25,15 @@
     "close": "დახურვა",
     "loading": "იტვირთება...",
     "sending": "იგზავნება...",
-    "error": "შეცდომა"
+    "error": "შეცდომა",
+    "answer": "პასუხი",
+    "noAnswer": "ჯერ პასუხი არ არის",
+    "firstName": "სახელი",
+    "lastName": "გვარი",
+    "email": "ელფოსტა",
+    "phone": "ტელეფონი",
+    "message": "შეტყობინება",
+    "success": "წარმატებით"
   },
   "common": {
     "menu": "მენიუ",
@@ -80,7 +88,15 @@
   },
   "footer": {
     "rights": "All rights reserved",
-    "madeWith": "Made with care"
+    "madeWith": "Made with care",
+    "contactUsTitle": "დაგვიკავშირდით:",
+    "contactsTitle": "კონტაქტები",
+    "addressLabel": "ოფისის მისამართი",
+    "addressValue": "0160 ქ.თბილისი, იური გაგარინის ქუჩა 4/4ა",
+    "phoneLabel": "ტელეფონი",
+    "phoneValue": "591 357 357",
+    "hoursLabel": "სამუშაო საათები",
+    "hoursValue": "ყოველდღე 11:00 – 19:00"
   },
   "about": {
     "title": "ჩვენს შესახებ",
@@ -113,7 +129,8 @@
     "tariffCountry": "ქვეყანა",
     "tariffDelivery": "ვადა",
     "tariffPrice": "ფასი",
-    "tariffDeliveryDays": " დღე"
+    "tariffDeliveryDays": " დღე",
+    "tariffAirShipping": "(საჰაერო გადაზიდვა)"
   },
   "login": {
     "title": "ავტორიზაცია",
