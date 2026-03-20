@@ -43,7 +43,7 @@ const TARIFF_ROWS: TariffRow[] = [
   { countryKey: 'us' as const, countryCode: 'US', pricePerKg: 5.5, deliveryDaysPrefix: '7-10', currencySymbol: '$' },
   { countryKey: 'cn' as const, countryCode: 'CN', pricePerKg: 3.2, deliveryDaysPrefix: '10-14', currencySymbol: '$' },
   {
-    countryKey: 'it' as const,
+    countryKey: 'italy' as const,
     countryCode: 'IT',
     pricePerKg: 7,
     deliveryDaysPrefix: '1-3',
@@ -52,7 +52,7 @@ const TARIFF_ROWS: TariffRow[] = [
   },
   { countryKey: 'gr' as const, countryCode: 'GR', pricePerKg: 3.8, deliveryDaysPrefix: '5-7', currencySymbol: '$' },
   {
-    countryKey: 'es' as const,
+    countryKey: 'spain' as const,
     countryCode: 'ES',
     pricePerKg: 7,
     deliveryDaysPrefix: '1-3',
@@ -60,7 +60,7 @@ const TARIFF_ROWS: TariffRow[] = [
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
-    countryKey: 'fr' as const,
+    countryKey: 'france' as const,
     countryCode: 'FR',
     pricePerKg: 7,
     deliveryDaysPrefix: '1-3',
@@ -68,7 +68,7 @@ const TARIFF_ROWS: TariffRow[] = [
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
-    countryKey: 'de' as const,
+    countryKey: 'germany' as const,
     countryCode: 'DE',
     pricePerKg: 7,
     deliveryDaysPrefix: '1-3',
@@ -143,13 +143,13 @@ export default function Tariffs() {
             <table className="w-full min-w-[280px]">
               <thead>
                 <tr className="border-b border-white/[0.08] bg-[#161716]">
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-400 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-zinc-300">
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-white/90">
                     {t('tariffCountry')}
                   </th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-zinc-400 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-zinc-300">
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-white/90 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-white/90">
                     {t('tariffDelivery')}
                   </th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-400 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-zinc-300">
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-white/90 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-white/90">
                     {t('tariffPrice')}
                   </th>
                 </tr>
@@ -174,7 +174,7 @@ export default function Tariffs() {
                         i % 2 === 0 ? 'bg-[#121311]' : 'bg-[#0f100f]'
                       }`}
                     >
-                      <td className="px-3 py-2.5 text-xs font-medium text-zinc-100 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                      <td className="px-3 py-2.5 text-xs font-medium text-white/90 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
                         <span className="inline-flex items-center gap-2 sm:gap-3">
                           {(() => {
                             const Flag = FLAGS[row.countryCode];
@@ -190,15 +190,15 @@ export default function Tariffs() {
                       </td>
 
                       <td
-                        className={`px-3 py-2.5 text-center text-xs text-zinc-400 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
+                        className={`px-3 py-2.5 text-center text-xs text-white/90 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
                           row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
                         }`}
                       >
                         {row.deliveryNoteKey ? (
                           <span className="flex flex-col items-center leading-tight">
-                            <span className="whitespace-nowrap">{deliveryDays}</span>
-                            <span className="whitespace-nowrap text-[16px] text-zinc-500 mt-0.5">
-                              {deliveryNote}
+                            <span className="whitespace-nowrap text-[16px] md:text-[18px]">{deliveryDays}</span>
+                            <span className="whitespace-nowrap text-[16px] md:text-[18px] text-white/90 mt-0.5">
+                              {deliveryNote?.replace(/[()]/g, '')}
                             </span>
                           </span>
                         ) : (

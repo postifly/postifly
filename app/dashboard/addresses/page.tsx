@@ -56,9 +56,12 @@ export default async function DashboardAddressesPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { roomNumber: true },
+    select: { firstName: true, lastName: true, roomNumber: true },
   });
 
+  const userFirstName = user?.firstName ?? '';
+  const userLastName = user?.lastName ?? '';
+  const hasUserName = Boolean(userFirstName || userLastName);
   const userRoomNumber = user?.roomNumber ?? '';
 
   const initialAddresses = addresses.map((a) => ({
@@ -94,6 +97,12 @@ export default async function DashboardAddressesPage() {
             </Link>
           </div>
           <div className="pt-4 sm:pt-6">
+            {hasUserName ? (
+              <div className="text-white/90 font-semibold mb-2">
+                {userFirstName ? <div>{userFirstName}</div> : null}
+                {userLastName ? <div>{userLastName}</div> : null}
+              </div>
+            ) : null}
             <h1 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">მისამართები</h1>
 
             {/* Mobile: card list */}
@@ -159,6 +168,13 @@ export default async function DashboardAddressesPage() {
                       {row.country}
                     </div>
                   </div>
+
+                  {hasUserName ? (
+                    <div className="text-white/90 font-semibold mb-3 text-left">
+                      {userFirstName ? <div>{userFirstName}</div> : null}
+                      {userLastName ? <div>{userLastName}</div> : null}
+                    </div>
+                  ) : null}
                   <div className="flex justify-between gap-2 mb-2">
                     <span className="text-[#3A5BFF] font-semibold shrink-0">მისამართი</span>
                     <span className="text-white/90 text-right break-all">{row.street}</span>

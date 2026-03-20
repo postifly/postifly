@@ -115,9 +115,12 @@ export default async function DashboardAddressesPage({ params }: Props) {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { roomNumber: true },
+    select: { firstName: true, lastName: true, roomNumber: true },
   });
 
+  const userFirstName = user?.firstName ?? '';
+  const userLastName = user?.lastName ?? '';
+  const hasUserName = Boolean(userFirstName || userLastName);
   const userRoomNumber = user?.roomNumber ?? '';
 
   const addressList = ADDRESS_ROWS.map((row) => ({
@@ -139,22 +142,20 @@ export default async function DashboardAddressesPage({ params }: Props) {
             </Link>
           </div>
           <div className="pt-4 sm:pt-6">
+            {hasUserName ? (
+              <div className="text-white/90 font-semibold mb-2">
+                {userFirstName ? <div>{userFirstName}</div> : null}
+                {userLastName ? <div>{userLastName}</div> : null}
+              </div>
+            ) : null}
             <h1 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">{tAddr('title')}</h1>
 
             <div className="md:hidden space-y-3">
               {addressList.map((row, i) => (
-                <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
-                    <span className="text-white/90 text-right break-all">{row.adress}</span>
-                  </div>
-                  <div className="flex justify-between gap-2 mb-1">
-                    <span className="text-white/90 font-semibold shrink-0">მისამართი2</span>
-                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
-                    <div className="flex flex-col items-end">
+               <div key={i}>
+               
+               <div  className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
+               <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         {(() => {
                           const Flag = FLAGS[row.countryCode];
@@ -169,14 +170,37 @@ export default async function DashboardAddressesPage({ params }: Props) {
                           {COUNTRY_KA[row.countryCode] ?? row.country}
                         </span>
                       </div>
-                      <span className="text-white/90 text-[14px] font-semibold">{row.country}</span>
                     </div>
+                  {hasUserName ? (
+                    <>
+                      <div className="flex justify-between gap-2 mb-1">
+                        <span className="text-white/90 font-semibold shrink-0">{tAddr('name')}</span>
+                        <span className="text-white/90 text-right break-all">{userFirstName} </span>
+                      </div>
+                      <div className="flex justify-between gap-2 mb-1">
+                        <span className="text-white/90 font-semibold shrink-0">{tAddr('lastname')}</span>
+                        <span className="text-white/90 text-right break-all">{userLastName} </span>
+                      </div>
+                    </>
+                  ) : null}
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
+                    <span className="text-white/90 text-right break-all">{row.adress}</span>
+                  </div>
+                  <div className="flex justify-between gap-2 mb-1">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street2')}</span>
+                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
+                    
+                      <span className="text-white/90 text-[14px] font-semibold">{row.country}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-1">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
                     <span className="text-white/90 text-right">{row.city}</span>
                   </div>
-                 
+
                   <div className="flex justify-between gap-2">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
                     <span className="text-white/90 font-medium">{row.postalCode}</span>
@@ -188,6 +212,7 @@ export default async function DashboardAddressesPage({ params }: Props) {
                     </div>
                   ) : null}
                 </div>
+               </div>
               ))}
             </div>
 
@@ -209,12 +234,24 @@ export default async function DashboardAddressesPage({ params }: Props) {
                       {COUNTRY_KA[row.countryCode] ?? row.country}
                     </div>
                   </div>
+                  {hasUserName ? (
+                    <>
+                      <div className="flex justify-between gap-2 mb-1">
+                        <span className="text-white/90 font-semibold shrink-0">{tAddr('name')}</span>
+                        <span className="text-white/90 text-right break-all">{userFirstName} </span>
+                      </div>
+                      <div className="flex justify-between gap-2 mb-1">
+                        <span className="text-white/90 font-semibold shrink-0">{tAddr('lastname')}</span>
+                        <span className="text-white/90 text-right break-all">{userLastName} </span>
+                      </div>
+                    </>
+                  ) : null}
                   <div className="flex justify-between gap-2 mb-2">
                     <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
                     <span className="text-white/90 text-right break-all">{row.adress}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">მისამართი2</span>
+                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street2')}</span>
                     <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
