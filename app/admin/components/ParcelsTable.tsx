@@ -17,6 +17,7 @@ type Parcel = {
   filePath: string;
   courierServiceRequested: boolean;
   courierFeeAmount: number | null;
+  payableAmount: number | null;
   user: {
     id: string;
     email: string;
@@ -66,6 +67,8 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [feeDraftById, setFeeDraftById] = useState<Record<string, string>>({});
   const [courierFeeSavingId, setCourierFeeSavingId] = useState<string | null>(null);
+  const [payableDraftById, setPayableDraftById] = useState<Record<string, string>>({});
+  const [payableSavingId, setPayableSavingId] = useState<string | null>(null);
 
   const handleStatusChange = async (parcelId: string, newStatus: string) => {
     setUpdatingId(parcelId);
@@ -147,6 +150,51 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
       setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
     } finally {
       setCourierFeeSavingId(null);
+    }
+  };
+
+  const handleSavePayable = async (parcel: Parcel) => {
+    const raw = payableDraftById[parcel.id];
+    const trimmed = raw?.trim() ?? '';
+    let value: number | null;
+    if (trimmed === '') {
+      value = null;
+    } else {
+      const n = parseFloat(trimmed.replace(',', '.'));
+      if (Number.isNaN(n) || n < 0) {
+        setError('გადასახდელი თანხა უნდა იყოს დადებითი რიცხვი ან ცარიელი.');
+        return;
+      }
+      value = Math.round(n * 100) / 100;
+    }
+
+    setPayableSavingId(parcel.id);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/parcels/${parcel.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payableAmount: value }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'გადასახდელი თანხის შენახვა ვერ მოხერხდა');
+        return;
+      }
+      const updatedParcel: Parcel = data.parcel;
+      setParcels((prev) =>
+        prev.map((p) => (p.id === parcel.id ? updatedParcel : p)),
+      );
+      setPayableDraftById((prev) => {
+        const next = { ...prev };
+        delete next[parcel.id];
+        return next;
+      });
+      if (onParcelUpdated) onParcelUpdated(updatedParcel);
+    } catch {
+      setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+    } finally {
+      setPayableSavingId(null);
     }
   };
 
@@ -245,12 +293,51 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                   {parcel.user.address || '—'}
                 </span>
 
-                {parcel.courierServiceRequested ? (
+                {currentStatus === 'arrived' ? (
                   <>
-                    <span className="col-span-2 mt-1 border-t border-gray-100 pt-2 text-[12px] font-semibold text-amber-900">
-                      საკურიერო — მომხმარებელმა მოითხოვა
+                    <span className="col-span-2 mt-1 border-t border-gray-100 pt-2 text-[12px] font-semibold text-black">
+                      ჩამოსული — გადასახდელი თანხა
                     </span>
-                    <span className="text-black">გადასახადი ({parcel.currency || 'GEL'})</span>
+                    <span className="text-black">გადასახდელი ({parcel.currency || 'GEL'})</span>
+                    <span className="flex flex-wrap items-center gap-2">
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="0"
+                        value={
+                          payableDraftById[parcel.id] !== undefined
+                            ? payableDraftById[parcel.id]
+                            : parcel.payableAmount != null
+                              ? String(parcel.payableAmount)
+                              : ''
+                        }
+                        onChange={(e) =>
+                          setPayableDraftById((prev) => ({
+                            ...prev,
+                            [parcel.id]: e.target.value,
+                          }))
+                        }
+                        className="w-28 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
+                      />
+                      <button
+                        type="button"
+                        disabled={payableSavingId === parcel.id}
+                        onClick={() => handleSavePayable(parcel)}
+                        className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                      >
+                        {payableSavingId === parcel.id ? '...' : 'შენახვა'}
+                      </button>
+                    </span>
+
+                    <span className="col-span-2 mt-1 border-t border-gray-100 pt-2 text-[12px] font-semibold text-amber-900">
+                      საკურიერო გადასახადი
+                      {parcel.courierServiceRequested ? (
+                        <span className="ml-1 font-normal text-amber-800">
+                          (მომხმარებელმა მოითხოვა)
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="text-black">საკურიერო ({parcel.currency || 'GEL'})</span>
                     <span className="flex flex-wrap items-center gap-2">
                       <input
                         type="text"
@@ -449,25 +536,23 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                           <span className="text-black">თარიღი</span>
                           <span>{parcel.createdAt}</span>
 
-                          {parcel.courierServiceRequested ? (
+                          {currentStatus === 'arrived' ? (
                             <>
-                              <span className="text-black">საკურიერო</span>
-                              <span className="text-amber-900">მომხმარებლის მოთხოვნა</span>
-                              <span className="text-black">საკურიერო გადასახადი</span>
+                              <span className="text-black">გადასახდელი (ტრანსპორტის თანხა)</span>
                               <span className="flex flex-wrap items-center gap-2">
                                 <input
                                   type="text"
                                   inputMode="decimal"
                                   placeholder="0"
                                   value={
-                                    feeDraftById[parcel.id] !== undefined
-                                      ? feeDraftById[parcel.id]
-                                      : parcel.courierFeeAmount != null
-                                        ? String(parcel.courierFeeAmount)
+                                    payableDraftById[parcel.id] !== undefined
+                                      ? payableDraftById[parcel.id]
+                                      : parcel.payableAmount != null
+                                        ? String(parcel.payableAmount)
                                         : ''
                                   }
                                   onChange={(e) =>
-                                    setFeeDraftById((prev) => ({
+                                    setPayableDraftById((prev) => ({
                                       ...prev,
                                       [parcel.id]: e.target.value,
                                     }))
@@ -477,12 +562,51 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                                 <span className="text-black">{parcel.currency || 'GEL'}</span>
                                 <button
                                   type="button"
-                                  disabled={courierFeeSavingId === parcel.id}
-                                  onClick={() => handleSaveCourierFee(parcel)}
+                                  disabled={payableSavingId === parcel.id}
+                                  onClick={() => handleSavePayable(parcel)}
                                   className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
                                 >
-                                  {courierFeeSavingId === parcel.id ? 'ინახება...' : 'შენახვა'}
+                                  {payableSavingId === parcel.id ? 'ინახება...' : 'შენახვა'}
                                 </button>
+                              </span>
+
+                              <span className="text-black">საკურიერო გადასახადი</span>
+                              <span className="flex flex-col gap-1">
+                                {parcel.courierServiceRequested ? (
+                                  <span className="text-[12px] text-amber-900">
+                                    მომხმარებლის მოთხოვნა
+                                  </span>
+                                ) : null}
+                                <span className="flex flex-wrap items-center gap-2">
+                                  <input
+                                    type="text"
+                                    inputMode="decimal"
+                                    placeholder="0"
+                                    value={
+                                      feeDraftById[parcel.id] !== undefined
+                                        ? feeDraftById[parcel.id]
+                                        : parcel.courierFeeAmount != null
+                                          ? String(parcel.courierFeeAmount)
+                                          : ''
+                                    }
+                                    onChange={(e) =>
+                                      setFeeDraftById((prev) => ({
+                                        ...prev,
+                                        [parcel.id]: e.target.value,
+                                      }))
+                                    }
+                                    className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
+                                  />
+                                  <span className="text-black">{parcel.currency || 'GEL'}</span>
+                                  <button
+                                    type="button"
+                                    disabled={courierFeeSavingId === parcel.id}
+                                    onClick={() => handleSaveCourierFee(parcel)}
+                                    className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                  >
+                                    {courierFeeSavingId === parcel.id ? 'ინახება...' : 'შენახვა'}
+                                  </button>
+                                </span>
                               </span>
                             </>
                           ) : null}

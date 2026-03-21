@@ -18,6 +18,7 @@ type Parcel = {
   shippingAmount?: number | null;
   courierServiceRequested: boolean;
   courierFeeAmount: number | null;
+  payableAmount: number | null;
   user: {
     id: string;
     email: string;

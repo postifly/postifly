@@ -18,7 +18,16 @@ export type UserParcel = {
   courierServiceRequested: boolean;
   /** ადმინის მიერ დაყენებული საკურიერო გადასახადი */
   courierFeeAmount: number | null;
+  /** ადმინის მიერ დაყენებული ძირითადი გადასახდელი (ჩამოსული) */
+  payableAmount: number | null;
 };
+
+function totalDue(p: UserParcel): number {
+  const base = p.payableAmount ?? 0;
+  const courier =
+    p.courierServiceRequested && p.courierFeeAmount != null ? p.courierFeeAmount : 0;
+  return Math.round((base + courier) * 100) / 100;
+}
 
 type Props = {
   parcels: UserParcel[];
@@ -35,9 +44,12 @@ const STATUS_OPTIONS: { value: string; label: string }[] = [
 
 const COURIER_LABEL = 'საკურიერო მომსახურება';
 const COURIER_ERR = 'შენახვა ვერ მოხერხდა. სცადეთ თავიდან.';
-/** როცა მონიშნულია საკურიერო, ჯერ კიდევ არ არის დაყენებული თანხა */
-const COURIER_ADMIN_NOTICE =
-  'ადმინისტრაცია მალე შეგატყობინებთ გადასახდელი თანხის შესახებ.';
+/** საკურიერო ჩართულია, საკურიერო გადასახადი ჯერ არ არის დაყენებული */
+const COURIER_FEE_PENDING_NOTICE =
+  'ადმინისტრაცია დააყენებს საკურიერო გადასახადს.';
+/** ჩამოსული — ძირითადი გადასახდელი ჯერ არ არის დაყენებული */
+const PAYABLE_AMOUNT_PENDING_NOTICE =
+  'ადმინისტრაცია გეტყვით  გადასახდელ თანხას.';
 
 export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
   const [activeStatus, setActiveStatus] = useState<string>('pending');
@@ -51,7 +63,10 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
 
   const filtered = parcels.filter((p) => p.status === activeStatus);
   const showCourierColumn = activeStatus === 'arrived';
-  const emptyColSpan = showCourierColumn ? 8 : 6;
+  const hasAnyAmountDue = filtered.some((p) => totalDue(p) > 0);
+  /** წითელი გადახდა, როცა სულ გადასახდელი > 0 */
+  const showPaymentColumn = showCourierColumn && hasAnyAmountDue;
+  const emptyColSpan = showCourierColumn ? (showPaymentColumn ? 9 : 8) : 6;
 
   const handleCourierToggle = async (parcel: UserParcel, next: boolean) => {
     if (parcel.status !== 'arrived') return;
@@ -151,10 +166,15 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               </th>
               {showCourierColumn && (
                 <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                  {COURIER_LABEL}
+                  გადასახდელი
                 </th>
               )}
               {showCourierColumn && (
+                <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
+                  {COURIER_LABEL}
+                </th>
+              )}
+              {showPaymentColumn && (
                 <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
                   გადახდა
                 </th>
@@ -195,6 +215,25 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                   </td>
                   {showCourierColumn && (
                     <td className="px-4 py-3 text-[15px] text-black">
+                      <div className="flex max-w-[15rem] flex-col gap-1">
+                        {parcel.payableAmount != null && (
+                          <span className="text-[13px] text-black">
+                            {parcel.payableAmount.toFixed(2)} {parcel.currency}
+                          </span>
+                        )}
+                        {parcel.payableAmount == null && (
+                          <span
+                            className="rounded-md border border-rose-200 bg-rose-50 px-2 py-1.5 text-[12px] leading-snug text-rose-900"
+                            role="status"
+                          >
+                            {PAYABLE_AMOUNT_PENDING_NOTICE}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  )}
+                  {showCourierColumn && (
+                    <td className="px-4 py-3 text-[15px] text-black">
                       <div className="flex max-w-[14rem] flex-col gap-1.5">
                         <label className="inline-flex cursor-pointer items-center">
                           <input
@@ -217,8 +256,11 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                           )}
                         {parcel.courierServiceRequested &&
                           parcel.courierFeeAmount == null && (
-                            <p className="text-[12px] leading-snug text-red-600">
-                              {COURIER_ADMIN_NOTICE}
+                            <p
+                              className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-[12px] leading-snug text-amber-950"
+                              role="status"
+                            >
+                              {COURIER_FEE_PENDING_NOTICE}
                             </p>
                           )}
                         {courierErrorId === parcel.id && (
@@ -229,14 +271,23 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                       </div>
                     </td>
                   )}
-                  {showCourierColumn && (
+                  {showPaymentColumn && (
                     <td className="px-4 py-3 align-middle">
-                      <Link
-                        href="/dashboard/balance"
-                        className="inline-flex items-center justify-center rounded-lg bg-red-600 px-3 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-red-700"
-                      >
-                        გადახდა
-                      </Link>
+                      {totalDue(parcel) > 0 ? (
+                        <div className="flex max-w-[11rem] flex-col gap-1.5">
+                          <span className="text-[12px] font-medium text-black">
+                            სულ: {totalDue(parcel).toFixed(2)} {parcel.currency}
+                          </span>
+                          <Link
+                            href="/dashboard/balance"
+                            className="inline-flex items-center justify-center rounded-lg bg-red-600 px-3 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-red-700"
+                          >
+                            გადახდა
+                          </Link>
+                        </div>
+                      ) : (
+                        <span className="text-[13px] text-gray-400">—</span>
+                      )}
                     </td>
                   )}
                 </tr>
@@ -288,7 +339,26 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               </div>
 
               {showCourierColumn && parcel.status === 'arrived' && (
-                <div className="mt-3 border-t border-gray-100 pt-3">
+                <div className="mt-3 rounded-lg border border-rose-200 bg-rose-50/90 px-3 py-2.5">
+                  <p className="text-[13px] font-semibold text-black">გადასახდელი</p>
+                  {parcel.payableAmount != null && (
+                    <p className="mt-1 text-[13px] text-black">
+                      {parcel.payableAmount.toFixed(2)} {parcel.currency}
+                    </p>
+                  )}
+                  {parcel.payableAmount == null && (
+                    <p
+                      className="mt-2 rounded-md border border-rose-200/80 bg-white/80 px-2 py-1.5 text-[12px] leading-snug text-rose-900"
+                      role="status"
+                    >
+                      {PAYABLE_AMOUNT_PENDING_NOTICE}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {showCourierColumn && parcel.status === 'arrived' && (
+                <div className="mt-3 rounded-lg border border-amber-200/80 bg-amber-50/50 px-3 py-2.5">
                   <label className="flex cursor-pointer items-start gap-2">
                     <input
                       type="checkbox"
@@ -299,7 +369,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                         handleCourierToggle(parcel, e.target.checked)
                       }
                     />
-                    <span className="text-[14px] text-black">
+                    <span className="text-[14px] font-semibold text-black">
                       {COURIER_LABEL}
                     </span>
                   </label>
@@ -312,8 +382,11 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                     )}
                   {parcel.courierServiceRequested &&
                     parcel.courierFeeAmount == null && (
-                      <p className="mt-2 text-[13px] leading-snug text-red-600">
-                        {COURIER_ADMIN_NOTICE}
+                      <p
+                        className="mt-2 rounded-md border border-amber-200 bg-white/90 px-2 py-1.5 text-[12px] leading-snug text-amber-950"
+                        role="status"
+                      >
+                        {COURIER_FEE_PENDING_NOTICE}
                       </p>
                     )}
                   {courierErrorId === parcel.id && (
@@ -321,12 +394,20 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                       {COURIER_ERR}
                     </p>
                   )}
-                  <Link
-                    href="/dashboard/balance"
-                    className="mt-3 flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-[14px] font-semibold text-white shadow-sm transition-colors hover:bg-red-700"
-                  >
-                    გადახდა
-                  </Link>
+                  {totalDue(parcel) > 0 && (
+                    <div className="mt-3 space-y-2 border-t border-gray-100 pt-3">
+                      <p className="text-[14px] font-semibold text-black">
+                        სულ გადასახდელი: {totalDue(parcel).toFixed(2)}{' '}
+                        {parcel.currency}
+                      </p>
+                      <Link
+                        href="/dashboard/balance"
+                        className="flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-[14px] font-semibold text-white shadow-sm transition-colors hover:bg-red-700"
+                      >
+                        გადახდა
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

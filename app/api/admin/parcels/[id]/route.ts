@@ -20,10 +20,15 @@ const patchParcelSchema = z
   .object({
     status: z.enum(allowedStatuses).optional(),
     courierFeeAmount: z.union([z.number().min(0), z.null()]).optional(),
+    payableAmount: z.union([z.number().min(0), z.null()]).optional(),
   })
-  .refine((d) => d.status !== undefined || d.courierFeeAmount !== undefined, {
-    message: 'მინიმუმ ერთი ველი სავალდებულოა',
-  });
+  .refine(
+    (d) =>
+      d.status !== undefined ||
+      d.courierFeeAmount !== undefined ||
+      d.payableAmount !== undefined,
+    { message: 'მინიმუმ ერთი ველი სავალდებულოა' },
+  );
 
 export async function PATCH(
   request: NextRequest,
@@ -57,6 +62,7 @@ export async function PATCH(
       data: {
         ...(data.status !== undefined ? { status: data.status } : {}),
         ...(data.courierFeeAmount !== undefined ? { courierFeeAmount: data.courierFeeAmount } : {}),
+        ...(data.payableAmount !== undefined ? { payableAmount: data.payableAmount } : {}),
       },
       include: {
         user: {

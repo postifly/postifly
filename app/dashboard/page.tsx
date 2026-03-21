@@ -33,6 +33,7 @@ export default async function DashboardPage() {
     createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
     courierServiceRequested: parcel.courierServiceRequested,
     courierFeeAmount: parcel.courierFeeAmount,
+    payableAmount: parcel.payableAmount,
   }));
 
   return (

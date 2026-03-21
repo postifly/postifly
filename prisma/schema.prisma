@@ -124,6 +124,8 @@ model Parcel {
   courierServiceRequested Boolean @default(false)
   /// ადმინის მიერ დაყენებული საკურიერო გადასახადი (მომხმარებელი ხედავს და იხდის)
   courierFeeAmount        Float?
+  /// ჩამოსულისთვის ადმინის მიერ დაყენებული ძირითადი გადასახდელი (სავალდებულო გადახდის თანხა)
+  payableAmount           Float?
 
   // Dates
   shippedAt       DateTime?
