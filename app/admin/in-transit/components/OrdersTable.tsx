@@ -32,7 +32,7 @@ type OrdersTableProps = {
 
 const statusOptions = [
   { value: 'in_transit', label: 'გზაში' },
-  { value: 'warehouse', label: 'საწყობში' },
+  { value: 'warehouse', label: 'ჩამოსული' },
   { value: 'stopped', label: 'გაჩერებული' },
   { value: 'delivered', label: 'გაცემული' },
   { value: 'pending', label: 'მოლოდინში' },

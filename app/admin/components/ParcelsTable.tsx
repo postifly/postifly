@@ -15,6 +15,8 @@ type Parcel = {
   customerName: string;
   createdAt: string;
   filePath: string;
+  courierServiceRequested: boolean;
+  courierFeeAmount: number | null;
   user: {
     id: string;
     email: string;
@@ -62,6 +64,8 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
   const [error, setError] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [feeDraftById, setFeeDraftById] = useState<Record<string, string>>({});
+  const [courierFeeSavingId, setCourierFeeSavingId] = useState<string | null>(null);
 
   const handleStatusChange = async (parcelId: string, newStatus: string) => {
     setUpdatingId(parcelId);
@@ -98,6 +102,51 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
       setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const handleSaveCourierFee = async (parcel: Parcel) => {
+    const raw = feeDraftById[parcel.id];
+    const trimmed = raw?.trim() ?? '';
+    let value: number | null;
+    if (trimmed === '') {
+      value = null;
+    } else {
+      const n = parseFloat(trimmed.replace(',', '.'));
+      if (Number.isNaN(n) || n < 0) {
+        setError('საკურიერო თანხა უნდა იყოს დადებითი რიცხვი ან ცარიელი (გასუფთავება).');
+        return;
+      }
+      value = Math.round(n * 100) / 100;
+    }
+
+    setCourierFeeSavingId(parcel.id);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/parcels/${parcel.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courierFeeAmount: value }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'საკურიერო თანხის შენახვა ვერ მოხერხდა');
+        return;
+      }
+      const updatedParcel: Parcel = data.parcel;
+      setParcels((prev) =>
+        prev.map((p) => (p.id === parcel.id ? updatedParcel : p)),
+      );
+      setFeeDraftById((prev) => {
+        const next = { ...prev };
+        delete next[parcel.id];
+        return next;
+      });
+      if (onParcelUpdated) onParcelUpdated(updatedParcel);
+    } catch {
+      setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+    } finally {
+      setCourierFeeSavingId(null);
     }
   };
 
@@ -196,6 +245,44 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                   {parcel.user.address || '—'}
                 </span>
 
+                {parcel.courierServiceRequested ? (
+                  <>
+                    <span className="col-span-2 mt-1 border-t border-gray-100 pt-2 text-[12px] font-semibold text-amber-900">
+                      საკურიერო — მომხმარებელმა მოითხოვა
+                    </span>
+                    <span className="text-black">გადასახადი ({parcel.currency || 'GEL'})</span>
+                    <span className="flex flex-wrap items-center gap-2">
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="0"
+                        value={
+                          feeDraftById[parcel.id] !== undefined
+                            ? feeDraftById[parcel.id]
+                            : parcel.courierFeeAmount != null
+                              ? String(parcel.courierFeeAmount)
+                              : ''
+                        }
+                        onChange={(e) =>
+                          setFeeDraftById((prev) => ({
+                            ...prev,
+                            [parcel.id]: e.target.value,
+                          }))
+                        }
+                        className="w-28 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
+                      />
+                      <button
+                        type="button"
+                        disabled={courierFeeSavingId === parcel.id}
+                        onClick={() => handleSaveCourierFee(parcel)}
+                        className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                      >
+                        {courierFeeSavingId === parcel.id ? '...' : 'შენახვა'}
+                      </button>
+                    </span>
+                  </>
+                ) : null}
+
                 <span className="text-black">ფაილი</span>
                 <span className="flex flex-wrap gap-2">
                   <a
@@ -272,7 +359,14 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                 <React.Fragment key={parcel.id}>
                   <tr className="hover:bg-gray-50">
                     <td className="px-4 py-2 align-top text-[16px] text-black">
-                      {parcel.user.email}
+                      <span className="inline-flex flex-wrap items-center gap-2">
+                        <span>{parcel.user.email}</span>
+                        {parcel.courierServiceRequested ? (
+                          <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-900">
+                            საკურიერო
+                          </span>
+                        ) : null}
+                      </span>
                       {(parcel.user.firstName || parcel.user.lastName) && (
                         <span className="block text-sm text-black">
                           {parcel.user.firstName} {parcel.user.lastName}
@@ -354,6 +448,44 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
 
                           <span className="text-black">თარიღი</span>
                           <span>{parcel.createdAt}</span>
+
+                          {parcel.courierServiceRequested ? (
+                            <>
+                              <span className="text-black">საკურიერო</span>
+                              <span className="text-amber-900">მომხმარებლის მოთხოვნა</span>
+                              <span className="text-black">საკურიერო გადასახადი</span>
+                              <span className="flex flex-wrap items-center gap-2">
+                                <input
+                                  type="text"
+                                  inputMode="decimal"
+                                  placeholder="0"
+                                  value={
+                                    feeDraftById[parcel.id] !== undefined
+                                      ? feeDraftById[parcel.id]
+                                      : parcel.courierFeeAmount != null
+                                        ? String(parcel.courierFeeAmount)
+                                        : ''
+                                  }
+                                  onChange={(e) =>
+                                    setFeeDraftById((prev) => ({
+                                      ...prev,
+                                      [parcel.id]: e.target.value,
+                                    }))
+                                  }
+                                  className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
+                                />
+                                <span className="text-black">{parcel.currency || 'GEL'}</span>
+                                <button
+                                  type="button"
+                                  disabled={courierFeeSavingId === parcel.id}
+                                  onClick={() => handleSaveCourierFee(parcel)}
+                                  className="rounded-md bg-black px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                >
+                                  {courierFeeSavingId === parcel.id ? 'ინახება...' : 'შენახვა'}
+                                </button>
+                              </span>
+                            </>
+                          ) : null}
 
                           <span className="text-black">სტატუსი</span>
                           <span className="flex items-center gap-2">

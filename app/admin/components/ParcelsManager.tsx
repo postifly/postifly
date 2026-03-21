@@ -15,11 +15,17 @@ type Parcel = {
   customerName: string;
   createdAt: string;
   filePath: string;
+  shippingAmount?: number | null;
+  courierServiceRequested: boolean;
+  courierFeeAmount: number | null;
   user: {
     id: string;
     email: string;
     firstName: string | null;
     lastName: string | null;
+    phone?: string | null;
+    city?: string | null;
+    address?: string | null;
   };
 };
 

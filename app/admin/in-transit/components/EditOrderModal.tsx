@@ -248,7 +248,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onOrderUpdated 
                   className="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-black"
                 >
                   <option value="in_transit">გზაში</option>
-                  <option value="warehouse">საწყობში</option>
+                  <option value="warehouse">ჩამოსული</option>
                   <option value="stopped">გაჩერებული</option>
                   <option value="delivered">გაცემული</option>
                   <option value="pending">მოლოდინში</option>

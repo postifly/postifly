@@ -31,6 +31,8 @@ export default async function DashboardPage() {
     quantity: parcel.quantity,
     customerName: parcel.customerName,
     createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
+    courierServiceRequested: parcel.courierServiceRequested,
+    courierFeeAmount: parcel.courierFeeAmount,
   }));
 
   return (

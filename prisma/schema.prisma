@@ -120,6 +120,11 @@ model Parcel {
   customsValue    Float?
   customsDeclared Boolean  @default(false)
 
+  /// მომხმარებლის მიერ მონიშნული საკურიერო (UI მხოლოდ status=arrived)
+  courierServiceRequested Boolean @default(false)
+  /// ადმინის მიერ დაყენებული საკურიერო გადასახადი (მომხმარებელი ხედავს და იხდის)
+  courierFeeAmount        Float?
+
   // Dates
   shippedAt       DateTime?
   arrivedAt       DateTime?

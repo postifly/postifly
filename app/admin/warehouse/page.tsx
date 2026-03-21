@@ -30,8 +30,8 @@ export default async function AdminWarehousePage() {
 
   return (
     <AdminShell
-      title="საწყობში"
-      description="საწყობში მყოფი ამანათების მართვა."
+      title="ჩამოსული"
+      description="ჩამოსული ამანათების მართვა."
     >
       <div className="space-y-6">
         <ParcelsManager initialParcels={formattedParcels} currentStatus="arrived" />

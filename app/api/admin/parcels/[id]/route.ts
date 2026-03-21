@@ -6,9 +6,24 @@ import prisma from '@/lib/prisma';
 
 const allowedStatuses = ['pending', 'in_transit', 'arrived', 'region', 'delivered', 'cancelled'] as const;
 
-const updateParcelStatusSchema = z.object({
-  status: z.enum(allowedStatuses),
-});
+const userSelect = {
+  id: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  phone: true,
+  city: true,
+  address: true,
+} as const;
+
+const patchParcelSchema = z
+  .object({
+    status: z.enum(allowedStatuses).optional(),
+    courierFeeAmount: z.union([z.number().min(0), z.null()]).optional(),
+  })
+  .refine((d) => d.status !== undefined || d.courierFeeAmount !== undefined, {
+    message: 'მინიმუმ ერთი ველი სავალდებულოა',
+  });
 
 export async function PATCH(
   request: NextRequest,
@@ -27,7 +42,7 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const data = updateParcelStatusSchema.parse(body);
+    const data = patchParcelSchema.parse(body);
 
     const parcel = await prisma.parcel.findUnique({
       where: { id },
@@ -40,24 +55,23 @@ export async function PATCH(
     const updatedParcel = await prisma.parcel.update({
       where: { id },
       data: {
-        status: data.status,
+        ...(data.status !== undefined ? { status: data.status } : {}),
+        ...(data.courierFeeAmount !== undefined ? { courierFeeAmount: data.courierFeeAmount } : {}),
       },
       include: {
         user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-          },
+          select: userSelect,
         },
       },
     });
 
     return NextResponse.json(
       {
-        message: 'სტატუსი წარმატებით განახლდა',
-        parcel: updatedParcel,
+        message: 'განახლდა',
+        parcel: {
+          ...updatedParcel,
+          createdAt: new Date(updatedParcel.createdAt).toLocaleDateString('ka-GE'),
+        },
       },
       { status: 200 }
     );
@@ -75,9 +89,9 @@ export async function PATCH(
       );
     }
 
-    console.error('Update parcel status error:', error);
+    console.error('Update parcel error:', error);
     return NextResponse.json(
-      { error: 'სტატუსის განახლებისას მოხდა შეცდომა' },
+      { error: 'განახლებისას მოხდა შეცდომა' },
       { status: 500 }
     );
   }
@@ -124,4 +138,3 @@ export async function DELETE(
     );
   }
 }
-
