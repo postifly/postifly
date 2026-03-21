@@ -20,7 +20,7 @@ export default function How({ isKa }: Props) {
         " გამოწერიდან რამოდენიმე დღეში კურიერი მაღაზიიდან მიიტანს თქვენს ნივთს ჩვენს ოფისში.",
         ' თქვენ ელ-ფოსტაზე მიიღებთ თქვენი ამანათის "თრექინგ კოდს", რის შემდეგაც თქვენ უნდა დაადეკლარიროთ ამანათი ჩვენს საიტზე;',
         " დეკლარირების შემდეგ დაელოდოთ თქვენს ამანათს, როგორც ჩამოვა მიიღებთ შეტყობინებას.",
-        " ჩამოსულ ამანათს მისამართზე კურიერი უფასოდ მოგიტანთ.",
+        " ჩამოსულ ამანათს მისამართზე კურიერი სწრაფად და უსაფრთხოდ მოგიტანთ.",
       ]
     : [
         " Register on the website from which you want to order the desired item;",
@@ -30,7 +30,7 @@ export default function How({ isKa }: Props) {
         " A few days after placing the order, the courier from the shop will deliver your item to our office.",
         " You will receive your parcel’s tracking code by email, after which you must declare the parcel on our website;",
         " After declaration, wait for your parcel; once it arrives, you will receive a notification.",
-        " The courier will deliver the arrived parcel to your address free of charge.",
+        " The courier will deliver the arrived parcel to your address quickly and safely.",
       ];
 
  
