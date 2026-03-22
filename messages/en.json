@@ -354,7 +354,18 @@
     "weightError": "Weight is required and must be a positive number",
     "calculatedPrice": "Amount to pay (weight × country tariff)",
     "priceError": "Price is required and must be positive",
-    "quantityError": "Quantity must be at least 1"
+    "quantityError": "Quantity must be at least 1",
+    "originCountryLabels": {
+      "uk": "United Kingdom",
+      "us": "USA",
+      "cn": "China",
+      "it": "Italy",
+      "gr": "Greece",
+      "es": "Spain",
+      "fr": "France",
+      "de": "Germany",
+      "tr": "Turkey"
+    }
   },
   "adminParcels": {
     "title": "",

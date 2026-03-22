@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
 import { useTranslations } from 'next-intl';
+import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -73,7 +74,7 @@ export default function AdminCreateParcelForm() {
   const router = useRouter();
   const t = useTranslations('adminParcels');
   const tCommon = useTranslations('common');
-  const tAddresses = useTranslations('addresses');
+  const tParcels = useTranslations('parcels');
 
   const [userEmail, setUserEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -428,7 +429,7 @@ export default function AdminCreateParcelForm() {
                       />
                     ) : null;
                   })()}
-                  <span>{tAddresses(originCountry as 'uk')}</span>
+                  <span>{tParcels(parcelOriginLabelKey(originCountry))}</span>
                 </>
               ) : (
                 <span className="text-black">{t('originCountryPlaceholder')}</span>
@@ -459,7 +460,7 @@ export default function AdminCreateParcelForm() {
                           title={code}
                         />
                       )}
-                      <span>{tAddresses(code as 'uk')}</span>
+                      <span>{tParcels(parcelOriginLabelKey(code))}</span>
                     </li>
                   );
                 })}

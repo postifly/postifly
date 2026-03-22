@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
+import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import {
   GB,
   US,
@@ -56,7 +57,6 @@ const ORIGIN_COUNTRIES: { code: string }[] = [
 
 export default function NewParcelPage() {
   const t = useTranslations('parcels');
-  const tAddresses = useTranslations('addresses');
   const tCommon = useTranslations('common');
   const tDeclaration = useTranslations('declaration');
   const router = useRouter();
@@ -312,7 +312,7 @@ export default function NewParcelPage() {
                         <FlagComp className="h-5 w-8 shrink-0 rounded object-cover" title={originCountry} />
                       ) : null;
                     })()}
-                    <span>{tAddresses(originCountry as 'uk')}</span>
+                    <span>{t(parcelOriginLabelKey(originCountry))}</span>
                   </>
                 ) : (
                   <span className="text-black">{t('countryPlaceholder')}</span>
@@ -340,7 +340,7 @@ export default function NewParcelPage() {
                         {FlagComp && (
                           <FlagComp className="h-5 w-8 shrink-0 rounded object-cover" title={code} />
                         )}
-                        <span>{tAddresses(code as 'uk')}</span>
+                        <span>{t(parcelOriginLabelKey(code))}</span>
                       </li>
                     );
                   })}

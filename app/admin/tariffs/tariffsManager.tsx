@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
 
 const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
@@ -16,16 +17,17 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
-const ORIGIN_COUNTRIES: { code: string; nameKey: string }[] = [
-  { code: 'GB', nameKey: 'uk' },
-  { code: 'US', nameKey: 'us' },
-  { code: 'CN', nameKey: 'cn' },
-  { code: 'IT', nameKey: 'it' },
-  { code: 'GR', nameKey: 'gr' },
-  { code: 'ES', nameKey: 'es' },
-  { code: 'FR', nameKey: 'fr' },
-  { code: 'DE', nameKey: 'de' },
-  { code: 'TR', nameKey: 'tr' },
+/** DB `originCountry` (ISO) + ფორმის კოდი → `parcels.originCountryLabels` */
+const ORIGIN_COUNTRIES: { code: string; formCode: string }[] = [
+  { code: 'GB', formCode: 'uk' },
+  { code: 'US', formCode: 'us' },
+  { code: 'CN', formCode: 'cn' },
+  { code: 'IT', formCode: 'it' },
+  { code: 'GR', formCode: 'gr' },
+  { code: 'ES', formCode: 'es' },
+  { code: 'FR', formCode: 'fr' },
+  { code: 'DE', formCode: 'de' },
+  { code: 'TR', formCode: 'tr' },
 ];
 
 type TariffRow = {
@@ -45,13 +47,13 @@ type TariffsResponse = {
 
 type CountryRow = {
   code: string;
-  nameKey: string;
+  formCode: string;
   tariffId: string | null;
   pricePerKg: number | '';
 };
 
 export default function TariffsManager() {
-  const t = useTranslations('addresses');
+  const t = useTranslations('parcels');
   const [loading, setLoading] = useState(true);
   const [savingCode, setSavingCode] = useState<string | null>(null);
   const [actionBusy, setActionBusy] = useState<string | null>(null);
@@ -75,7 +77,7 @@ export default function TariffsManager() {
       if (!res.ok) throw new Error(data.error || 'ვერ მოხერხდა ტარიფების წამოღება');
       const tariffs: TariffRow[] = Array.isArray(data.tariffs) ? data.tariffs : [];
 
-      const built = ORIGIN_COUNTRIES.map(({ code, nameKey }) => {
+      const built = ORIGIN_COUNTRIES.map(({ code, formCode }) => {
         const candidates = tariffs.filter(
           (x) =>
             x.originCountry.toUpperCase() === code &&
@@ -85,7 +87,7 @@ export default function TariffsManager() {
           candidates.find((x) => x.maxWeight == null) ?? candidates[0] ?? null;
         return {
           code,
-          nameKey,
+          formCode,
           tariffId: tariff?.id ?? null,
           pricePerKg: tariff != null ? tariff.pricePerKg : ('' as const),
         };
@@ -278,12 +280,12 @@ export default function TariffsManager() {
                       const Flag = FLAGS[row.code];
                       return Flag ? (
                         <Flag
-                          title={t(row.nameKey as 'uk')}
+                          title={t(parcelOriginLabelKey(row.formCode))}
                           className="h-5 w-8 shrink-0 rounded object-cover shadow-sm"
                         />
                       ) : null;
                     })()}
-                    <span>{t(row.nameKey as 'uk')}</span>
+                    <span>{t(parcelOriginLabelKey(row.formCode))}</span>
                   </span>
                 </td>
                 <td className="px-3 py-2">
