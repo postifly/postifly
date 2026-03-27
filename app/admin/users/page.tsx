@@ -2,8 +2,15 @@ import AdminShell from '../components/AdminShell';
 import { formatDateDMY } from '../../../lib/formatDate';
 import prisma from '../../../lib/prisma';
 import UsersTable from './components/UsersTable';
+import { getLocale } from 'next-intl/server';
 
 export default async function AdminUsersPage() {
+  const locale = await getLocale();
+  const text = locale === 'ru'
+    ? { title: 'Пользователи', description: 'Список пользователей и ролей.' }
+    : locale === 'en'
+      ? { title: 'Users', description: 'List of users and roles.' }
+      : { title: 'მომხმარებლები', description: 'მომხმარებლების სია და როლები.' };
   const users = await prisma.user.findMany({
     orderBy: { createdAt: 'desc' },
     select: {
@@ -27,8 +34,8 @@ export default async function AdminUsersPage() {
 
   return (
     <AdminShell
-      title="მომხმარებლები"
-      description="მომხმარებლების სია და როლები."
+      title={text.title}
+      description={text.description}
     >
       <UsersTable users={formattedUsers} />
     </AdminShell>

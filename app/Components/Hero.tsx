@@ -148,10 +148,10 @@ const Hero = () => {
             />
             <div className="min-w-0 w-full md:w-auto">
               <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
-                რთულია გამოწერის პროცესი? 
+                {t('guideLine1')}
               </h1>
               <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
-                დარეკე და გადააბარე!!!
+                {t('guideLine2')}
               </h1>
               <div className="mt-1 md:mt-3 flex flex-wrap justify-center gap-2 md:grid md:grid-cols-5 md:justify-items-start md:gap-2">
                 {Object.entries(FLAGS).map(([code, Flag]) => (

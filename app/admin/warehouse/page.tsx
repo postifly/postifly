@@ -1,8 +1,15 @@
 import AdminShell from '../components/AdminShell';
 import prisma from '../../../lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
+import { getLocale } from 'next-intl/server';
 
 export default async function AdminWarehousePage() {
+  const locale = await getLocale();
+  const text = locale === 'ru'
+    ? { title: 'Прибывшие', description: 'Управление прибывшими посылками.' }
+    : locale === 'en'
+      ? { title: 'Arrived', description: 'Manage arrived parcels.' }
+      : { title: 'ჩამოსული', description: 'ჩამოსული ამანათების მართვა.' };
   const parcels = await prisma.parcel.findMany({
     where: {
       status: 'arrived',
@@ -30,8 +37,8 @@ export default async function AdminWarehousePage() {
 
   return (
     <AdminShell
-      title="ჩამოსული"
-      description="ჩამოსული ამანათების მართვა."
+      title={text.title}
+      description={text.description}
     >
       <div className="space-y-6">
         <ParcelsManager initialParcels={formattedParcels} currentStatus="arrived" />

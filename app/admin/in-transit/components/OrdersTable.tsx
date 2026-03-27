@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import EditOrderModal from './EditOrderModal';
 import DeleteOrderModal from './DeleteOrderModal';
+import { useLocale } from 'next-intl';
 
 type Order = {
   id: string;
@@ -30,16 +31,39 @@ type OrdersTableProps = {
   onOrderUpdated?: (order: Order) => void;
 };
 
-const statusOptions = [
-  { value: 'in_transit', label: 'გზაში' },
-  { value: 'warehouse', label: 'ჩამოსული' },
-  { value: 'stopped', label: 'გაჩერებული' },
-  { value: 'delivered', label: 'გაცემული' },
-  { value: 'pending', label: 'მოლოდინში' },
-  { value: 'cancelled', label: 'გაუქმებული' },
-];
-
 export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onOrderUpdated }: OrdersTableProps) {
+  const locale = useLocale();
+  const isEn = locale === 'en';
+  const isRu = locale === 'ru';
+  const t = {
+    inTransit: isRu ? 'В пути' : isEn ? 'In transit' : 'გზაში',
+    warehouse: isRu ? 'Прибыла' : isEn ? 'Arrived' : 'ჩამოსული',
+    stopped: isRu ? 'Остановлена' : isEn ? 'Stopped' : 'გაჩერებული',
+    delivered: isRu ? 'Выдана' : isEn ? 'Delivered' : 'გაცემული',
+    pending: isRu ? 'В ожидании' : isEn ? 'Pending' : 'მოლოდინში',
+    cancelled: isRu ? 'Отменена' : isEn ? 'Cancelled' : 'გაუქმებული',
+    statusUpdateError: isRu ? 'Ошибка при обновлении статуса' : isEn ? 'Failed to update status' : 'სტატუსის განახლებისას მოხდა შეცდომა',
+    genericError: isRu ? 'Произошла ошибка. Пожалуйста, попробуйте снова.' : isEn ? 'An error occurred. Please try again.' : 'დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.',
+    user: isRu ? 'Пользователь' : isEn ? 'User' : 'მომხმარებელი',
+    type: isRu ? 'Тип' : isEn ? 'Type' : 'ტიპი',
+    weight: isRu ? 'Вес' : isEn ? 'Weight' : 'წონა',
+    status: isRu ? 'Статус' : isEn ? 'Status' : 'სტატუსი',
+    amount: isRu ? 'Сумма' : isEn ? 'Amount' : 'თანხა',
+    date: isRu ? 'Дата' : isEn ? 'Date' : 'თარიღი',
+    actions: isRu ? 'Действия' : isEn ? 'Actions' : 'მოქმედებები',
+    noOrders: isRu ? 'Заказов пока нет.' : isEn ? 'No orders yet.' : 'ჯერ არცერთი Order არ არის.',
+    edit: isRu ? 'Изменить' : isEn ? 'Edit' : 'ცვლილება',
+    delete: isRu ? 'Удалить' : isEn ? 'Delete' : 'წაშლა',
+  } as const;
+  const statusOptions = [
+    { value: 'in_transit', label: t.inTransit },
+    { value: 'warehouse', label: t.warehouse },
+    { value: 'stopped', label: t.stopped },
+    { value: 'delivered', label: t.delivered },
+    { value: 'pending', label: t.pending },
+    { value: 'cancelled', label: t.cancelled },
+  ];
+
   const router = useRouter();
   // Use prop directly - OrdersManager handles all state management
   const orders = initialOrders;
@@ -67,7 +91,7 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'სტატუსის განახლებისას მოხდა შეცდომა');
+        setError(data.error || t.statusUpdateError);
         return;
       }
 
@@ -87,7 +111,7 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
         }
       }
     } catch {
-      setError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+      setError(t.genericError);
     } finally {
       setUpdatingId(null);
     }
@@ -130,20 +154,20 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">მომხმარებელი</th>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">ტიპი</th>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">წონა</th>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">სტატუსი</th>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">თანხა</th>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">თარიღი</th>
-              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">მოქმედებები</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.user}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.type}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.weight}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.status}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.amount}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.date}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{t.actions}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
             {orders.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-4 py-6 text-center text-[16px] text-gray-600">
-                  ჯერ არცერთი Order არ არის.
+                  {t.noOrders}
                 </td>
               </tr>
             ) : (
@@ -184,14 +208,14 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
                         onClick={() => setEditingOrder({ ...order, userId: order.userId || order.user.id })}
                         className="rounded-md bg-blue-600 px-3 py-1 text-[14px] font-medium text-white hover:bg-blue-700"
                       >
-                        ცვლილება
+                        {t.edit}
                       </button>
                       <button
                         type="button"
                         onClick={() => setDeletingOrder(order)}
                         className="rounded-md bg-red-600 px-3 py-1 text-[14px] font-medium text-white hover:bg-red-700"
                       >
-                        წაშლა
+                        {t.delete}
                       </button>
                     </div>
                   </td>

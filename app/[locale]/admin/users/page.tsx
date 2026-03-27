@@ -6,6 +6,23 @@ import UsersTable from '@/app/admin/users/components/UsersTable';
 type Props = { params: Promise<{ locale: string }> };
 
 export default async function AdminUsersPageLocale(_props: Props) {
+  const locale = (await _props.params).locale;
+  const copy = {
+    ka: {
+      title: 'მომხმარებლები',
+      description: 'მომხმარებლების სია და როლები.',
+    },
+    en: {
+      title: 'Users',
+      description: 'List of users and roles.',
+    },
+    ru: {
+      title: 'Пользователи',
+      description: 'Список пользователей и ролей.',
+    },
+  } as const;
+  const text = copy[(locale as keyof typeof copy)] ?? copy.ka;
+
   const users = await prisma.user.findMany({
     orderBy: { createdAt: 'desc' },
     select: {
@@ -28,8 +45,8 @@ export default async function AdminUsersPageLocale(_props: Props) {
 
   return (
     <AdminShell
-      title="მომხმარებლები"
-      description="მომხმარებლების სია და როლები."
+      title={text.title}
+      description={text.description}
     >
       <UsersTable users={formattedUsers} />
     </AdminShell>

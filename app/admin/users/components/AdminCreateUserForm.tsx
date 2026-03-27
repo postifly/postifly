@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import type { AdminCreateUserInput } from '@/lib/validations';
+import { useLocale } from 'next-intl';
 
 const initialForm: AdminCreateUserInput & { confirmPassword: string } = {
   email: '',
@@ -18,6 +19,31 @@ const initialForm: AdminCreateUserInput & { confirmPassword: string } = {
 };
 
 export default function AdminCreateUserForm() {
+  const locale = useLocale();
+  const isEn = locale === 'en';
+  const isRu = locale === 'ru';
+  const t = {
+    passwordsMismatch: isRu ? 'Пароли не совпадают' : isEn ? 'Passwords do not match' : 'პაროლები არ ემთხვევა',
+    createUserError: isRu ? 'Ошибка при добавлении пользователя' : isEn ? 'Failed to add user' : 'მომხმარებლის დამატებისას მოხდა შეცდომა',
+    genericError: isRu ? 'Произошла ошибка. Пожалуйста, попробуйте снова.' : isEn ? 'An error occurred. Please try again.' : 'დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.',
+    email: isRu ? 'Эл. почта *' : isEn ? 'Email *' : 'ელფოსტა *',
+    password: isRu ? 'Пароль *' : isEn ? 'Password *' : 'პაროლი *',
+    confirmPassword: isRu ? 'Подтвердите пароль *' : isEn ? 'Confirm password *' : 'პაროლის დამოწმება *',
+    firstName: isRu ? 'Имя' : isEn ? 'First name' : 'სახელი',
+    lastName: isRu ? 'Фамилия' : isEn ? 'Last name' : 'გვარი',
+    phone: isRu ? 'Телефон' : isEn ? 'Phone' : 'ტელეფონი',
+    personalId: isRu ? 'Личный номер *' : isEn ? 'Personal ID *' : 'პირადი ნომერი *',
+    personalIdPlaceholder: isRu ? '11 цифр' : isEn ? '11 digits' : '11 ციფრი',
+    city: isRu ? 'Город' : isEn ? 'City' : 'ქალაქი',
+    address: isRu ? 'Адрес' : isEn ? 'Address' : 'მისამართი',
+    role: isRu ? 'Роль' : isEn ? 'Role' : 'როლი',
+    user: isRu ? 'Пользователь' : isEn ? 'User' : 'მომხმარებელი',
+    admin: isRu ? 'Админ' : isEn ? 'Admin' : 'ადმინი',
+    creating: isRu ? 'Создание...' : isEn ? 'Creating...' : 'იქმნება...',
+    register: isRu ? 'Регистрация' : isEn ? 'Register' : 'რეგისტრაცია',
+    cancel: isRu ? 'Отмена' : isEn ? 'Cancel' : 'გაუქმება',
+  } as const;
+
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState('');
@@ -36,7 +62,7 @@ export default function AdminCreateUserForm() {
     setErrors({});
     setSubmitError('');
     if (form.password !== form.confirmPassword) {
-      setErrors((prev) => ({ ...prev, confirmPassword: 'პაროლები არ ემთხვევა' }));
+      setErrors((prev) => ({ ...prev, confirmPassword: t.passwordsMismatch }));
       return;
     }
     setSubmitting(true);
@@ -66,13 +92,13 @@ export default function AdminCreateUserForm() {
           });
           setErrors(fieldErrors);
         }
-        setSubmitError(data.error || 'მომხმარებლის დამატებისას მოხდა შეცდომა');
+        setSubmitError(data.error || t.createUserError);
         return;
       }
       router.push('/admin/users');
       return;
     } catch {
-      setSubmitError('დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.');
+      setSubmitError(t.genericError);
     } finally {
       setSubmitting(false);
     }
@@ -87,7 +113,7 @@ export default function AdminCreateUserForm() {
       )}
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">ელფოსტა *</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.email}</label>
           <input
             type="email"
             name="email"
@@ -99,7 +125,7 @@ export default function AdminCreateUserForm() {
           {errors.email && <p className="mt-1 text-[13px] text-red-600">{errors.email}</p>}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">პაროლი *</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.password}</label>
           <input
             type="password"
             name="password"
@@ -112,7 +138,7 @@ export default function AdminCreateUserForm() {
           {errors.password && <p className="mt-1 text-[13px] text-red-600">{errors.password}</p>}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">პაროლის დამოწმება *</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.confirmPassword}</label>
           <input
             type="password"
             name="confirmPassword"
@@ -125,7 +151,7 @@ export default function AdminCreateUserForm() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-[14px] font-semibold text-black">სახელი</label>
+            <label className="mb-1 block text-[14px] font-semibold text-black">{t.firstName}</label>
             <input
               type="text"
               name="firstName"
@@ -135,7 +161,7 @@ export default function AdminCreateUserForm() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[14px] font-semibold text-black">გვარი</label>
+            <label className="mb-1 block text-[14px] font-semibold text-black">{t.lastName}</label>
             <input
               type="text"
               name="lastName"
@@ -146,7 +172,7 @@ export default function AdminCreateUserForm() {
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">ტელეფონი</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.phone}</label>
           <input
             type="tel"
             name="phone"
@@ -158,7 +184,7 @@ export default function AdminCreateUserForm() {
           {errors.phone && <p className="mt-1 text-[13px] text-red-600">{errors.phone}</p>}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">პირადი ნომერი *</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.personalId}</label>
           <input
             type="text"
             name="personalIdNumber"
@@ -166,13 +192,13 @@ export default function AdminCreateUserForm() {
             onChange={handleChange}
             required
             maxLength={11}
-            placeholder="11 ციფრი"
+            placeholder={t.personalIdPlaceholder}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
           {errors.personalIdNumber && <p className="mt-1 text-[13px] text-red-600">{errors.personalIdNumber}</p>}
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">ქალაქი</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.city}</label>
           <input
             type="text"
             name="city"
@@ -182,7 +208,7 @@ export default function AdminCreateUserForm() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">მისამართი</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.address}</label>
           <input
             type="text"
             name="address"
@@ -192,15 +218,15 @@ export default function AdminCreateUserForm() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-[14px] font-semibold text-black">როლი</label>
+          <label className="mb-1 block text-[14px] font-semibold text-black">{t.role}</label>
           <select
             name="role"
             value={form.role}
             onChange={handleChange}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           >
-            <option value="USER">მომხმარებელი</option>
-            <option value="ADMIN">ადმინი</option>
+            <option value="USER">{t.user}</option>
+            <option value="ADMIN">{t.admin}</option>
           </select>
         </div>
         <div className="mt-4 flex gap-3">
@@ -209,13 +235,13 @@ export default function AdminCreateUserForm() {
             disabled={submitting}
             className="rounded-lg bg-black px-4 py-2 text-[15px] font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
           >
-            {submitting ? 'იქმნება...' : 'რეგისტრაცია'}
+            {submitting ? t.creating : t.register}
           </button>
           <Link
             href="/admin/users"
             className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-[15px] font-semibold text-black hover:bg-gray-50"
           >
-            გაუქმება
+            {t.cancel}
           </Link>
         </div>
       </form>

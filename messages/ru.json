@@ -109,6 +109,8 @@
     "requisitesContent": "Название бренда: Postifly\nНазвание компании: ООО \"Express Logistic Service\"\nИдентификационный код: 436258381\nАдрес: Тбилиси, Гагарина 4-4 A\n\nTBC Bank\nКод банка: TBCBGE22\nСчет: GE47TB7653936080100018\n\nBank of Georgia\nКод банка: BAGAGE22\nСчет: GE56BGOOOOOOO549889504"
   },
   "home": {
+    "guideLine1": "Сложный процесс заказа?",
+    "guideLine2": "Позвоните и передайте это нам!!!",
     "hero1Line1": "Цена рассчитывается по фактическому весу",
     "hero1Line2": "Не переплачивайте",
     "hero1Line3": "Подписывайтесь легко",
