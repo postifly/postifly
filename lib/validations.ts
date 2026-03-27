@@ -60,6 +60,9 @@ const registerBaseSchema = z.object({
     .regex(/^\d+$/, 'პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს'),
   city: georgianTextField('ქალაქი აუცილებელია', MSG_GEORGIAN_CITY),
   address: georgianTextField('მისამართი აუცილებელია', MSG_GEORGIAN_ADDRESS),
+  termsAccepted: z
+    .boolean()
+    .refine((value) => value === true, 'გთხოვთ დაეთანხმოთ წესებს და პირობებს'),
 });
 
 // Registration schema for frontend (with confirmPassword)

@@ -22,6 +22,7 @@ const RegisterPage = () => {
     personalIdNumber: '',
     city: '',
     address: '',
+    termsAccepted: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,6 +31,7 @@ const RegisterPage = () => {
   const [submitError, setSubmitError] = useState<string>('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpCooldown, setOtpCooldown] = useState(0);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -89,10 +91,26 @@ const RegisterPage = () => {
     setSubmitError('');
     setErrors({});
 
+    if (!formData.termsAccepted) {
+      setErrors((prev) => ({ ...prev, termsAccepted: t('termsRequired') }));
+      return;
+    }
+
     try {
       const validatedData = registerSchema.parse(formData);
       setIsLoading(true);
-      const { confirmPassword, ...dataToSend } = validatedData;
+      const dataToSend = {
+        email: validatedData.email,
+        password: validatedData.password,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        phone: validatedData.phone,
+        otpCode: validatedData.otpCode,
+        personalIdNumber: validatedData.personalIdNumber,
+        city: validatedData.city,
+        address: validatedData.address,
+        termsAccepted: validatedData.termsAccepted,
+      };
 
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -391,9 +409,42 @@ const RegisterPage = () => {
           </div>
 
           <div>
+            <label className="flex items-start gap-3 text-[14px] text-black">
+              <input
+                id="termsAccepted"
+                name="termsAccepted"
+                type="checkbox"
+                checked={formData.termsAccepted}
+                onChange={(e) => {
+                  setFormData((prev) => ({ ...prev, termsAccepted: e.target.checked }));
+                  if (errors.termsAccepted) {
+                    setErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.termsAccepted;
+                      return next;
+                    });
+                  }
+                }}
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+              />
+              <span>
+                {t('termsPrefix')}{' '}
+                <button
+                  type="button"
+                  onClick={() => setShowTermsModal(true)}
+                  className="underline hover:no-underline"
+                >
+                  {t('termsLink')}
+                </button>
+              </span>
+            </label>
+            {errors.termsAccepted && <p className="mt-1 text-[16px] text-red-600">{errors.termsAccepted}</p>}
+          </div>
+
+          <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !formData.termsAccepted}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? tCommon('loading') : t('registerButton')}
@@ -401,6 +452,40 @@ const RegisterPage = () => {
           </div>
         </form>
       </div>
+
+      {showTermsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-lg bg-white shadow-lg">
+            <div className="flex items-center justify-between border-b px-5 py-4">
+              <h3 className="text-[18px] font-semibold text-black">{t('termsTitle')}</h3>
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(false)}
+                className="text-[14px] text-gray-700 hover:text-black"
+              >
+                {tCommon('close')}
+              </button>
+            </div>
+            <div className="space-y-3 overflow-y-auto px-5 py-4 text-[14px] leading-6 text-gray-800">
+              <p>{t('termsModalText1')}</p>
+              <p>{t('termsModalText2')}</p>
+              <p>{t('termsModalText3')}</p>
+              <Link href="/conditions" className="underline hover:no-underline">
+                {t('termsReadFull')}
+              </Link>
+            </div>
+            <div className="border-t px-5 py-4">
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(false)}
+                className="w-full rounded-md bg-black px-4 py-2 text-[14px] font-medium text-white hover:bg-gray-800"
+              >
+                {t('termsModalClose')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -135,6 +135,13 @@
     "tariffAirShipping": "(air shipping)",
     "tariffLandShipping": "(land shipping)"
   },
+  "homeConsent": {
+    "title": "Terms confirmation",
+    "description": "Before continuing, please confirm whether you agree to our terms and conditions.",
+    "conditionsLink": "Read full terms",
+    "accept": "Agree",
+    "reject": "Reject"
+  },
   "login": {
     "title": "Login",
     "orCreateAccount": "Or ",
@@ -193,6 +200,15 @@
     "password": "Password",
     "confirmPassword": "Confirm password",
     "repeatPassword": "Repeat password",
+    "termsPrefix": "I agree to the",
+    "termsLink": "Terms & Conditions",
+    "termsRequired": "You must agree to the Terms & Conditions",
+    "termsTitle": "Terms & Conditions",
+    "termsModalText1": "By creating an account, you confirm that the information you provide is accurate and complete.",
+    "termsModalText2": "You agree to comply with company policies for shipping, declarations, payments, and prohibited items.",
+    "termsModalText3": "You also agree that your personal information may be processed to provide the service in line with applicable law.",
+    "termsReadFull": "Read full terms",
+    "termsModalClose": "I understand",
     "registerButton": "Register",
     "registrationError": "Registration error",
     "genericError": "An error occurred. Please try again."

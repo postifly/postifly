@@ -45,6 +45,7 @@ model User {
   personalIdNumber  String   @unique
   city              String?
   address           String?
+  termsAcceptedAt   DateTime?
   balance           Float    @default(0)  // მომხმარებლის ბალანსი (GEL)
   roomNumber      String?      @unique // მომხმარებლის ოთახის ნომერი (მაგ. PO1, PO2, PO3...)
   role              UserRole @default(USER)
