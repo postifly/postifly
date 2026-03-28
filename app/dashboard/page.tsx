@@ -28,6 +28,7 @@ export default async function DashboardPage() {
         minWeight: true,
         maxWeight: true,
         pricePerKg: true,
+        currency: true,
         isActive: true,
       },
     }),

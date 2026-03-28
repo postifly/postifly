@@ -54,19 +54,19 @@ export default function BalanceTopUp({ initialBalance }: Props) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-xl border border-gray-200 bg-gray-50/50 p-6">
-        <h2 className="text-[16px] font-semibold text-gray-900 mb-2">{t('currentBalance')}</h2>
-        <p className="text-2xl font-bold text-black">
+      <section className="rounded-xl  border border-gray-200 bg-gray-50/50 p-6">
+        <h2 className="md:text-[18px] text-[16px] font-semibold text-gray-900 mb-2">{t('currentBalance')}</h2>
+        <p className="md:text-[20px] text-[18px] font-bold text-black">
           {balance.toFixed(2)} <span className="text-[18px] font-semibold text-gray-600">GEL</span>
         </p>
       </section>
 
-      <section className="rounded-xl border border-gray-200 bg-gray-50/50 p-6">
-        <h2 className="text-[16px] font-semibold text-gray-900 mb-4">{t('topUp')}</h2>
+      <section className="rounded-xl md:h-[200px] border border-gray-200 bg-gray-50/50 p-6">
+        <h2 className="md:text-[18px] text-[16px] font-semibold text-gray-900 mb-4">{t('topUp')}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {message && (
             <div
-              className={`rounded-lg px-4 py-3 text-[15px] ${
+              className={`rounded-lg px-4 md:text-[18px] text-[16px] py-3 ${
                 message.type === 'success'
                   ? 'bg-green-50 text-green-800 border border-green-200'
                   : 'bg-red-50 text-red-800 border border-red-200'
@@ -76,7 +76,7 @@ export default function BalanceTopUp({ initialBalance }: Props) {
             </div>
           )}
           <div>
-            <label htmlFor="balance-amount" className="mb-1 block text-[14px] md:text-[16px] font-medium text-black">
+            <label htmlFor="balance-amount" className="mb-1 block md:text-[18px] text-[16px] font-medium text-black">
               {t('amount')}
             </label>
             <input

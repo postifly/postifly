@@ -17,6 +17,7 @@ export type TariffPick = {
   minWeight: number;
   maxWeight: number | null;
   pricePerKg: number;
+  currency: string;
   isActive: boolean;
 };
 
@@ -27,7 +28,7 @@ export function resolveTariffForParcel(
   tariffs: TariffPick[],
   originCountry: string | null,
   weightKg: number | null,
-): { pricePerKg: number; shippingTotal: number } | null {
+): { pricePerKg: number; shippingTotal: number; currency: string } | null {
   if (originCountry == null || weightKg == null || weightKg <= 0) return null;
   const trimmed = originCountry.trim();
   if (!trimmed) return null;
@@ -49,5 +50,57 @@ export function resolveTariffForParcel(
   const tariff = candidates[0]!;
   const shippingTotal =
     Math.round(weightKg * tariff.pricePerKg * 100) / 100;
-  return { pricePerKg: tariff.pricePerKg, shippingTotal };
+  return {
+    pricePerKg: tariff.pricePerKg,
+    shippingTotal,
+    currency: tariff.currency || 'GEL',
+  };
+}
+
+/** დეშბორდზე ჩვენებისთვის: უნიკალური origin-ები, 1 კგ-ზე გადაწყვეტილი ტარიფი, ცნობილი ქვეყნების ფიქსირებული რიგითობა. */
+const DASHBOARD_TARIFF_ORIGIN_ORDER = [
+  'GB',
+  'US',
+  'CN',
+  'IT',
+  'GR',
+  'ES',
+  'FR',
+  'DE',
+  'TR',
+] as const;
+
+export function formKeyForTariffIso(iso: string): string | null {
+  const u = iso.toUpperCase();
+  for (const [key, code] of Object.entries(FORM_TO_TARIFF_COUNTRY)) {
+    if (code === u) return key;
+  }
+  return null;
+}
+
+export function buildDashboardTariffRows(tariffs: TariffPick[]) {
+  const origins = [
+    ...new Set(tariffs.map((t) => t.originCountry.toUpperCase())),
+  ];
+  const preferred = DASHBOARD_TARIFF_ORIGIN_ORDER as readonly string[];
+  const ordered = [
+    ...preferred.filter((iso) => origins.includes(iso)),
+    ...origins.filter((iso) => !preferred.includes(iso)).sort(),
+  ];
+  const rows: {
+    originIso: string;
+    pricePerKg: number;
+    currency: string;
+  }[] = [];
+  for (const iso of ordered) {
+    const resolved = resolveTariffForParcel(tariffs, iso, 1);
+    if (resolved) {
+      rows.push({
+        originIso: iso,
+        pricePerKg: resolved.pricePerKg,
+        currency: resolved.currency,
+      });
+    }
+  }
+  return rows;
 }

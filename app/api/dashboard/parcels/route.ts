@@ -93,6 +93,7 @@ export async function POST(request: NextRequest) {
         minWeight: true,
         maxWeight: true,
         pricePerKg: true,
+        currency: true,
         isActive: true,
       },
     });

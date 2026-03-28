@@ -273,7 +273,9 @@
       "customs": "საბაჟო",
       "courier": "საკურიერო",
       "corporate": "კორპორატიული"
-    }
+    },
+    "tariffBannerTitle": "თქვენი ტარიფი",
+    "tariffPerKgLabel": "1 კგ"
   },
   "addresses": {
     "title": "მისამართები",

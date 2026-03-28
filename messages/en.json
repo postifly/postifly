@@ -272,7 +272,9 @@
       "customs": "Customs",
       "courier": "Courier",
       "corporate": "Corporate"
-    }
+    },
+    "tariffBannerTitle": "Your rates",
+    "tariffPerKgLabel": "1 kg"
   },
   "addresses": {
     "title": "Addresses",

@@ -272,7 +272,9 @@
       "customs": "Таможня",
       "courier": "Курьер",
       "corporate": "Корпоративный"
-    }
+    },
+    "tariffBannerTitle": "Ваши тарифы",
+    "tariffPerKgLabel": "1 кг"
   },
   "addresses": {
     "title": "Адреса",
