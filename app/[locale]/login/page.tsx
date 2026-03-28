@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
@@ -55,7 +55,9 @@ const LoginPage = () => {
       if (result?.error) {
         setSubmitError(t('invalidCredentials'));
       } else if (result?.ok) {
-        router.push('/');
+        const session = await getSession();
+        const dest = session?.user?.role === 'ADMIN' ? '/admin' : '/dashboard';
+        router.push(dest);
         router.refresh();
       }
     } catch (error: unknown) {

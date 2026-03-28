@@ -4,6 +4,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --brand-gradient: linear-gradient(90deg, #ff4fd8, #3a5bff, #8a3cff, #ff4fd8);
 }
 
 @theme inline {
@@ -328,11 +329,11 @@ button:not(.mobile-menu-button),
   left: 0;
   width: 100%;
 
-  background: #2563eb;
+  background: var(--brand-gradient);
   backdrop-filter: blur(10px);
   z-index: 1000;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: background 0.3s ease;
 }
 

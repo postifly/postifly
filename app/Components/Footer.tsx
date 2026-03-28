@@ -9,9 +9,7 @@ const Footer = () => {
   return (
     <footer
       className="w-full py-8 md:py-10 border-t border-white/10"
-      style={{
-        background: 'linear-gradient(90deg, #FF4FD8, #3A5BFF, #8A3CFF, #FF4FD8)',
-      }}
+      style={{ background: 'var(--brand-gradient)' }}
     >
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
