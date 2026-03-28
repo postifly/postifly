@@ -53,7 +53,7 @@ export default function DashboardHeader() {
               <Link href="/" className="flex items-center gap-2 px-3 py-2.5 text-[15px] md:text-[17px] text-black " onClick={() => setNavOpen(false)}>
                 {t('home')}
               </Link>
-              <Link href="/dashboard/addresses" className="flex items-center gap-2 px-3 py-2.5 text-[15px] md:text-[17px] text-black  relative" onClick={() => setNavOpen(false)}>
+              <Link href="/dashboard#dashboard-addresses" className="flex items-center gap-2 px-3 py-2.5 text-[15px] md:text-[17px] text-black  relative" onClick={() => setNavOpen(false)}>
                 {t('addresses')}
               </Link>
               <Link href="/dashboard/balance" className="flex items-center gap-2 px-3 py-2.5 text-[15px] md:text-[17px] text-black " onClick={() => setNavOpen(false)}>
@@ -79,18 +79,8 @@ export default function DashboardHeader() {
             >
               {t('home')}
             </Link>
-            <Link
-              href="/dashboard/addresses"
-              className="relative flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-[#3a5bff] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
-            >
-              {t('addresses')}
-            </Link>
-            <Link
-              href="/dashboard/balance"
-              className="relative flex items-center gap-2 text-[16px] md:text-[18px] font-bold text-black hover:text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-[#3a5bff] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100"
-            >
-              {t('balanceTopUp')}
-            </Link>
+           
+           
           
           </div>
           <Link

@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { resolveTariffForParcel } from '@/lib/tariffLookup';
 import DashboardHeader from '@/app/dashboard/components/DashboardHeader';
+import DashboardAddressesSection from '@/app/dashboard/components/DashboardAddressesSection';
 import UserParcelsTabs, { UserParcel } from '@/app/dashboard/components/UserParcelsTabs';
 import { getTranslations } from 'next-intl/server';
 
@@ -90,6 +91,7 @@ export default async function DashboardPage({ params }: Props) {
             </span>
           </Link>
           <UserParcelsTabs parcels={formattedParcels} />
+          <DashboardAddressesSection />
         </main>
       </div>
     </div>
