@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ka" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <SessionProvider>
           {children}
         </SessionProvider>

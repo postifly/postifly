@@ -140,7 +140,7 @@ export default function Tariffs() {
     <motion.section
    
     
-      className="relative w-full overflow-hidden bg-white py-10 sm:py-14 md:py-24"
+      className="relative w-full overflow-hidden bg-white mt-10 pb-10"
     >
       {/* Soft top glow — same family as bg, slightly lifted */}
       <div
