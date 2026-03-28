@@ -33,12 +33,12 @@ const MiddleText = () => {
   }, [texts.length]);
 
   return (
-    <section className="bg-[#010002]">
+    <section className="bg-white">
       <div className="relative mx-auto max-w-4xl">
         {texts.map((text, i) => (
           <h2
             key={i}
-            className={`md:text-[25px] text-[18px] text-white font-medium md:text-left text-center transition-opacity duration-500 ${
+            className={`md:text-[25px] text-[18px] text-black font-medium md:text-left text-center transition-opacity duration-500 ${
               textIndex === i
                 ? 'opacity-100 relative'
                 : 'opacity-0 absolute left-0 right-0 top-0 pointer-events-none'
@@ -48,7 +48,7 @@ const MiddleText = () => {
             {text.line2 && (
               <>
                 <br />
-                <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white">
+                <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-black">
                   {text.line2}
                 </span>
               </>
@@ -56,7 +56,7 @@ const MiddleText = () => {
             {text.line3 && (
               <>
                 <br />
-                <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white">
+                <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-black">
                   {text.line3}
                 </span>
               </>
@@ -64,7 +64,7 @@ const MiddleText = () => {
             {text.line4 && (
               <>
                 <br />
-                <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white">
+                <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-black">
                   {text.line4}
                 </span>
               </>

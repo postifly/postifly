@@ -140,7 +140,7 @@ export default function Tariffs() {
     <motion.section
    
     
-      className="relative w-full overflow-hidden bg-[#010002] py-10 sm:py-14 md:py-24"
+      className="relative w-full overflow-hidden bg-white py-10 sm:py-14 md:py-24"
     >
       {/* Soft top glow — same family as bg, slightly lifted */}
       <div
@@ -148,7 +148,7 @@ export default function Tariffs() {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"
         aria-hidden
       />
 
@@ -161,7 +161,7 @@ export default function Tariffs() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-6 text-center sm:mb-8 md:mb-14"
         >
-          <h2 className="text-[20px] font-extrabold tracking-tight text-white sm:text-[22px] md:text-[34px]">
+          <h2 className="text-[20px] font-extrabold tracking-tight text-black sm:text-[22px] md:text-[34px]">
             {t('tariffsSectionTitle')}
           </h2>
         </motion.div>
@@ -172,19 +172,19 @@ export default function Tariffs() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={viewport}
           transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-          className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#121311] shadow-[0_24px_80px_-20px_rgba(0,0,0,0.75),inset_0_1px_0_0_rgba(255,255,255,0.04)] sm:rounded-2xl"
+          className="overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-white via-indigo-50/40 to-pink-50/50 shadow-[0_20px_60px_-15px_rgba(58,91,255,0.18),0_8px_24px_-12px_rgba(255,79,216,0.12)] sm:rounded-2xl"
         >
           <div className="-mx-px overflow-x-auto">
             <table className="w-full min-w-[280px]">
               <thead>
-                <tr className="border-b border-white/[0.08] bg-[#161716]">
-                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-white/90 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-white/90">
+                <tr className="border-b border-indigo-100/80 bg-gradient-to-r from-indigo-100/90 via-white to-pink-100/80">
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-gray-800">
                     {t('tariffCountry')}
                   </th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-white/90 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-white/90">
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-700 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-gray-800">
                     {t('tariffDelivery')}
                   </th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-white/90 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-white/90">
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-700 sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold md:text-gray-800">
                     {t('tariffPrice')}
                   </th>
                 </tr>
@@ -205,18 +205,18 @@ export default function Tariffs() {
                     <motion.tr
                       key={row.countryCode}
                       variants={item}
-                      className={`border-b border-white/[0.06] transition-colors duration-200 last:border-b-0 hover:bg-white/[0.03] ${
-                        i % 2 === 0 ? 'bg-[#121311]' : 'bg-[#0f100f]'
+                      className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${
+                        i % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
                       }`}
                     >
-                      <td className="px-3 py-2.5 text-xs font-medium text-white/90 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                      <td className="px-3 py-2.5 text-xs font-medium text-gray-800 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
                         <span className="inline-flex items-center gap-2 sm:gap-3">
                           {(() => {
                             const Flag = FLAGS[row.countryCode];
                             return Flag ? (
                               <Flag
                                 title={countryName}
-                                className="h-4 w-6 shrink-0 rounded object-cover shadow-md ring-1 ring-white/10 sm:h-5 sm:w-7 md:h-6 md:w-8"
+                                className="h-4 w-6 shrink-0 rounded object-cover shadow-sm ring-1 ring-gray-200/80 sm:h-5 sm:w-7 md:h-6 md:w-8"
                               />
                             ) : null;
                           })()}
@@ -225,14 +225,16 @@ export default function Tariffs() {
                       </td>
 
                       <td
-                        className={`px-3 py-2.5 text-center text-xs text-white/90 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
+                        className={`px-3 py-2.5 text-center text-xs text-gray-700 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
                           row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
                         }`}
                       >
                         {row.deliveryNoteKey ? (
                           <span className="flex flex-col items-center leading-tight">
-                            <span className="whitespace-nowrap text-[16px] md:text-[18px]">{deliveryDays}</span>
-                            <span className="whitespace-nowrap text-[16px] md:text-[18px] text-white/90 mt-0.5">
+                            <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-800">
+                              {deliveryDays}
+                            </span>
+                            <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-500 mt-0.5">
                               {deliveryNote?.replace(/[()]/g, '')}
                             </span>
                           </span>
@@ -241,7 +243,7 @@ export default function Tariffs() {
                         )}
                       </td>
 
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold text-white/90 tabular-nums sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold tabular-nums text-black sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
                         {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                       </td>
                     </motion.tr>

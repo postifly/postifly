@@ -14,7 +14,7 @@
 }
 
 .bg {
-  background-color: #010002 !important;
+  background-color: #ffffff !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1230,4 +1230,46 @@ html body [data-ca3_iconfont="ETmodules"]::before {
     0 1px 0 rgba(0, 0, 0, 0.19),
     0 2px 0 rgba(0, 0, 0, 0.18),
     0 2px 30px rgba(255, 255, 255, 0.4);
+}
+
+/* Home: marquee band under tariffs */
+@keyframes home-marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.home-marquee-track {
+  animation: home-marquee-x linear infinite;
+}
+
+.home-marquee-track--reverse {
+  animation-direction: reverse;
+}
+
+.home-marquee-fade-mask {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 45%,
+    rgba(0, 0, 0, 0.55) 72%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 45%,
+    rgba(0, 0, 0, 0.55) 72%,
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-marquee-track {
+    animation: none;
+    transform: none;
+  }
 }

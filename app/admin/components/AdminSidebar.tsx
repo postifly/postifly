@@ -44,7 +44,7 @@ const COUNT_KEY_BY_HREF: Record<string, keyof SectionCounts> = {
 };
 
 const countBadgeClass =
-  'ml-auto flex h-6 min-w-[1.75rem] shrink-0 items-center justify-center rounded-full bg-[#3a5bff] px-2 text-xs font-bold text-white ring-1 ring-white/20';
+  'ml-auto flex h-6 min-w-[1.75rem] shrink-0 items-center justify-center rounded-full bg-emerald-600 px-2 text-xs font-bold text-white ring-1 ring-emerald-400/35';
 
 export default function AdminSidebar() {
   const t = useTranslations('adminsidebar');
@@ -175,7 +175,7 @@ export default function AdminSidebar() {
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center justify-between rounded-xl border border-white/15 bg-zinc-900/90 px-3 py-2.5 text-[15px] font-medium text-zinc-100 shadow-lg shadow-black/20"
+          className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-[15px] font-medium text-slate-800 shadow-md shadow-slate-200/80"
           aria-expanded={open}
           aria-haspopup="true"
         >
@@ -183,10 +183,10 @@ export default function AdminSidebar() {
             <span>{currentItem.label}</span>
             {currentItem.href === '/admin/chat' && (chatCounts || chatLoading) ? (
               <span className="flex items-center gap-1 text-xs">
-                <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-zinc-200">
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">
                   გაუხსნელი: {chatCounts?.open ?? '...'}
                 </span>
-                <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] text-amber-300">
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] text-amber-800">
                   უპასუხებელი: {chatCounts?.awaitingReply ?? '...'}
                 </span>
               </span>
@@ -197,7 +197,7 @@ export default function AdminSidebar() {
             ) : null}
           </span>
           <span
-            className={`text-zinc-400 transition-transform ${
+            className={`text-slate-500 transition-transform ${
               open ? 'rotate-180' : ''
             }`}
           >
@@ -205,7 +205,7 @@ export default function AdminSidebar() {
           </span>
         </button>
         {open && (
-          <div className="mt-1.5 rounded-xl border border-white/15 bg-zinc-900/95 shadow-xl shadow-black/30 overflow-hidden">
+          <div className="mt-1.5 rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-200/70 overflow-hidden">
             <nav className="flex flex-col gap-0.5 py-1">
               {items.map((item) => {
                 const isActive = pathname === item.href;
@@ -219,18 +219,18 @@ export default function AdminSidebar() {
                     }}
                     className={`block w-full text-left py-2.5 px-3 text-[15px] font-medium transition-colors ${
                       isActive
-                        ? 'bg-white/15 text-white'
-                        : 'text-zinc-300 hover:bg-white/10 hover:text-zinc-100'
+                        ? 'bg-emerald-600 text-white'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
                     <span className="flex items-center justify-between gap-2">
                       <span>{item.label}</span>
                       {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
                         <span className="ml-auto flex items-center gap-1 text-xs">
-                          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-zinc-200">
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">
                             {chatCounts?.open ?? '...'}
                           </span>
-                          <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] text-amber-300">
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] text-amber-800">
                             {chatCounts?.awaitingReply ?? '...'}
                           </span>
                         </span>
@@ -250,7 +250,7 @@ export default function AdminSidebar() {
 
       {/* Desktop: fixed sidebar */}
       <aside className="hidden lg:block">
-        <div className="sticky top-4 rounded-xl border border-white/10 bg-zinc-900/80 shadow-xl shadow-black/20 overflow-hidden">
+        <div className="sticky top-4 rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-200/70 overflow-hidden">
           <div className="max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden py-2">
             <nav className="flex flex-col gap-0.5 px-2">
               {items.map((item) => {
@@ -261,18 +261,18 @@ export default function AdminSidebar() {
                     href={item.href}
                     className={`block py-2.5 px-3 text-[15px] font-medium transition-colors rounded-lg border-l-2 ${
                       isActive
-                        ? 'border-[#3a5bff] bg-white/10 text-white'
-                        : 'border-transparent text-zinc-300 hover:bg-white/8 hover:text-zinc-100'
+                        ? 'border-emerald-700 bg-emerald-200 text-emerald-950'
+                        : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
                     <span className="flex items-center justify-between gap-2">
                       <span>{item.label}</span>
                       {item.href === '/admin/chat' && (chatCounts || chatLoading) ? (
                         <span className="ml-auto flex items-center gap-1 text-xs">
-                          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-zinc-200">
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">
                             {chatCounts?.open ?? '...'}
                           </span>
-                          <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[11px] text-amber-300">
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] text-amber-800">
                             {chatCounts?.awaitingReply ?? '...'}
                           </span>
                         </span>
