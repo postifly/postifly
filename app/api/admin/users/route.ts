@@ -7,7 +7,10 @@ import { formatDateDMY } from '../../../../lib/formatDate';
 import prisma from '../../../../lib/prisma';
 import { adminCreateUserSchema } from '../../../../lib/validations';
 import { normalizePhone } from '../../../../lib/sms';
-import { generateNextRoomNumber } from '../../../../lib/roomNumber';
+import {
+  generateNextRoomNumber,
+  withRetryOnDuplicateRoomNumber,
+} from '../../../../lib/roomNumber';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -100,31 +103,32 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-    const roomNumber = await generateNextRoomNumber();
-
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        firstName: validatedData.firstName?.trim() || null,
-        lastName: validatedData.lastName?.trim() || null,
-        phone,
-        phoneVerified: false,
-        personalIdNumber: validatedData.personalIdNumber,
-        city: validatedData.city?.trim() || null,
-        address: validatedData.address?.trim() || null,
-        role: validatedData.role ?? 'USER',
-        roomNumber,
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        createdAt: true,
+    const user = await withRetryOnDuplicateRoomNumber(async () => {
+      const roomNumber = await generateNextRoomNumber();
+      return prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          firstName: validatedData.firstName?.trim() || null,
+          lastName: validatedData.lastName?.trim() || null,
+          phone,
+          phoneVerified: false,
+          personalIdNumber: validatedData.personalIdNumber,
+          city: validatedData.city?.trim() || null,
+          address: validatedData.address?.trim() || null,
+          role: validatedData.role ?? 'USER',
+          roomNumber,
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          createdAt: true,
           roomNumber: true,
-      },
+        },
+      });
     });
 
     const city = validatedData.city?.trim();

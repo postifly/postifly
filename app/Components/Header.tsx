@@ -38,6 +38,26 @@ const faqLinks: NavLinkItem[] = [
 ];
 
 
+function UserOutlineIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
 const navStructure: NavItem[] = [
   {type: 'link',  href: '/about',  labelKey: 'header.about' },
   {
@@ -210,7 +230,7 @@ const Header = () => {
               objectFit: 'contain',
             }}
           />
-          <h1 className="text-[#3A5BFF] md:text-[25px] text-[18px] font-bold">Postifly</h1>
+          <h1 className="text-white md:text-[25px] text-[18px] font-bold drop-shadow-sm">Postifly</h1>
         </Link>
 
         {/* Desktop nav in the top row */}
@@ -219,20 +239,17 @@ const Header = () => {
         </nav>
 
         <div className="header-actions">
-          <LocaleSwitcher />
           {isAuthed ? (
             <div className="header-dropdown" ref={accountMenuRef}>
               <button
                 type="button"
-                className="auth-button header-dropdown-trigger"
+                className="header-account-trigger header-dropdown-trigger"
                 aria-haspopup="menu"
                 aria-expanded={isAccountMenuOpen}
                 onClick={() => setIsAccountMenuOpen((v) => !v)}
               >
-                <span className="flex flex-col items-start">
-                  <span>{accountTriggerLabel}</span>
-                
-                </span>
+                <UserOutlineIcon className="header-auth-icon shrink-0" />
+                <span className="header-account-label">{accountTriggerLabel}</span>
                 <span className="header-dropdown-caret" aria-hidden="true">▾</span>
               </button>
               <div
@@ -249,7 +266,7 @@ const Header = () => {
                 </Link>
                 <button
                   type="button"
-                  className="header-dropdown-item text-white"
+                  className="header-dropdown-item header-dropdown-item-logout"
                   role="menuitem"
                   onClick={async () => {
                     setIsAccountMenuOpen(false);
@@ -261,10 +278,17 @@ const Header = () => {
               </div>
             </div>
           ) : (
-            <Link href="/login" className="auth-button">
-              {t('header.login')}
-            </Link>
+            <div className="header-auth-guest">
+              <UserOutlineIcon className="header-auth-icon" />
+              <Link href="/login" className="header-auth-link">
+                {t('header.login')}
+              </Link>
+              <Link href="/register" className="header-auth-link">
+                {t('register.title')}
+              </Link>
+            </div>
           )}
+          <LocaleSwitcher variant="compact" />
         </div>
 
         <button
@@ -372,13 +396,22 @@ const Header = () => {
               </button>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="auth-button-mobile"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t('header.login')}
-            </Link>
+            <>
+              <Link
+                href="/login"
+                className="auth-button-mobile"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('header.login')}
+              </Link>
+              <Link
+                href="/register"
+                className="auth-button-mobile auth-button-mobile-outline"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('register.title')}
+              </Link>
+            </>
           )}
         </div>
       </nav>

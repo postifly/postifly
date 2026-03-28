@@ -81,12 +81,7 @@ const LoginPage = () => {
           <h2 className="mt-6 text-center text-3xl font-bold text-black">
             {t('title')}
           </h2>
-          <p className="mt-2 text-center text-[16px] text-black">
-            {t('orCreateAccount')}
-            <Link href="/register" className="font-medium text-black hover:underline">
-              {t('createAccountLink')}
-            </Link>
-          </p>
+         
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

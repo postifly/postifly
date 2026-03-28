@@ -328,12 +328,12 @@ button:not(.mobile-menu-button),
   left: 0;
   width: 100%;
 
-  background: linear-gradient(90deg, #FF4FD8, #3A5BFF, #8A3CFF, #FF4FD8);
+  background: #2563eb;
   backdrop-filter: blur(10px);
   z-index: 1000;
-  
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.3s ease;
 }
 
 .header-container {
@@ -431,9 +431,72 @@ button:not(.mobile-menu-button),
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.50rem;
+  gap: 1rem;
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+.header-auth-guest {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.header-auth-icon {
+  color: #fff;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.header-auth-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 17px;
+  padding: 6px 2px;
+  transition: opacity 0.2s ease;
+}
+
+.header-auth-link:hover {
+  opacity: 0.9;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.header-account-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 500;
+  font-size: 17px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.header-account-trigger:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.header-account-label {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-dropdown-item-logout {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+}
+
+.header-dropdown-item-logout:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
 }
 
 .desktop-menu-button {
@@ -477,9 +540,13 @@ button:not(.mobile-menu-button),
     font-size: 16px;
   }
 
-  .header-actions .auth-button {
-    padding: 8px 16px;
-    font-size: 14px;
+  .header-auth-link,
+  .header-account-trigger {
+    font-size: 15px;
+  }
+
+  .header-auth-guest {
+    gap: 0.45rem;
   }
 }
 

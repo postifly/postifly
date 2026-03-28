@@ -15,7 +15,7 @@ const Services = () => {
 
     return (
         <>
-            <section className="relative bg w-full overflow-hidden bg pt-14 pb-0 md:pt-20 md:pb-14 flex items-center justify-center">
+            <section className="relative bg-[#010002] w-full overflow-hidden bg pb-0  md:pb-14 flex items-center justify-center">
                 {/* Match Tariffs: soft top glow + bottom hairline */}
                 <div
                     className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,255,255,0.06),transparent)]"

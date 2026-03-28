@@ -161,12 +161,7 @@ const RegisterPage = () => {
       <div className="max-w-md w-full mt-14 space-y-8">
         <div className="text-center mx-auto gap-4 flex flex-col items-center justify-center">
           <h2 className="mt-6 text-center text-3xl font-bold text-black">{t('title')}</h2>
-          <p className="mt-2 text-center text-[16px] text-black">
-            {t('orSignIn')}
-            <Link href="/login" className="font-medium text-black hover:underline">
-              {t('signInLink')}
-            </Link>
-          </p>
+          
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

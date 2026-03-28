@@ -137,15 +137,7 @@ const Hero = () => {
       <div className="absolute inset-0 z-20 flex items-center justify-start -translate-y-32 md:-translate-y-20">
         <div className="relative pl-6 md:pl-10 pr-4 max-w-4xl">
           <div className="mb-4 md:mb-6 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-4">
-            <Image
-              src="/guide.png"
-              alt="Guide"
-              width={256}
-              height={256}
-              sizes="(max-width: 768px) 160px, 150px"
-              className="pointer-events-none w-40 h-40 md:w-[150px] md:h-[150px] object-contain rounded-xl bg-white/5 p-2 ring-1 ring-white/10 transition-none "
-              priority
-            />
+            
             <div className="min-w-0 w-full md:w-auto">
               <h1 className="mt-3 mb-3 md:mt-2 text-white text-[18px] md:text-[25px] font-semibold leading-snug text-center md:text-left">
                 {t('guideLine1')}
@@ -171,42 +163,7 @@ const Hero = () => {
             </div>
             
           </div>
-          {HERO_TEXTS.map((text, i) => (
-            <h1
-              key={i}
-              className={`md:text-[25px] text-[18px] text-white font-medium md:text-left text-center transition-opacity duration-500 ${
-                textIndex === i
-                  ? 'opacity-100 relative'
-                  : 'opacity-0 absolute left-6 md:left-12 lg:left-20 top-0 pointer-events-none'
-              }`}
-            >
-              {text.line1}
-              {text.line2 && (
-                <>
-                  <br />
-                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white ">
-                    {text.line2}
-                  </span>
-                </>
-              )}
-              {text.line3 && (
-                <>
-                  <br />
-                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white ">
-                    {text.line3}
-                  </span>
-                </>
-              )}
-              {text.line4 && (
-                <>
-                  <br />
-                  <span className="inline-block md:text-[30px] text-[20px] space-x-2 mt-5 text-white ">
-                    {text.line4}
-                  </span>
-                </>
-              )}
-            </h1>
-          ))}
+         
         </div>
       </div>
      

@@ -4,7 +4,10 @@ import { ZodError } from 'zod';
 import prisma from '../../../../lib/prisma';
 import { registerApiSchema } from '../../../../lib/validations';
 import { normalizePhone } from '../../../../lib/sms';
-import { generateNextRoomNumber } from '../../../../lib/roomNumber';
+import {
+  generateNextRoomNumber,
+  withRetryOnDuplicateRoomNumber,
+} from '../../../../lib/roomNumber';
 
 export async function POST(request: NextRequest) {
   try {
@@ -71,32 +74,33 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-    const roomNumber = await generateNextRoomNumber();
-
-    // Create user (phone verified via OTP)
-    const user = await prisma.user.create({
-      data: {
-        email: validatedData.email,
-        password: hashedPassword,
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        phone: normalizedPhone,
-        phoneVerified: true,
-        personalIdNumber: validatedData.personalIdNumber,
-        city: validatedData.city,
-        address: validatedData.address,
-        termsAcceptedAt: new Date(),
-        role: 'USER',
-        roomNumber,
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        role: true,
-        createdAt: true,
-      },
+    // Create user (phone verified via OTP); retry if another signup took the same PO{n}
+    const user = await withRetryOnDuplicateRoomNumber(async () => {
+      const roomNumber = await generateNextRoomNumber();
+      return prisma.user.create({
+        data: {
+          email: validatedData.email,
+          password: hashedPassword,
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          phone: normalizedPhone,
+          phoneVerified: true,
+          personalIdNumber: validatedData.personalIdNumber,
+          city: validatedData.city,
+          address: validatedData.address,
+          termsAcceptedAt: new Date(),
+          role: 'USER',
+          roomNumber,
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          createdAt: true,
+        },
+      });
     });
 
     // Create default shipping address from registration (city + address)

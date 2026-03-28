@@ -4,7 +4,10 @@ import { z } from 'zod';
 import crypto from 'crypto';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { generateNextRoomNumber } from '@/lib/roomNumber';
+import {
+  generateNextRoomNumber,
+  withRetryOnDuplicateRoomNumber,
+} from '@/lib/roomNumber';
 import { utapi } from '@/lib/uploadthing';
 
 export const dynamic = 'force-dynamic';
@@ -188,18 +191,20 @@ export async function POST(request: NextRequest) {
     if (!user) {
       const randomPassword = crypto.randomBytes(24).toString('hex');
       const personalIdNumber = `AUTO-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
-      const roomNumber = await generateNextRoomNumber();
-      const created = await prisma.user.create({
-        data: {
-          email: parsed.userEmail.trim().toLowerCase(),
-          password: randomPassword,
-          personalIdNumber,
-          phone: parsed.phone || undefined,
-          city: parsed.city || undefined,
-          address: parsed.address || undefined,
-          roomNumber,
-        },
-        select: { id: true, phone: true },
+      const created = await withRetryOnDuplicateRoomNumber(async () => {
+        const roomNumber = await generateNextRoomNumber();
+        return prisma.user.create({
+          data: {
+            email: parsed.userEmail.trim().toLowerCase(),
+            password: randomPassword,
+            personalIdNumber,
+            phone: parsed.phone || undefined,
+            city: parsed.city || undefined,
+            address: parsed.address || undefined,
+            roomNumber,
+          },
+          select: { id: true, phone: true },
+        });
       });
       user = created;
     }

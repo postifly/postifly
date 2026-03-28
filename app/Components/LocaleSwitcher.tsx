@@ -14,12 +14,15 @@ const localeConfig: Record<string, { label: string; Flag: React.ComponentType<{ 
   ru: { label: 'Рус', Flag: RU },
 };
 
-export default function LocaleSwitcher() {
+type LocaleSwitcherProps = { variant?: 'default' | 'compact' };
+
+export default function LocaleSwitcher({ variant = 'default' }: LocaleSwitcherProps) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const compact = variant === 'compact';
 
   const current = localeConfig[locale] ?? { label: locale, Flag: GE };
 
@@ -42,23 +45,31 @@ export default function LocaleSwitcher() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[16px] md:text-[20px] font-medium text-white bg-transparent hover:bg-white/10 transition-colors"
+        className={`flex items-center rounded-md text-white bg-transparent hover:bg-white/10 transition-colors ${
+          compact
+            ? 'gap-1.5 px-1 py-1'
+            : 'gap-2 px-2.5 py-1.5 text-[16px] md:text-[20px] font-medium'
+        }`}
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label="Switch language"
         suppressHydrationWarning
       >
-        <current.Flag className="w-5 h-[10px] object-cover rounded-sm shrink-0" title={current.label} />
-        <span>{current.label}</span>
         <svg
-          className={`w-3.5 h-3.5 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`shrink-0 transition-transform text-white ${compact ? 'w-3 h-3' : 'w-3.5 h-3.5'} ${open ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={2}
+          aria-hidden
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
+        <current.Flag
+          className={`object-cover rounded-sm shrink-0 border border-white/25 ${compact ? 'w-6 h-[14px]' : 'w-5 h-[10px]'}`}
+          title={current.label}
+        />
+        {!compact && <span>{current.label}</span>}
       </button>
       {open && (
         <div
