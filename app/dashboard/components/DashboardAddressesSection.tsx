@@ -146,7 +146,7 @@ export default async function DashboardAddressesSection() {
                       />
                     ) : null;
                   })()}
-                  <span className="whitespace-nowrap text-[14px] font-semibold text-neutral-800">
+                  <span className="whitespace-nowrap text-[15px] font-semibold text-[#3a5bff]">
                     {COUNTRY_KA[row.countryCode] ?? row.country}
                   </span>
                 </div>
@@ -196,9 +196,9 @@ export default async function DashboardAddressesSection() {
         ))}
       </div>
 
-      <div className="hidden gap-4 md:grid md:grid-cols-3">
+      <div className="hidden gap-4  md:grid md:grid-cols-3">
         {addressList.map((row, i) => (
-          <div key={i} className="rounded-lg border border-black bg-neutral-50 p-4">
+          <div key={i} className="rounded-lg  border border-black bg-neutral-50 p-4">
             <div className="mb-3 flex items-center justify-center gap-3">
               {(() => {
                 const Flag = FLAGS[row.countryCode];
@@ -209,7 +209,7 @@ export default async function DashboardAddressesSection() {
                   />
                 ) : null;
               })()}
-              <div className="whitespace-nowrap text-[14px] font-semibold text-neutral-800">
+              <div className="whitespace-nowrap text-[15px] font-semibold text-[#3a5bff]">
                 {COUNTRY_KA[row.countryCode] ?? row.country}
               </div>
             </div>

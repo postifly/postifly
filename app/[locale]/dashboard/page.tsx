@@ -109,13 +109,13 @@ export default async function DashboardPage({ params }: Props) {
   });
 
   return (
-    <div className="  bg min-h-screen py-8">
+    <div className="  bg ">
       <div className="mx-auto mt-24 w-full max-w-7xl px-4">
         <main className="w-full min-w-0 rounded-2xl bg-white p-6">
           <div className="mb-6 flex w-full min-w-0 flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6">
             <aside className="flex md:w-[300px] md:h-[200px] w-full shrink-0 flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-5 lg:max-w-[16rem]">
               <div>
-                <p className="md:text-[18px] text-[16px] font-semibold uppercase tracking-wide text-slate-500">
+                <p className="text-[16px] font-semibold uppercase tracking-wide text-slate-500">
                   {tBalance('currentBalance')}
                 </p>
                 <p className="mt-2 md:text-[20px] text-[18px] font-bold tabular-nums text-slate-900">
@@ -124,7 +124,7 @@ export default async function DashboardPage({ params }: Props) {
               </div>
               <Link
                 href="/dashboard/balance"
-                className="inline-flex w-full items-center justify-center rounded-lg bg-[#3a5bff] px-4 py-3 text-center md:text-[18px] text-[16px] font-semibold text-white shadow-sm transition hover:bg-[#2d4ae0]"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-[#3a5bff] px-4 py-3 text-center text-[16px] font-semibold text-white shadow-sm transition hover:bg-[#2d4ae0]"
               >
                 {tDashboard('balanceTopUp')}
               </Link>
