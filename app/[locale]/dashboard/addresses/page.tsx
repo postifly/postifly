@@ -138,28 +138,28 @@ export default async function DashboardAddressesPage({ params }: Props) {
   }));
 
   return (
-    <div className=" py-4 sm:py-8 text-white">
+    <div className="py-4 sm:py-8 text-neutral-900">
       <div className="mx-auto mt-16 sm:mt-20 md:mt-24 w-full max-w-6xl px-3 sm:px-4">
-        <main className="rounded-xl sm:rounded-2xl border border-white/10 bg-[#121311] p-4 sm:p-6">
-          <div className="pb-4 sm:pb-6 border-b border-white/10">
-            <Link href="/dashboard" className="text-[16px] md:text-[18px] font-medium text-white hover:text-white/90">
+        <main className="rounded-xl sm:rounded-2xl border border-black bg-white p-4 sm:p-6">
+          <div className="pb-4 sm:pb-6 border-b border-neutral-200">
+            <Link href="/dashboard" className="text-[16px] md:text-[18px] font-medium text-neutral-900 hover:text-neutral-600">
               ← {t('back')}
             </Link>
           </div>
           <div className="pt-4 sm:pt-6">
             {hasUserName ? (
-              <div className="text-white/90 font-semibold mb-2">
+              <div className="text-neutral-800 font-semibold mb-2">
                 {userFirstName ? <div>{userFirstName}</div> : null}
                 {userLastName ? <div>{userLastName}</div> : null}
               </div>
             ) : null}
-            <h1 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">{tAddr('title')}</h1>
+            <h1 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-4 sm:mb-6">{tAddr('title')}</h1>
 
             <div className="md:hidden space-y-3">
               {addressList.map((row, i) => (
                 <div key={i}>
 
-                  <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm">
+                  <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-sm">
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         {(() => {
@@ -167,11 +167,11 @@ export default async function DashboardAddressesPage({ params }: Props) {
                           return Flag ? (
                             <Flag
                               title={row.country}
-                              className="h-8 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
+                              className="h-8 w-auto rounded object-cover shadow-md ring-1 ring-black/10"
                             />
                           ) : null;
                         })()}
-                        <span className="text-white/90 text-[14px] font-semibold whitespace-nowrap">
+                        <span className="text-neutral-800 text-[14px] font-semibold whitespace-nowrap">
                           {COUNTRY_KA[row.countryCode] ?? row.country}
                         </span>
                       </div>
@@ -179,41 +179,41 @@ export default async function DashboardAddressesPage({ params }: Props) {
                     {hasUserName ? (
                       <>
                         <div className="flex justify-between gap-2 mb-1">
-                          <span className="text-white/90 font-semibold shrink-0">{tAddr('name')}</span>
-                          <span className="text-white/90 text-right break-all">{userFirstName} </span>
+                          <span className="text-neutral-800 font-semibold shrink-0">{tAddr('name')}</span>
+                          <span className="text-neutral-800 text-right break-all">{userFirstName} </span>
                         </div>
                         <div className="flex justify-between gap-2 mb-1">
-                          <span className="text-white/90 font-semibold shrink-0">{tAddr('lastname')}</span>
-                          <span className="text-white/90 text-right break-all">{userLastName} </span>
+                          <span className="text-neutral-800 font-semibold shrink-0">{tAddr('lastname')}</span>
+                          <span className="text-neutral-800 text-right break-all">{userLastName} </span>
                         </div>
                       </>
                     ) : null}
                     <div className="flex justify-between gap-2 mb-1">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
-                      <span className="text-white/90 text-right break-all">{row.adress}</span>
+                      <span className="text-neutral-800 font-semibold shrink-0">{tAddr('street')}</span>
+                      <span className="text-neutral-800 text-right break-all">{row.adress}</span>
                     </div>
                     <div className="flex justify-between gap-2 mb-1">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('street2')}</span>
-                      <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                      <span className="text-neutral-800 font-semibold shrink-0">{tAddr('street2')}</span>
+                      <span className="text-neutral-800 text-right break-words">{userRoomNumber}</span>
                     </div>
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
+                      <span className="text-neutral-800 font-semibold shrink-0">{tAddr('country')}</span>
 
-                      <span className="text-white/90 text-[14px] font-semibold">{row.country}</span>
+                      <span className="text-neutral-800 text-[14px] font-semibold">{row.country}</span>
                     </div>
                     <div className="flex justify-between gap-2 mb-1">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
-                      <span className="text-white/90 text-right">{row.city}</span>
+                      <span className="text-neutral-800 font-semibold shrink-0">{tAddr('city')}</span>
+                      <span className="text-neutral-800 text-right">{row.city}</span>
                     </div>
 
                     <div className="flex justify-between gap-2">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
-                      <span className="text-white/90 font-medium">{row.postalCode}</span>
+                      <span className="text-neutral-800 font-semibold shrink-0">{tAddr('postalCode')}</span>
+                      <span className="text-neutral-800 font-medium">{row.postalCode}</span>
                     </div>
                     {row.phone ? (
                       <div className="flex justify-between gap-2 mt-1">
-                        <span className="text-white/90 font-semibold shrink-0">{tAddr('phone')}</span>
-                        <span className="text-white/90 font-medium">{row.phone}</span>
+                        <span className="text-neutral-800 font-semibold shrink-0">{tAddr('phone')}</span>
+                        <span className="text-neutral-800 font-medium">{row.phone}</span>
                       </div>
                     ) : null}
                   </div>
@@ -224,57 +224,57 @@ export default async function DashboardAddressesPage({ params }: Props) {
             {/* Desktop: show each country as its own card */}
             <div className="hidden md:grid md:grid-cols-3 gap-4">
               {addressList.map((row, i) => (
-                <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-4">
+                <div key={i} className="rounded-lg border border-black bg-neutral-50 p-4">
                   <div className="flex items-center justify-center gap-3 mb-3">
                     {(() => {
                       const Flag = FLAGS[row.countryCode];
                       return Flag ? (
                         <Flag
                           title={COUNTRY_KA[row.countryCode] ?? row.country}
-                          className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-white/10"
+                          className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-black/10"
                         />
                       ) : null;
                     })()}
-                    <div className="text-white/90 text-[14px] font-semibold whitespace-nowrap">
+                    <div className="text-neutral-800 text-[14px] font-semibold whitespace-nowrap">
                       {COUNTRY_KA[row.countryCode] ?? row.country}
                     </div>
                   </div>
                   {hasUserName ? (
                     <>
                       <div className="flex justify-between gap-2 mb-1">
-                        <span className="text-white/90 font-semibold shrink-0">{tAddr('name')}</span>
-                        <span className="text-white/90 text-right break-all">{userFirstName} </span>
+                        <span className="text-neutral-800 font-semibold shrink-0">{tAddr('name')}</span>
+                        <span className="text-neutral-800 text-right break-all">{userFirstName} </span>
                       </div>
                       <div className="flex justify-between gap-2 mb-1">
-                        <span className="text-white/90 font-semibold shrink-0">{tAddr('lastname')}</span>
-                        <span className="text-white/90 text-right break-all">{userLastName} </span>
+                        <span className="text-neutral-800 font-semibold shrink-0">{tAddr('lastname')}</span>
+                        <span className="text-neutral-800 text-right break-all">{userLastName} </span>
                       </div>
                     </>
                   ) : null}
                   <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street')}</span>
-                    <span className="text-white/90 text-right break-all">{row.adress}</span>
+                    <span className="text-neutral-800 font-semibold shrink-0">{tAddr('street')}</span>
+                    <span className="text-neutral-800 text-right break-all">{row.adress}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('street2')}</span>
-                    <span className="text-white/90 text-right break-words">{userRoomNumber}</span>
+                    <span className="text-neutral-800 font-semibold shrink-0">{tAddr('street2')}</span>
+                    <span className="text-neutral-800 text-right break-words">{userRoomNumber}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('country')}</span>
-                    <span className="text-white/90 text-right">{row.country}</span>
+                    <span className="text-neutral-800 font-semibold shrink-0">{tAddr('country')}</span>
+                    <span className="text-neutral-800 text-right">{row.country}</span>
                   </div>
                   <div className="flex justify-between gap-2 mb-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('city')}</span>
-                    <span className="text-white/90 text-right">{row.city}</span>
+                    <span className="text-neutral-800 font-semibold shrink-0">{tAddr('city')}</span>
+                    <span className="text-neutral-800 text-right">{row.city}</span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-white/90 font-semibold shrink-0">{tAddr('postalCode')}</span>
-                    <span className="text-white/90 font-medium">{row.postalCode}</span>
+                    <span className="text-neutral-800 font-semibold shrink-0">{tAddr('postalCode')}</span>
+                    <span className="text-neutral-800 font-medium">{row.postalCode}</span>
                   </div>
                   {row.phone ? (
                     <div className="flex justify-between gap-2 mt-1">
-                      <span className="text-white/90 font-semibold shrink-0">{tAddr('phone')}</span>
-                      <span className="text-white/90 font-medium">{row.phone}</span>
+                      <span className="text-neutral-800 font-semibold shrink-0">{tAddr('phone')}</span>
+                      <span className="text-neutral-800 font-medium">{row.phone}</span>
                     </div>
                   ) : null}
                 </div>
