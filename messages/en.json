@@ -76,8 +76,19 @@
     "guestFieldsRequired": "Please enter your first name, last name and email.",
     "messageSent": "Message sent. Your conversation continues in this window.",
     "welcomeLine1": "Hello 👋",
-    "welcomeLine2": "Get pricing and conditions quickly ⏱️",
+    "welcomeLine2": "Get prices and conditions quickly ⏱️",
     "welcomeLine3": "Write to us now 😊"
+  },
+  "calculator": {
+    "title": "Size / weight calculator",
+    "length": "Length (cm)",
+    "width": "Width (cm)",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "calculate": "Calculate weight",
+    "colWeight": "Weight (kg)",
+    "colVolumetric": "Volumetric weight (kg)",
+    "colChargeable": "Chargeable weight (kg)"
   },
   "header": {
     "services": "Services",
@@ -85,6 +96,7 @@
     "commercialExport": "Commercial Cargo Export",
     "customsBroker": "Customs Brokerage",
     "courier": "Courier Service",
+    "calculator": "Calculator",
     "stores": "Stores",
     "pricing": "Pricing",
     "faq": "FAQ",

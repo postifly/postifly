@@ -79,12 +79,24 @@
     "welcomeLine2": "Узнайте цены и условия быстро ⏱️",
     "welcomeLine3": "Напишите нам прямо сейчас 😊"
   },
+  "calculator": {
+    "title": "Калькулятор размера / веса",
+    "length": "Длина (см)",
+    "width": "Ширина (см)",
+    "height": "Высота (см)",
+    "weight": "Вес (кг)",
+    "calculate": "Рассчитать вес",
+    "colWeight": "Вес (кг)",
+    "colVolumetric": "Объёмный вес (кг)",
+    "colChargeable": "Платный вес (кг)"
+  },
   "header": {
     "services": "Сервисы",
     "onlineShopping": "Онлайн-шопинг",
     "commercialExport": "Экспорт коммерческих грузов",
     "customsBroker": "Таможенно-брокерские услуги",
     "courier": "Курьерская служба",
+    "calculator": "Калькулятор",
     "stores": "Магазины",
     "pricing": "Тарифы",
     "faq": "FAQ",
