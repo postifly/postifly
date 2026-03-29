@@ -11,10 +11,10 @@ export default async function ConditionsPage({ params, searchParams }: Props) {
   const { section } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-54 bg-gray-50">
       <section
         id="conditions"
-        className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 px-4"
+        className="w-full "
       >
         <ConditionsAccordion locale={locale} sectionId={section} />
       </section>

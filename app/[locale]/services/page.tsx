@@ -14,7 +14,7 @@ export default async function ServicesPage({ params, searchParams }: Props) {
   return (
     <section
       id="services"
-      className="w-full min-h-screen pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50"
+      className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-34 bg-gray-50"
     >
       <ServicesAccordion isKa={isKa} activeServiceId={service} />
     </section>
