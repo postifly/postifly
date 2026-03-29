@@ -10,7 +10,7 @@ import LocaleSwitcher from './LocaleSwitcher';
 type NavLinkItem = { href: string; labelKey: string };
 type NavItem =
   | { type: 'link'; href: string; labelKey: string }
-  | { type: 'dropdown'; href: string; labelKey: string; children: NavLinkItem[] };
+  | { type: 'dropdown'; href?: string; labelKey: string; children: NavLinkItem[] };
 
 const servicesLinks: NavLinkItem[] = [
   { href: '/services?service=service1', labelKey: 'header.onlineShopping' },
@@ -62,7 +62,6 @@ const navStructure: NavItem[] = [
   {type: 'link',  href: '/about',  labelKey: 'header.about' },
   {
     type: 'dropdown',
-    href: '/services',
     labelKey: 'header.services',
     children: servicesLinks,
   },
@@ -70,7 +69,6 @@ const navStructure: NavItem[] = [
   {type: 'link',  href: '/stores',  labelKey: 'header.stores' },
   {
     type: 'dropdown',
-    href: '/conditions',
     labelKey: 'header.conditions',
     children: conditionsLinks,
   },
@@ -144,21 +142,36 @@ const Header = () => {
     const firstCol = isConditionsDropdown ? item.children.slice(0, half) : [];
     const secondCol = isConditionsDropdown ? item.children.slice(half) : [];
 
+    const dropdownKey = (item.href ?? '') + item.labelKey;
+
     return (
       <div
-        key={item.href + item.labelKey}
+        key={dropdownKey}
         className="header-dropdown header-dropdown-nav"
       >
-        <Link
-          href={item.href}
-          className="nav-link  header-dropdown-trigger text-white"
-          aria-haspopup="menu"
-        >
-          {getLabel(item.labelKey)}
-          <span className="header-dropdown-caret" aria-hidden="true">
-            ▾
-          </span>
-        </Link>
+        {item.href ? (
+          <Link
+            href={item.href}
+            className="nav-link  header-dropdown-trigger text-white"
+            aria-haspopup="menu"
+          >
+            {getLabel(item.labelKey)}
+            <span className="header-dropdown-caret" aria-hidden="true">
+              ▾
+            </span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className="nav-link header-dropdown-trigger text-white"
+            aria-haspopup="menu"
+          >
+            {getLabel(item.labelKey)}
+            <span className="header-dropdown-caret" aria-hidden="true">
+              ▾
+            </span>
+          </button>
+        )}
         <div
           className={`header-dropdown-menu header-dropdown-menu-nav ${
             isConditionsDropdown ? 'header-dropdown-menu-two-col' : ''
@@ -336,7 +349,7 @@ const Header = () => {
                 {getLabel(item.labelKey)}
               </Link>
             ) : (
-              <div key={item.href + item.labelKey} className="nav-mobile-dropdown">
+              <div key={(item.href ?? '') + item.labelKey} className="nav-mobile-dropdown">
                 <button
                   type="button"
                   className="nav-link-mobile nav-mobile-dropdown-trigger"
