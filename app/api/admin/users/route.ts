@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     });
     if (existingByEmail) {
       return NextResponse.json(
-        { error: 'ეს ელფოსტა უკვე გამოყენებულია' },
+        { error: 'ეს ელ-ფოსტა უკვე გამოყენებულია' },
         { status: 400 }
       );
     }

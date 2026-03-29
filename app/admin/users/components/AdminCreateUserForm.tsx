@@ -26,7 +26,7 @@ export default function AdminCreateUserForm() {
     passwordsMismatch: isRu ? 'Пароли не совпадают' : isEn ? 'Passwords do not match' : 'პაროლები არ ემთხვევა',
     createUserError: isRu ? 'Ошибка при добавлении пользователя' : isEn ? 'Failed to add user' : 'მომხმარებლის დამატებისას მოხდა შეცდომა',
     genericError: isRu ? 'Произошла ошибка. Пожалуйста, попробуйте снова.' : isEn ? 'An error occurred. Please try again.' : 'დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.',
-    email: isRu ? 'Эл. почта *' : isEn ? 'Email *' : 'ელფოსტა *',
+    email: isRu ? 'Эл. почта *' : isEn ? 'Email *' : 'ელ-ფოსტა *',
     password: isRu ? 'Пароль *' : isEn ? 'Password *' : 'პაროლი *',
     confirmPassword: isRu ? 'Подтвердите пароль *' : isEn ? 'Confirm password *' : 'პაროლის დამოწმება *',
     firstName: isRu ? 'Имя' : isEn ? 'First name' : 'სახელი',

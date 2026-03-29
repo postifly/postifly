@@ -5,7 +5,7 @@ import { GEORGIAN_CITY_SET } from './georgianCities';
 const LATIN_NAME_REGEX = /^[A-Za-z][A-Za-z\s'.-]*$/;
 
 const MSG_LATIN_NAME =
-  'შეიყვანეთ მხოლოდ ლათინური ასოები (ინგლისური კლავიატურა)';
+  'შეიყვანეთ მხოლოდ ლათინური ასოები';
 const MSG_GEORGIAN_ADDRESS = 'მისამართი უნდა იყოს ქართული ასოებით';
 
 /** Georgian script block + digits, spaces, common address punctuation */
@@ -39,7 +39,7 @@ function georgianTextField(emptyMessage: string, formatMessage: string) {
 
 // Base registration schema (without confirmPassword)
 const registerBaseSchema = z.object({
-  email: z.string().email('არასწორი ელფოსტა'),
+  email: z.string().email('არასწორი ელ-ფოსტა'),
   password: z.string().min(6, 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო'),
   firstName: z
     .string()
@@ -86,13 +86,13 @@ export const registerApiSchema = registerBaseSchema;
 
 // Login schema
 export const loginSchema = z.object({
-  email: z.string().email('არასწორი ელფოსტა'),
+  email: z.string().email('არასწორი ელ-ფოსტა'),
   password: z.string().min(1, 'პაროლი აუცილებელია'),
 });
 
 // Admin: create user manually (no OTP)
 export const adminCreateUserSchema = z.object({
-  email: z.string().email('არასწორი ელფოსტა'),
+  email: z.string().email('არასწორი ელ-ფოსტა'),
   password: z.string().min(6, 'პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო'),
   firstName: z.string().min(1, 'სახელი აუცილებელია').optional(),
   lastName: z.string().min(1, 'გვარი აუცილებელია').optional(),

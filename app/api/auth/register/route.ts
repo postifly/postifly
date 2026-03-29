@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     if (existingUserByEmail) {
       return NextResponse.json(
-        { error: 'ეს ელფოსტა უკვე გამოყენებულია' },
+        { error: 'ეს ელ-ფოსტა უკვე გამოყენებულია' },
         { status: 400 }
       );
     }
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
 
       // Create a detailed error message
         const errorMessages = formattedErrors.map((err: { field: string; message: string; code: string }) => {
-        const fieldName = err.field === 'email' ? 'ელფოსტა' :
+        const fieldName = err.field === 'email' ? 'ელ-ფოსტა' :
                          err.field === 'password' ? 'პაროლი' :
                          err.field === 'confirmPassword' ? 'პაროლის დამოწმება' :
                          err.field === 'personalIdNumber' ? 'პირადი ნომერი' :

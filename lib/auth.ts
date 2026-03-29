@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('ელფოსტა და პაროლი აუცილებელია');
+          throw new Error('ელ-ფოსტა და პაროლი აუცილებელია');
         }
 
         // Validate input
@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          throw new Error('ელფოსტა ან პაროლი არასწორია');
+          throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
         }
 
         // Verify password
@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isPasswordValid) {
-          throw new Error('ელფოსტა ან პაროლი არასწორია');
+          throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
         }
 
         return {

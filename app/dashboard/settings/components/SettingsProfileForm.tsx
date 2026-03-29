@@ -67,7 +67,7 @@ export default function SettingsProfileForm({ initialProfile }: Props) {
         )}
         <div>
           <label htmlFor="settings-email" className="mb-1 block text-[14px] font-medium text-black">
-            ელფოსტა
+            ელ-ფოსტა
           </label>
           <input
             id="settings-email"

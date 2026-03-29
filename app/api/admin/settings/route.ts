@@ -7,7 +7,7 @@ import prisma from '../../../../lib/prisma';
 
 const updateAdminSettingsSchema = z
   .object({
-    email: z.string().email('არასწორი ელფოსტა').optional(),
+    email: z.string().email('არასწორი ელ-ფოსტა').optional(),
     firstName: z.string().min(1, 'სახელი აუცილებელია').optional(),
     lastName: z.string().min(1, 'გვარი აუცილებელია').optional(),
     city: z.string().max(200).optional().nullable(),
@@ -81,7 +81,7 @@ export async function PUT(request: NextRequest) {
       const existing = await prisma.user.findUnique({ where: { email: data.email } });
       if (existing) {
         return NextResponse.json(
-          { error: 'ეს ელფოსტა უკვე გამოყენებულია', field: 'email' },
+          { error: 'ეს ელ-ფოსტა უკვე გამოყენებულია', field: 'email' },
           { status: 400 }
         );
       }

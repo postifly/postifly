@@ -90,7 +90,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
     roomPlaceholder: isRu ? 'напр. 12 (или PO123)' : isEn ? 'e.g. 12 (or PO123)' : 'მაგ. 12 (ან PO123)',
     roomHint: isRu ? 'Ищет также по адресу пользователя и PO номеру.' : isEn ? 'Also searches in user address and PO number.' : 'ეძებს მომხმარებლის მისამართში და PO ნომერშიც.',
     loading: isRu ? 'Загрузка...' : isEn ? 'Loading...' : 'იტვირთება...',
-    email: isRu ? 'Эл. почта' : isEn ? 'Email' : 'ელფოსტა',
+    email: isRu ? 'Эл. почта' : isEn ? 'Email' : 'ელ-ფოსტა',
     name: isRu ? 'Имя' : isEn ? 'Name' : 'სახელი',
     role: isRu ? 'Роль' : isEn ? 'Role' : 'როლი',
     registration: isRu ? 'Регистрация' : isEn ? 'Registered' : 'რეგისტრაცია',
