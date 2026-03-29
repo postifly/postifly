@@ -43,20 +43,6 @@ export default function ChatWidget() {
   const [threadContact, setThreadContact] = useState<ThreadContact | null>(null);
   const pollRef = useRef<number | null>(null);
 
-  const guestPreview: ThreadContact | null =
-    isGuest &&
-    guestFirstName.trim() &&
-    guestLastName.trim() &&
-    guestEmail.trim()
-      ? {
-          firstName: guestFirstName.trim(),
-          lastName: guestLastName.trim(),
-          email: guestEmail.trim(),
-        }
-      : null;
-
-  const guestHeaderInfo = threadContact ?? guestPreview;
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const saved = window.localStorage.getItem(STORAGE_KEY);
@@ -276,10 +262,8 @@ export default function ChatWidget() {
                 </div>
               )}
 
-              {/* Messages from you and admin; header: authed = name, room, email; guest = name, email */}
-              {(threadId ||
-                (isAuthed && session?.user) ||
-                (isGuest && guestHeaderInfo)) && (
+              {/* საუბრის ზონა მხოლოდ აქტიური თრედის შემდეგ — მანამდე ყველას (სტუმარი/ავტორიზებული) ჩანს მისალმება თავში */}
+              {threadId && (
                 <div className="flex h-[250px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white/70">
                   {isAuthed && session?.user && (
                     <div className="shrink-0 border-b border-gray-200 bg-gray-50/90 px-3 py-2">
@@ -292,13 +276,13 @@ export default function ChatWidget() {
                       </p>
                     </div>
                   )}
-                  {isGuest && guestHeaderInfo && (
+                  {isGuest && threadContact && (
                     <div className="shrink-0 border-b border-gray-200 bg-gray-50/90 px-3 py-2">
                       <p className="text-[12px] font-semibold text-gray-900">
-                        {guestHeaderInfo.firstName} {guestHeaderInfo.lastName}
+                        {threadContact.firstName} {threadContact.lastName}
                       </p>
                       <p className="mt-0.5 break-all text-[11px] text-gray-600">
-                        {guestHeaderInfo.email}
+                        {threadContact.email}
                       </p>
                     </div>
                   )}
