@@ -4,12 +4,11 @@ import Services from '../Components/Services';
 import Tariffs from '../Components/Tariffs';
 import HomeMarqueeBand from '../Components/HomeMarqueeBand';
 
-import HomeConsentModal from '../Components/HomeConsentModal';
 
 const Page = () => {
   return (
     <div>
-      <HomeConsentModal />
+    
       <Hero />
       <Services />
       <Tariffs />
