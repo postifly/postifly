@@ -75,6 +75,15 @@ export default function NewParcelPage() {
   const [countryOpen, setCountryOpen] = useState(false);
   const [tariffs, setTariffs] = useState<Record<string, number>>({});
   const countryRef = useRef<HTMLDivElement>(null);
+  const priceNumForUi = useMemo(() => parseFloat(price.replace(',', '.')), [price]);
+  const requiresInvoicePdf = useMemo(
+    () => !Number.isNaN(priceNumForUi) && priceNumForUi >= 300,
+    [priceNumForUi],
+  );
+  const pdfLabel = useMemo(() => {
+    const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
+    return requiresInvoicePdf ? `${base} *` : base;
+  }, [tDeclaration, requiresInvoicePdf]);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,18 +132,6 @@ export default function NewParcelPage() {
       setError('აღწერა აუცილებელია');
       return;
     }
-    if (!file) {
-      setError(tDeclaration('fileRequired'));
-      return;
-    }
-    if (file.type !== 'application/pdf') {
-      setError(tDeclaration('onlyPdf'));
-      return;
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      setError(tDeclaration('maxSize'));
-      return;
-    }
 
     const priceNum = parseFloat(price.replace(',', '.'));
     const quantityNum = parseInt(quantity, 10);
@@ -142,6 +139,20 @@ export default function NewParcelPage() {
     if (Number.isNaN(priceNum) || priceNum < 0) {
       setError(t('priceError'));
       return;
+    }
+    if (priceNum >= 300 && !file) {
+      setError(tDeclaration('fileRequired'));
+      return;
+    }
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        setError(tDeclaration('onlyPdf'));
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setError(tDeclaration('maxSize'));
+        return;
+      }
     }
     if (!Number.isInteger(quantityNum) || quantityNum < 1) {
       setError(t('quantityError'));
@@ -164,7 +175,7 @@ export default function NewParcelPage() {
       if (comment.trim()) formData.append('comment', comment.trim());
       formData.append('weight', String(w));
       formData.append('description', description.trim());
-      formData.append('file', file);
+      if (file) formData.append('file', file);
 
       const res = await fetch('/api/dashboard/parcels', {
         method: 'POST',
@@ -403,13 +414,13 @@ export default function NewParcelPage() {
 
             <div>
               <label htmlFor="declarationFile" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {tDeclaration('pdfFile')}
+                {pdfLabel}
               </label>
               <input
                 id="declarationFile"
                 type="file"
                 accept="application/pdf"
-                required
+                required={requiresInvoicePdf}
                 onChange={(e) => {
                   const f = e.target.files?.[0] ?? null;
                   if (f && f.type !== 'application/pdf') {
@@ -423,6 +434,9 @@ export default function NewParcelPage() {
                 }}
                 className="block w-full text-[15px] md:text-[18px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] md:text-[18px] file:font-medium file:text-black hover:file:bg-gray-50"
               />
+              <p className="mt-1 text-[16px] md:text-[18px] text-black font-medium">
+                {priceNumForUi >= 300 ? '300₾-დან ინვოისის PDF აუცილებელია.' : '300₾-მდე ინვოისის PDF სავალდებულო არაა.'}
+              </p>
               <p className="mt-1 text-[16px] md:text-[20px] text-black font-medium">{tDeclaration('maxFileSize')}</p>
             </div>
             <div className="flex gap-3 pt-2">

@@ -14,7 +14,7 @@ type Parcel = {
   quantity: number;
   customerName: string;
   createdAt: string;
-  filePath: string;
+  filePath: string | null;
   shippingAmount?: number | null;
   courierServiceRequested: boolean;
   courierFeeAmount: number | null;

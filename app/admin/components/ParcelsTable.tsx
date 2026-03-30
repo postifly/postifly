@@ -16,7 +16,7 @@ type Parcel = {
   quantity: number;
   customerName: string;
   createdAt: string;
-  filePath: string;
+  filePath: string | null;
   courierServiceRequested: boolean;
   courierFeeAmount: number | null;
   payableAmount: number | null;
@@ -418,23 +418,27 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                 ) : null}
 
                 <span className="text-black">{t.file}</span>
-                <span className="flex flex-wrap gap-2">
-                  <a
-                    href={parcel.filePath}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-md bg-gray-900 px-2 py-1 text-[12px] font-medium text-white hover:bg-black"
-                  >
-                    {t.open}
-                  </a>
-                  <a
-                    href={parcel.filePath}
-                    download
-                    className="rounded-md bg-gray-100 px-2 py-1 text-[12px] font-medium text-gray-900 hover:bg-gray-200"
-                  >
-                    {t.download}
-                  </a>
-                </span>
+                {parcel.filePath ? (
+                  <span className="flex flex-wrap gap-2">
+                    <a
+                      href={parcel.filePath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-md bg-gray-900 px-2 py-1 text-[12px] font-medium text-white hover:bg-black"
+                    >
+                      {t.open}
+                    </a>
+                    <a
+                      href={parcel.filePath}
+                      download
+                      className="rounded-md bg-gray-100 px-2 py-1 text-[12px] font-medium text-gray-900 hover:bg-gray-200"
+                    >
+                      {t.download}
+                    </a>
+                  </span>
+                ) : (
+                  <span className="text-black">—</span>
+                )}
               </div>
 
               <div className="flex items-center justify-between gap-3">
@@ -562,23 +566,27 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                           <span>{parcel.user.address || '—'}</span>
 
                           <span className="text-black">{t.file}</span>
-                          <span className="flex flex-wrap gap-2">
-                            <a
-                              href={parcel.filePath}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center rounded-md bg-gray-900 px-2 py-1 text-[12px] font-medium text-white hover:bg-black"
-                            >
-                              {t.open}
-                            </a>
-                            <a
-                              href={parcel.filePath}
-                              download
-                              className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-[12px] font-medium text-gray-900 hover:bg-gray-200"
-                            >
-                              {t.download}
-                            </a>
-                          </span>
+                          {parcel.filePath ? (
+                            <span className="flex flex-wrap gap-2">
+                              <a
+                                href={parcel.filePath}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center rounded-md bg-gray-900 px-2 py-1 text-[12px] font-medium text-white hover:bg-black"
+                              >
+                                {t.open}
+                              </a>
+                              <a
+                                href={parcel.filePath}
+                                download
+                                className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-[12px] font-medium text-gray-900 hover:bg-gray-200"
+                              >
+                                {t.download}
+                              </a>
+                            </span>
+                          ) : (
+                            <span>—</span>
+                          )}
 
                           <span className="text-black">{t.date}</span>
                           <span>{parcel.createdAt}</span>

@@ -131,7 +131,7 @@ model Parcel {
   // Pricing
   currency        String   @default("GEL")
   shippingAmount   Float?   // გადასახდელი (წონა × ტარიფი) - რას გადაიხდის მომხმარებელი
-  filePath        String   // stored path to uploaded declaration PDF
+  filePath        String?  // stored path to uploaded declaration PDF (optional)
 
   // Customs
   customsValue    Float?

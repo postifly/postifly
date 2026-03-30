@@ -8,7 +8,7 @@ import { utapi } from '../../../../lib/uploadthing';
 
 export const dynamic = 'force-dynamic';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPE = 'application/pdf';
 
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
@@ -54,23 +54,18 @@ export async function POST(request: NextRequest) {
     const quantity = parseInt(quantityStr, 10);
     const weight = weightStr ? parseFloat(weightStr.replace(',', '.')) : NaN;
 
-    if (!file || file.size === 0) {
+    const hasFile = !!file && file.size > 0;
+    if (!Number.isNaN(price) && price >= 300 && !hasFile) {
       return NextResponse.json(
-        { error: 'PDF ფაილის ატვირთვა აუცილებელია' },
+        { error: '300 ლარიდან ინვოისის PDF ფაილი აუცილებელია' },
         { status: 400 },
       );
     }
-    if (file.type !== ALLOWED_TYPE) {
-      return NextResponse.json(
-        { error: 'მხოლოდ PDF ფორმატია დაშვებული' },
-        { status: 400 },
-      );
+    if (hasFile && file.type !== ALLOWED_TYPE) {
+      return NextResponse.json({ error: 'მხოლოდ PDF ფორმატია დაშვებული' }, { status: 400 });
     }
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: 'ფაილის ზომა არ უნდა აღემატებოდეს 5 MB-ს' },
-        { status: 400 },
-      );
+    if (hasFile && file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: 'ფაილის ზომა არ უნდა აღემატებოდეს 10 MB-ს' }, { status: 400 });
     }
 
     const parsed = createParcelSchema.parse({
@@ -128,17 +123,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uploadResult = await utapi.uploadFiles(file);
-
-    if (uploadResult.error || !uploadResult.data?.url) {
-      console.error('UploadThing error (parcel PDF):', uploadResult.error);
-      return NextResponse.json(
-        { error: 'ფაილის ატვირთვისას მოხდა შეცდომა' },
-        { status: 500 },
-      );
+    let fileUrl: string | null = null;
+    if (hasFile) {
+      const uploadResult = await utapi.uploadFiles(file);
+      if (uploadResult.error || !uploadResult.data?.url) {
+        console.error('UploadThing error (parcel PDF):', uploadResult.error);
+        return NextResponse.json({ error: 'ფაილის ატვირთვისას მოხდა შეცდომა' }, { status: 500 });
+      }
+      fileUrl = uploadResult.data.url;
     }
-
-    const fileUrl = uploadResult.data.url;
 
     const parcel = await prisma.parcel.create({
       data: {
