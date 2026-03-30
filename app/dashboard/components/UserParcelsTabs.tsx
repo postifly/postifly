@@ -123,10 +123,17 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
 
   return (
     <div className="mt-10 space-y-4">
-      <h2 className="text-[18px] md:text-[20px] font-semibold text-black">
-        ამანათები
-      </h2>
-
+      <div className="flex justify-between items-center">
+        <h2 className="text-[18px] md:text-[20px] font-semibold text-black">
+          ამანათები
+        </h2>
+        <Link
+          href="/dashboard/parcels/new"
+          className="inline-flex w-full md:w-auto items-center justify-center rounded-lg border border-slate-200 bg-[#3a5bff] px-4 py-3 text-center text-[16px] font-semibold text-white shadow-sm transition "
+        >
+          ამანათის დამატება
+        </Link>
+      </div>
       {/* Status tabs */}
       <div className="flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 text-[14px] md:text-[15px]">
         {STATUS_OPTIONS.map((status) => {
@@ -138,17 +145,15 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               key={status.value}
               type="button"
               onClick={() => setActiveStatus(status.value)}
-              className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors ${
-                isActive
+              className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors ${isActive
                   ? 'bg-black text-white'
                   : 'bg-white text-gray-800 hover:bg-gray-100'
-              }`}
+                }`}
             >
               <span>{status.label}</span>
               <span
-                className={`min-w-[1.75rem] rounded-full px-2 py-0.5 text-center text-[12px] ${
-                  isActive ? 'bg-[#3a5bff]' : 'bg-gray-100 text-gray-700'
-                }`}
+                className={`min-w-[1.75rem] rounded-full px-2 py-0.5 text-center text-[12px] ${isActive ? 'bg-[#3a5bff]' : 'bg-gray-100 text-gray-700'
+                  }`}
               >
                 {count}
               </span>

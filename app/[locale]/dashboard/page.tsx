@@ -123,12 +123,15 @@ export default async function DashboardPage({ params }: Props) {
                   {balanceFormatted}
                 </p>
               </div>
-              <Link
-                href="/dashboard/balance"
-                className="inline-flex w-full items-center justify-center rounded-lg bg-[#3a5bff] px-4 py-3 text-center text-[16px] font-semibold text-white shadow-sm transition hover:bg-[#2d4ae0]"
-              >
-                {tDashboard('balanceTopUp')}
-              </Link>
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/dashboard/balance"
+                  className="inline-flex w-full items-center justify-center rounded-lg bg-[#3a5bff] px-4 py-3 text-center text-[16px] font-semibold text-white shadow-sm transition hover:bg-[#2d4ae0]"
+                >
+                  {tDashboard('balanceTopUp')}
+                </Link>
+              
+              </div>
             </aside>
             <div className="min-w-0 flex-1">
               <DashboardTariffsSection
@@ -139,6 +142,7 @@ export default async function DashboardPage({ params }: Props) {
             </div>
           </div>
           <DashboardAddressesSection />
+          
           <UserParcelsTabs parcels={formattedParcels} />
         </main>
       </div>
