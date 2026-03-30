@@ -59,7 +59,7 @@ const ADDRESS_ROWS: AddressRow[] = [
     postalCode: 'RM10 7SA ',
     phone: '+44 7386 585212',
   },
-  { countryKey: 'us', countryCode: 'US', adress: '22 Parkway Circle, unit5 ', stateKey: 'DELAWARE (DE)', cityKey: 'New Castle', postalCode: '19720' },
+  { countryKey: 'us', phone: '+1 (934) 777-5589', countryCode: 'US', adress: '22 Parkway Circle, unit5 ', stateKey: 'DELAWARE (DE)', cityKey: 'New Castle', postalCode: '19720' },
   { countryKey: 'cn', countryCode: 'CN', adress: '', postalCode: '' },
 
   {
