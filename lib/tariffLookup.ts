@@ -11,6 +11,22 @@ export const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   tr: 'TR',
 };
 
+/**
+ * ვალუტა `originCountry`-ზე უნდა განისაზღვროს (ქვეყნის მიხედვით),
+ * რადგან DB-ში `currency` ველი ხშირად არ არის თანმიმდევრული.
+ */
+const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+  GB: 'GBP',
+  US: 'USD',
+  CN: 'USD',
+  IT: 'EUR',
+  GR: 'EUR',
+  ES: 'EUR',
+  FR: 'EUR',
+  DE: 'EUR',
+  TR: 'USD',
+};
+
 export type TariffPick = {
   originCountry: string;
   destinationCountry: string;
@@ -50,10 +66,11 @@ export function resolveTariffForParcel(
   const tariff = candidates[0]!;
   const shippingTotal =
     Math.round(weightKg * tariff.pricePerKg * 100) / 100;
+  const derivedCurrency = CURRENCY_BY_ORIGIN_ISO[tariffCountry];
   return {
     pricePerKg: tariff.pricePerKg,
     shippingTotal,
-    currency: tariff.currency || 'GEL',
+    currency: derivedCurrency ?? tariff.currency ?? 'GEL',
   };
 }
 
