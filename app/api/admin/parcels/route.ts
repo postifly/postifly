@@ -36,19 +36,51 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   tr: 'TR',
 };
 
+const optionalNumberFromString = (emptyMessage: string) =>
+  z.preprocess(
+    (v) => {
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        if (!trimmed) return undefined;
+        return Number(trimmed.replace(',', '.'));
+      }
+      return v;
+    },
+    z.number({ message: emptyMessage }),
+  ).optional();
+
+const optionalIntFromString = (emptyMessage: string) =>
+  z.preprocess(
+    (v) => {
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        if (!trimmed) return undefined;
+        return parseInt(trimmed, 10);
+      }
+      return v;
+    },
+    z.number({ message: emptyMessage }).int(),
+  ).optional();
+
 const createParcelSchema = z.object({
   userEmail: z.string().email('User email is invalid'),
   customerName: z.string().min(1, 'Customer name is required'),
   trackingNumber: z.string().min(1, 'Tracking number is required'),
   price: z.number().min(0, 'Item value is required'),
   onlineShop: z.string().min(1, 'Online shop is required'),
-  quantity: z.number().int().min(1, 'Quantity must be at least 1'),
+  quantity: optionalIntFromString('Quantity is invalid').refine(
+    (v) => v === undefined || v >= 1,
+    'Quantity is invalid',
+  ),
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'Origin country is required' }),
   city: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
   comment: z.string().optional(),
-  weight: z.number().min(0.001, 'Weight is required'),
+  weight: optionalNumberFromString('Weight is invalid').refine(
+    (v) => v === undefined || v >= 0.001,
+    'Weight is invalid',
+  ),
   description: z.string().min(1, 'Description is required'),
 });
 
@@ -137,7 +169,7 @@ export async function POST(request: NextRequest) {
     }
 
     const price = parseFloat(priceStr.replace(',', '.'));
-    const quantity = parseInt(quantityStr, 10);
+    const quantity = quantityStr ? parseInt(quantityStr, 10) : NaN;
     const weight = weightStr ? parseFloat(weightStr.replace(',', '.')) : NaN;
 
     if (!file || file.size === 0) {
@@ -165,7 +197,7 @@ export async function POST(request: NextRequest) {
       trackingNumber,
       price,
       onlineShop,
-      quantity,
+      quantity: Number.isNaN(quantity) ? undefined : quantity,
       originCountry: originCountry || undefined,
       city: city || undefined,
       address: address || undefined,
@@ -175,24 +207,27 @@ export async function POST(request: NextRequest) {
       description,
     });
 
-    const tariffCountry = FORM_TO_TARIFF_COUNTRY[parsed.originCountry];
-    const tariff = await prisma.tariff.findFirst({
-      where: {
-        originCountry: tariffCountry,
-        destinationCountry: 'GE',
-        isActive: true,
-        minWeight: { lte: parsed.weight },
-        OR: [{ maxWeight: null }, { maxWeight: { gte: parsed.weight } }],
-      },
-      orderBy: { minWeight: 'desc' },
-    });
-    if (!tariff) {
-      return NextResponse.json(
-        { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ შეამოწმოთ ტარიფები.' },
-        { status: 400 }
-      );
+    let shippingAmount: number | null = null;
+    if (parsed.weight != null) {
+      const tariffCountry = FORM_TO_TARIFF_COUNTRY[parsed.originCountry];
+      const tariff = await prisma.tariff.findFirst({
+        where: {
+          originCountry: tariffCountry,
+          destinationCountry: 'GE',
+          isActive: true,
+          minWeight: { lte: parsed.weight },
+          OR: [{ maxWeight: null }, { maxWeight: { gte: parsed.weight } }],
+        },
+        orderBy: { minWeight: 'desc' },
+      });
+      if (!tariff) {
+        return NextResponse.json(
+          { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ შეამოწმოთ ტარიფები.' },
+          { status: 400 }
+        );
+      }
+      shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
     }
-    const shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
 
     let user = await prisma.user.findUnique({
       where: { email: parsed.userEmail.trim().toLowerCase() },
@@ -258,10 +293,10 @@ export async function POST(request: NextRequest) {
         price: parsed.price,
         shippingAmount,
         onlineShop: parsed.onlineShop.trim(),
-        quantity: parsed.quantity,
+        quantity: parsed.quantity ?? 1,
         originCountry: parsed.originCountry,
         comment: parsed.comment?.trim() ?? null,
-        weight: parsed.weight,
+        weight: parsed.weight ?? null,
         description: parsed.description?.trim() ?? null,
         currency: 'GEL',
         filePath: fileUrl,

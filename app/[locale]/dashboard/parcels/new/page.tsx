@@ -94,14 +94,26 @@ export default function NewParcelPage() {
     const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
     return requiresInvoicePdf ? `${base} *` : base;
   }, [tDeclaration, requiresInvoicePdf]);
+  const trackingLabel = useMemo(() => `${t('trackingCode').replace(/\s*\*$/, '')} *`, [t]);
+  const onlineShopLabel = useMemo(() => `${t('onlineShop').replace(/\s*\*$/, '')} *`, [t]);
+  const quantityLabel = useMemo(() => t('quantity').replace(/\s*\*$/, ''), [t]);
+  const weightLabel = useMemo(() => `${t('weight').replace(/\s*\*$/, '')} (კგ) *`, [t]);
 
   const parcelFormSchema = useMemo(() => {
     const numFromString = (v: unknown) => {
-      if (typeof v === 'string') return parseFloat(v.replace(',', '.'));
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        if (!trimmed) return undefined;
+        return parseFloat(trimmed.replace(',', '.'));
+      }
       return v;
     };
     const intFromString = (v: unknown) => {
-      if (typeof v === 'string') return parseInt(v, 10);
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        if (!trimmed) return undefined;
+        return parseInt(trimmed, 10);
+      }
       return v;
     };
     return z
@@ -109,9 +121,13 @@ export default function NewParcelPage() {
         trackingNumber: z.string().trim().min(1, t('trackingCode') + ' აუცილებელია'),
         price: z.preprocess(numFromString, z.number({ message: t('priceError') }).min(0, t('priceError'))),
         onlineShop: z.string().trim().min(1, t('onlineShop') + ' აუცილებელია'),
-        quantity: z.preprocess(intFromString, z.number({ message: t('quantityError') }).int().min(1, t('quantityError'))),
+        quantity: z
+          .preprocess(intFromString, z.number({ message: t('quantityError') }).int().min(1, t('quantityError')))
+          .optional(),
         originCountry: z.string().trim().min(1, t('countryRequired')),
-        weight: z.preprocess(numFromString, z.number({ message: t('weightError') }).min(0.001, t('weightError'))),
+        weight: z
+          .preprocess(numFromString, z.number({ message: t('weightError') }).min(0.001, t('weightError')))
+          .optional(),
         description: z.string().trim().min(1, 'აღწერა აუცილებელია'),
         comment: z.string().trim().optional(),
         file: z.any().optional(),
@@ -209,10 +225,10 @@ export default function NewParcelPage() {
       formData.append('trackingNumber', trackingNumber.trim());
       formData.append('price', String(parsed.data.price));
       formData.append('onlineShop', onlineShop.trim());
-      formData.append('quantity', String(parsed.data.quantity));
+      if (parsed.data.quantity != null) formData.append('quantity', String(parsed.data.quantity));
       formData.append('originCountry', originCountry.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
-      formData.append('weight', String(parsed.data.weight));
+      if (parsed.data.weight != null) formData.append('weight', String(parsed.data.weight));
       formData.append('description', description.trim());
       if (file) formData.append('file', file);
 
@@ -256,7 +272,7 @@ export default function NewParcelPage() {
             )}
             <div>
               <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('trackingCode')}
+                {trackingLabel}
               </label>
               <input
                 id="trackingNumber"
@@ -299,7 +315,7 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="onlineShop" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('onlineShop')}
+                {onlineShopLabel}
               </label>
               <input
                 id="onlineShop"
@@ -319,7 +335,7 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('quantity')}
+                {quantityLabel}
               </label>
               <input
                 id="quantity"
@@ -340,7 +356,7 @@ export default function NewParcelPage() {
             </div>
             <div ref={countryRef} className="relative">
               <label htmlFor="originCountry" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('country')}
+                {t('country')} *
               </label>
               <input
                 id="originCountry"
@@ -408,7 +424,7 @@ export default function NewParcelPage() {
             </div>
             <div>
               <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('weight')} *
+                {weightLabel}
               </label>
               <input
                 id="weight"
@@ -437,7 +453,7 @@ export default function NewParcelPage() {
                 htmlFor="description"
                 className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
               >
-                {t('description')}
+                {t('description')} *
               </label>
               <textarea
                 id="description"

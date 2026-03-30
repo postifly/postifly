@@ -13,15 +13,47 @@ const ALLOWED_TYPE = 'application/pdf';
 
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
 
+const optionalNumberFromString = (emptyMessage: string) =>
+  z.preprocess(
+    (v) => {
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        if (!trimmed) return undefined;
+        return Number(trimmed.replace(',', '.'));
+      }
+      return v;
+    },
+    z.number({ message: emptyMessage }),
+  ).optional();
+
+const optionalIntFromString = (emptyMessage: string) =>
+  z.preprocess(
+    (v) => {
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        if (!trimmed) return undefined;
+        return parseInt(trimmed, 10);
+      }
+      return v;
+    },
+    z.number({ message: emptyMessage }).int(),
+  ).optional();
+
 const createParcelSchema = z.object({
   customerName: z.string().min(1, 'მომხმარებლის სახელი აუცილებელია'),
   trackingNumber: z.string().min(1, 'თრექინგ კოდი აუცილებელია'),
   price: z.number().min(0, 'ნაყიდი ნივთის ღირებულება აუცილებელია'),
   onlineShop: z.string().min(1, 'ონლაინ მაღაზია აუცილებელია'),
-  quantity: z.number().int().min(1, 'ამანათის რაოდენობა აუცილებელია'),
+  quantity: optionalIntFromString('ამანათის რაოდენობა არასწორია').refine(
+    (v) => v === undefined || v >= 1,
+    'ამანათის რაოდენობა არასწორია',
+  ),
   originCountry: z.enum(ORIGIN_COUNTRY_CODES, { message: 'ქვეყანა აუცილებელია' }),
   comment: z.string().optional(),
-  weight: z.number().min(0.001, 'წონა აუცილებელია და უნდა იყოს მეტი 0-ზე'),
+  weight: optionalNumberFromString('წონა არასწორია').refine(
+    (v) => v === undefined || v >= 0.001,
+    'წონა არასწორია',
+  ),
   description: z.string().min(1, 'აღწერა აუცილებელია'),
 });
 
@@ -58,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     const price = parseFloat(priceStr.replace(',', '.'));
-    const quantity = parseInt(quantityStr, 10);
+    const quantity = quantityStr ? parseInt(quantityStr, 10) : NaN;
     const weight = weightStr ? parseFloat(weightStr.replace(',', '.')) : NaN;
 
     const hasFile = !!file && file.size > 0;
@@ -80,37 +112,40 @@ export async function POST(request: NextRequest) {
       trackingNumber,
       price: Number.isNaN(price) ? undefined : price,
       onlineShop,
-      quantity,
+      quantity: Number.isNaN(quantity) ? undefined : quantity,
       originCountry: originCountry || undefined,
       comment: comment || undefined,
       weight: Number.isNaN(weight) ? undefined : weight,
       description,
     });
 
-    const tariffs = await prisma.tariff.findMany({
-      where: { isActive: true, destinationCountry: 'GE' },
-      select: {
-        originCountry: true,
-        destinationCountry: true,
-        minWeight: true,
-        maxWeight: true,
-        pricePerKg: true,
-        currency: true,
-        isActive: true,
-      },
-    });
-    const resolved = resolveTariffForParcel(
-      tariffs,
-      parsed.originCountry,
-      parsed.weight,
-    );
-    if (!resolved) {
-      return NextResponse.json(
-        { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ დაუკავშირდეთ ადმინისტრაციას.' },
-        { status: 400 },
+    let shippingAmount: number | null = null;
+    if (parsed.weight != null) {
+      const tariffs = await prisma.tariff.findMany({
+        where: { isActive: true, destinationCountry: 'GE' },
+        select: {
+          originCountry: true,
+          destinationCountry: true,
+          minWeight: true,
+          maxWeight: true,
+          pricePerKg: true,
+          currency: true,
+          isActive: true,
+        },
+      });
+      const resolved = resolveTariffForParcel(
+        tariffs,
+        parsed.originCountry,
+        parsed.weight,
       );
+      if (!resolved) {
+        return NextResponse.json(
+          { error: 'ამ ქვეყნის ტარიფი ვერ მოიძებნა. გთხოვთ დაუკავშირდეთ ადმინისტრაციას.' },
+          { status: 400 },
+        );
+      }
+      shippingAmount = resolved.shippingTotal;
     }
-    const shippingAmount = resolved.shippingTotal;
 
     const userId = session.user.id;
     if (!userId) {
@@ -151,10 +186,10 @@ export async function POST(request: NextRequest) {
         price: parsed.price,
         shippingAmount,
         onlineShop: parsed.onlineShop.trim(),
-        quantity: parsed.quantity,
+        quantity: parsed.quantity ?? 1,
         originCountry: parsed.originCountry,
         comment: parsed.comment?.trim() ?? null,
-        weight: parsed.weight,
+        weight: parsed.weight ?? null,
         description: parsed.description?.trim() ?? null,
         currency: 'GEL',
         filePath: fileUrl,
