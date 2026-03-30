@@ -302,6 +302,7 @@
     "title": "მისამართები",
     "country": "ქვეყანა",
     "city": "ქალაქი",
+    "state": "შტატი",
     "street": "მისამართი 1",
     "street2":"მისამართი 2",
     "name":"სახელი",
@@ -329,6 +330,7 @@
     "turkey": "თურქეთი",
     
     "london": "London",
+    "Essex": "Essex",
     "newYork": "New York",
     "beijing": "Beijing",
     "rome": "Rome",
@@ -337,7 +339,8 @@
     "paris": "Paris",
     "berlin": "Berlin",
     "istanbul": "Istanbul",
-    "tbilisi": "Tbilisi"
+    "tbilisi": "Tbilisi",
+    "Dagenham": "Dagenham"
   },
   "balance": {
     "title": "ბალანსის შევსება",

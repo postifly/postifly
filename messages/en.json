@@ -301,6 +301,7 @@
     "title": "Addresses",
     "country": "Country",
     "city": "City",
+    "state": "State",
     "street": "Adress 1",
     "street2": "Address 2",
     "name": "Name",
@@ -328,6 +329,7 @@
     "tr": "Turkey",
     "ge": "Georgia",
     "london": "London",
+    "Essex": "Essex",
     "newYork": "New York",
     "beijing": "Beijing",
     "rome": "Rome",
@@ -336,7 +338,8 @@
     "paris": "Paris",
     "berlin": "Berlin",
     "istanbul": "Istanbul",
-    "tbilisi": "Tbilisi"
+    "tbilisi": "Tbilisi",
+    "Dagenham": "Dagenham"
   },
   "balance": {
     "title": "Top up balance",

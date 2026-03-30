@@ -29,7 +29,7 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
 
 const COUNTRY_KA: Record<string, string> = {
   GB: 'დიდი ბრიტანეთი',
-  US: 'ამერიკა ',
+  US: 'ამერიკის შტატები',
   CN: 'ჩინეთი',
   IT: 'იტალია',
   GR: 'საბერძნეთი',
@@ -43,14 +43,23 @@ type AddressRow = {
   countryKey: string;
   countryCode: string;
   cityKey?: string;
+  stateKey?: string;
   adress: string;
   postalCode: string;
   phone?: string;
 };
 
 const ADDRESS_ROWS: AddressRow[] = [
-  { countryKey: 'uk', countryCode: 'GB', adress: '', postalCode: '' },
-  { countryKey: 'us', countryCode: 'US', adress: '', postalCode: '' },
+  {
+    countryKey: 'uk',
+    countryCode: 'GB',
+    adress: '13 Oglethorpe Road',
+    cityKey: 'Dagenham',
+    stateKey: 'Essex',
+    postalCode: 'RM10 7SA ',
+    phone: '+44 7386 585212',
+  },
+  { countryKey: 'us', countryCode: 'US', adress: '', stateKey: 'newYork', postalCode: '' },
   { countryKey: 'cn', countryCode: 'CN', adress: '', postalCode: '' },
 
   {
@@ -114,14 +123,44 @@ export default async function DashboardAddressesSection() {
   const hasUserName = Boolean(userFirstName || userLastName);
   const userRoomNumber = user?.roomNumber ?? '';
 
-  const addressList = ADDRESS_ROWS.map((row) => ({
-    countryCode: row.countryCode,
-    country: tAddr(row.countryKey),
-    city: row.cityKey ? tAddr(row.cityKey) : '',
-    adress: row.adress,
-    postalCode: row.postalCode,
-    phone: row.phone,
-  }));
+  const addressList = ADDRESS_ROWS.map((row) => {
+    // next-intl throws when a message key is missing; we fall back to raw values
+    // so dashboard rendering never crashes on unexpected city names.
+    let country = row.countryKey;
+    try {
+      country = tAddr(row.countryKey);
+    } catch {
+      // ignore missing translation
+    }
+
+    let city = '';
+    if (row.cityKey) {
+      try {
+        city = tAddr(row.cityKey);
+      } catch {
+        city = row.cityKey;
+      }
+    }
+
+    let state = '';
+    if (row.stateKey) {
+      try {
+        state = tAddr(row.stateKey);
+      } catch {
+        state = row.stateKey;
+      }
+    }
+
+    return {
+      countryCode: row.countryCode,
+      country,
+      city,
+      state,
+      adress: row.adress,
+      postalCode: row.postalCode,
+      phone: row.phone,
+    };
+  });
 
   return (
     <section
@@ -180,6 +219,13 @@ export default async function DashboardAddressesSection() {
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('city')}</span>
                 <span className="text-right text-neutral-800">{row.city}</span>
               </div>
+
+              {row.state ? (
+                <div className="mb-1 flex justify-between gap-2">
+                  <span className="shrink-0 font-semibold text-neutral-800">{tAddr('state')}</span>
+                  <span className="text-right text-neutral-800">{row.state}</span>
+                </div>
+              ) : null}
 
               <div className="flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('postalCode')}</span>
@@ -241,6 +287,14 @@ export default async function DashboardAddressesSection() {
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('city')}</span>
               <span className="text-right text-neutral-800">{row.city}</span>
             </div>
+
+            {row.state ? (
+              <div className="mb-2 flex justify-between gap-2">
+                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('state')}</span>
+                <span className="text-right text-neutral-800">{row.state}</span>
+              </div>
+            ) : null}
+
             <div className="flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('postalCode')}</span>
               <span className="font-medium text-neutral-800">{row.postalCode}</span>
