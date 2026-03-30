@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import { useSession } from 'next-auth/react';
+import { z } from 'zod';
 import {
   GB,
   US,
@@ -72,13 +73,14 @@ export default function NewParcelPage() {
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
   const [tariffs, setTariffs] = useState<Record<string, number>>({});
   const countryRef = useRef<HTMLDivElement>(null);
   const priceNumForUi = useMemo(() => parseFloat(price.replace(',', '.')), [price]);
   const requiresInvoicePdf = useMemo(
-    () => !Number.isNaN(priceNumForUi) && priceNumForUi >= 300,
+    () => !Number.isNaN(priceNumForUi) && priceNumForUi >= 296,
     [priceNumForUi],
   );
   const resolvedCustomerName = useMemo(() => {
@@ -92,6 +94,52 @@ export default function NewParcelPage() {
     const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
     return requiresInvoicePdf ? `${base} *` : base;
   }, [tDeclaration, requiresInvoicePdf]);
+
+  const parcelFormSchema = useMemo(() => {
+    const numFromString = (v: unknown) => {
+      if (typeof v === 'string') return parseFloat(v.replace(',', '.'));
+      return v;
+    };
+    const intFromString = (v: unknown) => {
+      if (typeof v === 'string') return parseInt(v, 10);
+      return v;
+    };
+    return z
+      .object({
+        trackingNumber: z.string().trim().min(1, t('trackingCode') + ' აუცილებელია'),
+        price: z.preprocess(numFromString, z.number({ message: t('priceError') }).min(0, t('priceError'))),
+        onlineShop: z.string().trim().min(1, t('onlineShop') + ' აუცილებელია'),
+        quantity: z.preprocess(intFromString, z.number({ message: t('quantityError') }).int().min(1, t('quantityError'))),
+        originCountry: z.string().trim().min(1, t('countryRequired')),
+        weight: z.preprocess(numFromString, z.number({ message: t('weightError') }).min(0.001, t('weightError'))),
+        description: z.string().trim().min(1, 'აღწერა აუცილებელია'),
+        comment: z.string().trim().optional(),
+        file: z.any().optional(),
+      })
+      .superRefine((val, ctx) => {
+        if (val.price >= 296 && !val.file) {
+          ctx.addIssue({ code: 'custom', path: ['file'], message: tDeclaration('fileRequired') });
+        }
+        if (val.file) {
+          const f = val.file as File;
+          if (f.type !== 'application/pdf') {
+            ctx.addIssue({ code: 'custom', path: ['file'], message: tDeclaration('onlyPdf') });
+          }
+          if (f.size > MAX_FILE_SIZE) {
+            ctx.addIssue({ code: 'custom', path: ['file'], message: tDeclaration('maxSize') });
+          }
+        }
+      });
+  }, [t, tDeclaration]);
+
+  function clearFieldError(field: string) {
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -131,43 +179,26 @@ export default function NewParcelPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
 
-    if (!originCountry.trim()) {
-      setError(t('countryRequired'));
-      return;
-    }
-    if (!description.trim()) {
-      setError('აღწერა აუცილებელია');
-      return;
-    }
-
-    const priceNum = parseFloat(price.replace(',', '.'));
-    const quantityNum = parseInt(quantity, 10);
-    const w = weight ? parseFloat(weight.replace(',', '.')) : NaN;
-    if (Number.isNaN(priceNum) || priceNum < 0) {
-      setError(t('priceError'));
-      return;
-    }
-    if (priceNum >= 300 && !file) {
-      setError(tDeclaration('fileRequired'));
-      return;
-    }
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        setError(tDeclaration('onlyPdf'));
-        return;
+    const parsed = parcelFormSchema.safeParse({
+      trackingNumber,
+      price,
+      onlineShop,
+      quantity,
+      originCountry,
+      weight,
+      description,
+      comment,
+      file,
+    });
+    if (!parsed.success) {
+      const next: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const key = (issue.path?.[0] as string | undefined) ?? 'form';
+        if (!next[key]) next[key] = issue.message;
       }
-      if (file.size > MAX_FILE_SIZE) {
-        setError(tDeclaration('maxSize'));
-        return;
-      }
-    }
-    if (!Number.isInteger(quantityNum) || quantityNum < 1) {
-      setError(t('quantityError'));
-      return;
-    }
-    if (Number.isNaN(w) || w <= 0) {
-      setError(t('weightError'));
+      setFieldErrors(next);
       return;
     }
 
@@ -176,12 +207,12 @@ export default function NewParcelPage() {
       const formData = new FormData();
       formData.append('customerName', resolvedCustomerName.trim());
       formData.append('trackingNumber', trackingNumber.trim());
-      formData.append('price', String(priceNum));
+      formData.append('price', String(parsed.data.price));
       formData.append('onlineShop', onlineShop.trim());
-      formData.append('quantity', String(quantityNum));
+      formData.append('quantity', String(parsed.data.quantity));
       formData.append('originCountry', originCountry.trim());
       if (comment.trim()) formData.append('comment', comment.trim());
-      formData.append('weight', String(w));
+      formData.append('weight', String(parsed.data.weight));
       formData.append('description', description.trim());
       if (file) formData.append('file', file);
 
@@ -217,7 +248,7 @@ export default function NewParcelPage() {
             </Link>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
+          <form onSubmit={handleSubmit} noValidate className="space-y-4" suppressHydrationWarning>
             {error && (
               <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[15px] text-red-800">
                 {error}
@@ -230,29 +261,40 @@ export default function NewParcelPage() {
               <input
                 id="trackingNumber"
                 type="text"
-                required
                 value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
+                onChange={(e) => {
+                  setTrackingNumber(e.target.value);
+                  clearFieldError('trackingNumber');
+                }}
                 className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('trackingPlaceholder')}
                 suppressHydrationWarning
               />
+              {fieldErrors.trackingNumber && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.trackingNumber}</p>
+              )}
             </div>
             <div>
               <label htmlFor="price" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
-                {t('itemValue')}
+                {t('itemValue')} *
               </label>
               <input
                 id="price"
                 type="text"
                 inputMode="decimal"
-                required
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                  clearFieldError('price');
+                  clearFieldError('file');
+                }}
                 className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('pricePlaceholder')}
                 suppressHydrationWarning
               />
+              {fieldErrors.price && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.price}</p>
+              )}
           
             </div>
             <div>
@@ -262,13 +304,18 @@ export default function NewParcelPage() {
               <input
                 id="onlineShop"
                 type="text"
-                required
                 value={onlineShop}
-                onChange={(e) => setOnlineShop(e.target.value)}
+                onChange={(e) => {
+                  setOnlineShop(e.target.value);
+                  clearFieldError('onlineShop');
+                }}
                 className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('onlineShopPlaceholder')}
                 suppressHydrationWarning
               />
+              {fieldErrors.onlineShop && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.onlineShop}</p>
+              )}
             </div>
             <div>
               <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
@@ -278,13 +325,18 @@ export default function NewParcelPage() {
                 id="quantity"
                 type="number"
                 min={1}
-                required
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => {
+                  setQuantity(e.target.value);
+                  clearFieldError('quantity');
+                }}
                 className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('quantityPlaceholder')}
                 suppressHydrationWarning
               />
+              {fieldErrors.quantity && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.quantity}</p>
+              )}
             </div>
             <div ref={countryRef} className="relative">
               <label htmlFor="originCountry" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
@@ -294,7 +346,6 @@ export default function NewParcelPage() {
                 id="originCountry"
                 type="text"
                 readOnly
-                required
                 value={originCountry}
                 className="hidden border"
                 tabIndex={-1}
@@ -338,6 +389,7 @@ export default function NewParcelPage() {
                         onClick={() => {
                           setOriginCountry(code);
                           setCountryOpen(false);
+                          clearFieldError('originCountry');
                         }}
                         className="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-[15px] text-black hover:bg-gray-100"
                       >
@@ -350,6 +402,9 @@ export default function NewParcelPage() {
                   })}
                 </ul>
               )}
+              {fieldErrors.originCountry && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.originCountry}</p>
+              )}
             </div>
             <div>
               <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
@@ -359,13 +414,18 @@ export default function NewParcelPage() {
                 id="weight"
                 type="text"
                 inputMode="decimal"
-                required
                 value={weight}
-                onChange={(e) => setWeight(e.target.value)}
+                onChange={(e) => {
+                  setWeight(e.target.value);
+                  clearFieldError('weight');
+                }}
                 className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 placeholder={t('weightPlaceholder')}
                 suppressHydrationWarning
               />
+              {fieldErrors.weight && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.weight}</p>
+              )}
               {calculatedPrice != null && (
                 <p className="mt-1.5 text-[15px] font-medium text-black">
                   {t('calculatedPrice')}: {calculatedPrice.toFixed(2)} GEL
@@ -381,12 +441,17 @@ export default function NewParcelPage() {
               </label>
               <textarea
                 id="description"
-                required
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  clearFieldError('description');
+                }}
                 className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 min-h-[90px]"
                 suppressHydrationWarning
               />
+              {fieldErrors.description && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.description}</p>
+              )}
             </div>
             <div>
               <label
@@ -413,7 +478,6 @@ export default function NewParcelPage() {
                 id="declarationFile"
                 type="file"
                 accept="application/pdf"
-                required={requiresInvoicePdf}
                 onChange={(e) => {
                   const f = e.target.files?.[0] ?? null;
                   if (f && f.type !== 'application/pdf') {
@@ -424,11 +488,15 @@ export default function NewParcelPage() {
                   }
                   setError(null);
                   setFile(f);
+                  clearFieldError('file');
                 }}
                 className="block w-full text-[15px] md:text-[18px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] md:text-[18px] file:font-medium file:text-black hover:file:bg-gray-50"
               />
+              {fieldErrors.file && (
+                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.file}</p>
+              )}
               <p className="mt-1 text-[16px] md:text-[18px] text-black font-medium">
-                {priceNumForUi >= 300 ? '300₾-დან ინვოისის PDF აუცილებელია.' : '300₾-მდე ინვოისის PDF სავალდებულო არაა.'}
+                {priceNumForUi >= 296 ? '296₾-დან ინვოისის PDF აუცილებელია.' : '296₾-მდე ინვოისის PDF სავალდებულო არაა.'}
               </p>
               <p className="mt-1 text-[16px] md:text-[20px] text-black font-medium">{tDeclaration('maxFileSize')}</p>
             </div>

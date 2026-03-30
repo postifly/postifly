@@ -129,6 +129,13 @@ export async function POST(request: NextRequest) {
     const description = formData.get('description')?.toString().trim() ?? '';
     const file = formData.get('file') as File | null;
 
+    if (!priceStr) {
+      return NextResponse.json(
+        { error: 'Item value is required' },
+        { status: 400 }
+      );
+    }
+
     const price = parseFloat(priceStr.replace(',', '.'));
     const quantity = parseInt(quantityStr, 10);
     const weight = weightStr ? parseFloat(weightStr.replace(',', '.')) : NaN;

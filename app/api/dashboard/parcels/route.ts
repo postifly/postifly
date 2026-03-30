@@ -50,14 +50,21 @@ export async function POST(request: NextRequest) {
     const description = formData.get('description')?.toString().trim() ?? '';
     const file = formData.get('file') as File | null;
 
+    if (!priceStr) {
+      return NextResponse.json(
+        { error: 'ნაყიდი ნივთის ღირებულება აუცილებელია' },
+        { status: 400 },
+      );
+    }
+
     const price = parseFloat(priceStr.replace(',', '.'));
     const quantity = parseInt(quantityStr, 10);
     const weight = weightStr ? parseFloat(weightStr.replace(',', '.')) : NaN;
 
     const hasFile = !!file && file.size > 0;
-    if (!Number.isNaN(price) && price >= 300 && !hasFile) {
+    if (!Number.isNaN(price) && price >= 296 && !hasFile) {
       return NextResponse.json(
-        { error: '300 ლარიდან ინვოისის PDF ფაილი აუცილებელია' },
+        { error: '296 ლარიდან ინვოისის PDF ფაილი აუცილებელია' },
         { status: 400 },
       );
     }
