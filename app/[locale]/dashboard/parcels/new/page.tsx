@@ -286,7 +286,7 @@ export default function NewParcelPage() {
               </div>
             )}
             <div>
-              <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label htmlFor="trackingNumber" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
                 {trackingLabel}
               </label>
               <input
@@ -306,7 +306,7 @@ export default function NewParcelPage() {
               )}
             </div>
             <div>
-              <label htmlFor="price" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label htmlFor="price" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
                 {t('itemValue')} *
               </label>
               <input
@@ -329,7 +329,7 @@ export default function NewParcelPage() {
           
             </div>
             <div>
-              <label htmlFor="onlineShop" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label htmlFor="onlineShop" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
                 {onlineShopLabel}
               </label>
               <input
@@ -349,7 +349,7 @@ export default function NewParcelPage() {
               )}
             </div>
             <div>
-              <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
                 {quantityLabel}
               </label>
               <input
@@ -399,7 +399,7 @@ export default function NewParcelPage() {
                     <span>{t(parcelOriginLabelKey(originCountry))}</span>
                   </>
                 ) : (
-                  <span className="text-black">{t('countryPlaceholder')}</span>
+                  <span className="text-black  font-bold md:text-[18px] text-[16px]">{t('countryPlaceholder')}</span>
                 )}
                 <span className="ml-auto text-gray-400">{countryOpen ? '▲' : '▼'}</span>
               </button>
@@ -420,7 +420,7 @@ export default function NewParcelPage() {
                           setCountryOpen(false);
                           clearFieldError('originCountry');
                         }}
-                        className="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-[15px] text-black hover:bg-gray-100"
+                        className="flex cursor-pointer items-center gap-3 px-3 py-2.5 text-[15px] md:text-[18px] text-black hover:bg-gray-100"
                       >
                         {FlagComp && (
                           <FlagComp className="h-5 w-8 shrink-0 rounded object-cover" title={code} />
@@ -436,7 +436,7 @@ export default function NewParcelPage() {
               )}
             </div>
             <div>
-              <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
                 {weightLabel}
               </label>
               <input
@@ -464,7 +464,7 @@ export default function NewParcelPage() {
             <div>
               <label
                 htmlFor="description"
-                className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
+                className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]"
               >
                 {t('description')} *
               </label>
@@ -532,7 +532,7 @@ export default function NewParcelPage() {
             <div>
               <label
                 htmlFor="comment"
-                className="mb-1 block text-[15px] md:text-[18px] font-bold text-black"
+                className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]"
               >
                 {t('comment')}
               </label>
@@ -547,7 +547,8 @@ export default function NewParcelPage() {
             </div>
 
             <div>
-              <label htmlFor="declarationFile" className="mb-1 block text-[15px] md:text-[18px] font-bold text-black">
+              
+              <label htmlFor="declarationFile" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
                 {pdfLabel}
               </label>
               <input
