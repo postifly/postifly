@@ -18,6 +18,7 @@ const servicesLinks: NavLinkItem[] = [
   { href: '/services?service=service2', labelKey: 'header.customsBroker' },
   { href: '/services?service=service3', labelKey: 'header.courier' },
   { href: '/calculator', labelKey: 'header.calculator' },
+  { href: '/dates', labelKey: 'header.dates' },
 ];
 
 const conditionsLinks: NavLinkItem[] = [
