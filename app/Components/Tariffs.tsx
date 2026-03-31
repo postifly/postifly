@@ -138,6 +138,13 @@ export default function Tariffs() {
   const tCalc = useTranslations('calculator');
   const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
   const [weightKg, setWeightKg] = React.useState<string>('1');
+  const [tariffPage, setTariffPage] = React.useState<number>(0);
+
+  const tariffChunks = React.useMemo(() => {
+    const splitIndex = Math.ceil(TARIFF_ROWS.length / 2);
+    return [TARIFF_ROWS.slice(0, splitIndex), TARIFF_ROWS.slice(splitIndex)];
+  }, []);
+  const activeTariffRows = tariffChunks[tariffPage] ?? tariffChunks[0];
 
   const selectedTariff = React.useMemo(
     () => TARIFF_ROWS.find((row) => row.countryCode === selectedCountryCode) ?? TARIFF_ROWS[0],
@@ -203,12 +210,14 @@ export default function Tariffs() {
                 </thead>
 
                 <motion.tbody
+                  key={tariffPage}
                   variants={container}
                   initial="hidden"
                   whileInView="visible"
                   viewport={viewport}
                 >
-                  {TARIFF_ROWS.map((row, i) => {
+                  {activeTariffRows.map((row, i) => {
+                    const rowIndex = tariffPage * Math.ceil(TARIFF_ROWS.length / 2) + i;
                     const countryName = tAddr(row.countryKey);
                     const deliveryDaysLabel = t('tariffDeliveryDays').trim();
                     const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
@@ -218,7 +227,7 @@ export default function Tariffs() {
                         key={row.countryCode}
                         variants={item}
                         className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${
-                          i % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
+                          rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
                         }`}
                       >
                         <td className="px-3 py-2.5 text-xs font-medium text-gray-800 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
@@ -263,6 +272,23 @@ export default function Tariffs() {
                   })}
                 </motion.tbody>
               </table>
+            </div>
+            <div className="flex items-center justify-center border-t border-indigo-100/80 bg-white/70 px-3 py-2 sm:px-4">
+          
+              <div className="flex justify-center items-center gap-3">
+                {tariffChunks.map((_, index) => (
+                  <button
+                    key={`tariff-page-${index}`}
+                    type="button"
+                    onClick={() => setTariffPage(index)}
+                    className={`h-3 w-3 rounded-full transition ${
+                      tariffPage === index ? 'bg-indigo-500' : 'bg-indigo-200 hover:bg-indigo-300'
+                    }`}
+                    aria-label={`Go to tariff page ${index + 1}`}
+                  />
+                ))}
+              </div>
+       
             </div>
           </motion.div>
 
