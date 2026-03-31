@@ -1,9 +1,148 @@
-import React from 'react'
+import React from "react";
 
-const ContactPage = () => {
-  return (
-    <div>ContactPage</div>
-  )
+type ContactAddress = {
+  countryKey: string;
+  countryCode: string;
+  adress: string;
+  cityKey: string;
+  stateKey?: string;
+  postalCode: string;
+  phone: string;
+  mapEmbedUrl?: string;
+  workingHours?: Array<{ day: string; time: string }>;
+};
+
+const addresses: ContactAddress[] = [
+  {
+    countryKey: "ge",
+    countryCode: "GE",
+    adress: "იური გაგარინის ქუჩა 4/4ა",
+    cityKey: "თბილისი",
+    postalCode: "0160",
+    phone: "+995 591 357 357",
+    mapEmbedUrl:
+      "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d744.3538607707357!2d44.7685562!3d41.7331312!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x404472e617d00001%3A0xeb1aa7f4ba81d489!2sJuri%2C%204%2F4%20Iuri%20Gagarini%20St%2C%20T%27bilisi!5e0!3m2!1sen!2sge!4v1774941743964!5m2!1sen!2sge",
+    workingHours: [
+      { day: "ყოველდღე", time: "11:00 - 19:00" },
+      { day: "ონლაინ", time: "11:00 - 22:00" },
+    ],
+  },
+  {
+    countryKey: "uk",
+    countryCode: "GB",
+    adress: "13 Oglethorpe Road",
+    cityKey: "Dagenham",
+    stateKey: "Essex",
+    postalCode: "RM10 7SA",
+    phone: "+44 7386 585212",
+    mapEmbedUrl:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2480.6231181268936!2d0.14853970000000002!3d51.55680949999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a50dce88cf13%3A0xfd3b00dc0aaf7ab9!2s13%20Oglethorpe%20Rd%2C%20Dagenham%20RM10%207SA%2C%20UK!5e0!3m2!1sen!2sge!4v1774941576350!5m2!1sen!2sge",
+  },
+  {
+    countryKey: "us",
+    phone: "+1 (934) 777-5589",
+    countryCode: "US",
+    adress: "22 Parkway Circle, unit5",
+    stateKey: "DELAWARE (DE)",
+    cityKey: "New Castle",
+    postalCode: "19720",
+    mapEmbedUrl:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3071.4048731036296!2d-75.6154525!3d39.6631062!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c7037c8a5160f7%3A0x64f625d37d93c3be!2s22%20Parkway%20Cir%20Suite%205%2C%20New%20Castle%2C%20DE%2019720%2C%20USA!5e0!3m2!1sen!2sge!4v1774941427350!5m2!1sen!2sge",
+    workingHours: [
+      { day: "ორშ", time: "09:30 - 17:00" },
+      { day: "სამ", time: "09:30 - 17:00" },
+      { day: "ოთხ", time: "09:30 - 17:00" },
+      { day: "ხუთ", time: "09:30 - 17:00" },
+      { day: "პარ", time: "09:30 - 17:00" },
+    ],
+  },
+  {
+    countryKey: "it",
+    countryCode: "IT",
+    cityKey: "paris",
+    adress: "7 bis rue decres",
+    postalCode: "75014",
+    phone: "+33 7 53 19 86 83",
+    mapEmbedUrl:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2626.328197308618!2d2.3150323999999998!3d48.8328782!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6704bdd5bb8e3%3A0xb2d5e813f3d73b2d!2s7%20bis%20Rue%20Decr%C3%A8s%2C%2075014%20Paris%2C%20France!5e0!3m2!1sen!2sge!4v1774941512645!5m2!1sen!2sge",
+  },
+];
+
+const countryTitle: Record<string, string> = {
+  GE: "Georgia",
+  GB: "United Kingdom",
+  US: "United States",
+  IT: "Italy",
+};
+
+function mapQuery(address: ContactAddress) {
+  const parts = [
+    address.adress,
+    address.cityKey,
+    address.stateKey ?? "",
+    address.postalCode,
+    address.countryCode,
+  ].filter(Boolean);
+  return encodeURIComponent(parts.join(", "));
 }
 
-export default ContactPage
+export default function ContactPage() {
+  return (
+    <main className="min-h-screen mt-24  px-4 py-12 sm:px-6 lg:px-10">
+      <section className="mx-auto max-w-6xl">
+        <h1 className="text-center text-3xl font-semibold text-slate-900 sm:text-4xl">
+          Contact Addresses
+        </h1>
+        <p className="mt-2 text-center text-slate-600">
+          ჩვენი საწყობების მისამართები და ლოკაციები რუკაზე.
+        </p>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {addresses.map((address) => (
+            <article
+              key={`${address.countryCode}-${address.postalCode}`}
+              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            >
+              <iframe
+                title={`${countryTitle[address.countryCode]} map`}
+                src={
+                  address.mapEmbedUrl ??
+                  `https://www.google.com/maps?q=${mapQuery(address)}&output=embed`
+                }
+                className="h-52 w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+
+              <div className="space-y-2 p-4 text-sm text-slate-700">
+                <p className="text-base font-semibold text-slate-900">
+                  {countryTitle[address.countryCode]} ({address.countryCode})
+                </p>
+                <p>{address.adress}</p>
+                <p>
+                  {address.cityKey}
+                  {address.stateKey ? `, ${address.stateKey}` : ""}
+                </p>
+                <p>{address.postalCode}</p>
+                <p className="font-medium">{address.phone}</p>
+                {address.workingHours?.length ? (
+                  <div className="pt-2">
+                    <p className="mb-1 font-semibold text-slate-900">სამუშაო საათები</p>
+                    <div className="space-y-1 text-xs sm:text-sm">
+                      {address.workingHours.map((row) => (
+                        <div key={row.day} className="flex justify-between gap-3">
+                          <span>{row.day}:</span>
+                          <span>{row.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
