@@ -1,41 +1,45 @@
 import Image from "next/image";
 import React from "react";
-
-const cards = [
-  {
-    title: "სწრაფი მიწოდება",
-    description: "საჰაერო გზით ევროპიდან 3 დღეში",
-    image: "/why/1.png",
-    alt: "სწრაფი მიწოდების ილუსტრაცია",
-  },
-  {
-    title: "უსაფრთხო ტრანსპორტირება",
-    description: "შენი ამანათი დაცულია სრულად",
-    image: "/why/2.png",
-    alt: "უსაფრთხო ტრანსპორტირების ილუსტრაცია",
-  },
-  {
-    title: "ხელმისაწვდომი ტარიფები",
-    description: "საუკეთესო ბალანსი ფასსა და ხარისხს შორის",
-    image: "/why/3.png",
-    alt: "ხელმისაწვდომი ტარიფების ილუსტრაცია",
-  },
-];
+import { useTranslations } from "next-intl";
 
 const Why = () => {
+  const t = useTranslations("home");
+  const cards = [
+    {
+      title: t("whyCard1Title"),
+      description: t("whyCard1Description"),
+      image: "/why/1.png",
+      alt: t("whyCard1Title"),
+    },
+    {
+      title: t("whyCard2Title"),
+      description: t("whyCard2Description"),
+      image: "/why/2.png",
+      alt: t("whyCard2Title"),
+    },
+    {
+      title: t("whyCard3Title"),
+      description: t("whyCard3Description"),
+      image: "/why/3.png",
+      alt: t("whyCard3Title"),
+    },
+  ];
+
   return (
-  <section className=" md:mt-[200px] md:mt-14 flex w-full items-center justify-center overflow-hidden flex-col pb-0 ">
+    <section className="mt-[300px] flex w-full flex-col items-center justify-center overflow-hidden px-4 pb-0 sm:px-6 md:mt-12 lg:mt-[150px]">
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-extrabold tracking-tight text-black md:text-3xl">რატომ ჩვენ</h2>
+        <h2 className="text-2xl font-extrabold tracking-tight text-black md:text-3xl">
+          {t("whyTitle")}
+        </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      <div className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
         {cards.map((card) => (
           <article
             key={card.title}
-            className="rounded-[28px] border border-[#e8e9ff] bg-[#f7f8ff] px-5 pb-7 pt-6 text-center shadow-[0_14px_30px_-24px_rgba(58,91,255,0.55)] transition duration-300"
+            className="rounded-[24px] border border-[#e8e9ff] bg-[#f7f8ff] px-4 pb-6 pt-5 text-center shadow-[0_14px_30px_-24px_rgba(58,91,255,0.55)] transition duration-300 sm:rounded-[28px] sm:px-5 sm:pb-7 sm:pt-6"
           >
-            <div className="relative mx-auto mb-4 h-[250px] w-[250px]">
+            <div className="relative mx-auto mb-4 h-[180px] w-[180px] sm:h-[220px] sm:w-[220px] md:h-[250px] md:w-[250px]">
               <Image
                 src={card.image}
                 alt={card.alt}
@@ -43,9 +47,13 @@ const Why = () => {
                 className="object-contain transition duration-300 group-hover:scale-[1.06]"
               />
             </div>
-            <h3 className="text-[24px] font-extrabold leading-tight text-[#3a5bff] md:text-[28px]">{card.title}</h3>
+            <h3 className="text-[20px] font-extrabold leading-tight text-[#3a5bff] sm:text-[24px] md:text-[28px]">
+              {card.title}
+            </h3>
             <div className="mx-auto my-4 h-px w-4/5 bg-[#d8daf5]" />
-            <p className="mx-auto max-w-[22ch] text-[19px] leading-snug text-black md:text-[22px]">{card.description}</p>
+            <p className="mx-auto max-w-full text-base leading-snug text-black sm:max-w-[24ch] sm:text-[19px] md:max-w-[22ch] md:text-[22px]">
+              {card.description}
+            </p>
           </article>
         ))}
       </div>
