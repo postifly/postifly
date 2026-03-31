@@ -1,9 +1,36 @@
+"use client";
+
 import Image from "next/image";
 import React from "react";
 import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 
 const Why = () => {
   const t = useTranslations("home");
+  const containerVariants = {
+    hidden: { opacity: 1 },
+    show: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.08,
+        staggerChildren: 0.12,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 36, rotate: -1, filter: "blur(6px)" },
+    show: {
+      opacity: 1,
+      y: 0,
+      rotate: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+
   const cards = [
     {
       title: t("whyCard1Title"),
@@ -27,18 +54,26 @@ const Why = () => {
 
   return (
     <>
-      <section className=" mt-10 flex flex-col w-full items-center justify-center overflow-hidden bg-white pb-0 md:pb-14">
+      <section className=" mt-10 flex w-full flex-col items-center justify-center overflow-hidden bg-white px-4 pb-0 md:px-0 md:pb-14">
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-extrabold tracking-tight text-black md:text-3xl">
             {t("whyTitle")}
           </h2>
         </div>
 
-        <div className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
+        <motion.div
+          className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           {cards.map((card) => (
-            <article
+            <motion.article
               key={card.title}
               className="rounded-[24px] border border-[#e8e9ff] bg-[#f7f8ff] px-4 pb-6 pt-5 text-center shadow-[0_14px_30px_-24px_rgba(58,91,255,0.55)] transition duration-300 sm:rounded-[28px] sm:px-5 sm:pb-7 sm:pt-6"
+              variants={cardVariants}
+              whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.24 } }}
             >
               <div className="relative mx-auto mb-4 h-[180px] w-[180px] sm:h-[220px] sm:w-[220px] md:h-[250px] md:w-[250px]">
                 <Image
@@ -55,9 +90,9 @@ const Why = () => {
               <p className="mx-auto max-w-full text-base leading-snug text-black sm:max-w-[24ch] sm:text-[19px] md:max-w-[22ch] md:text-[22px]">
                 {card.description}
               </p>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
       </section>
 
 

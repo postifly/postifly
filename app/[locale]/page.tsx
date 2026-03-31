@@ -16,7 +16,7 @@ const Page = () => {
       <Why />
       <Tariffs />
       {/* <HomeMarqueeBand /> */}
-      <Reviews />
+      {/* <Reviews /> */}
     </div>
   );
 };

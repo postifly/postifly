@@ -131,7 +131,33 @@ const item = {
     transition: { duration: 0.45, ease: 'easeOut' as const },
   },
 };
-
+const REVIEWS = [
+  {
+    name: 'ვალერიან მარგალიტაძე',
+    rating: 5,
+    text: 'ამანათები ყოველთვის დროულად მომდის და შეფუთვაც ძალიან კარგი აქვთ.',
+  },
+  {
+    name: 'დავით ჩხარტიშვილი',
+    rating: 5,
+    text: 'კალკულატორი ზუსტ ფასს მაჩვენებს და სერვისიც ძალიან სწრაფია.',
+  },
+  {
+    name: 'ნინო ჭყონია',
+    rating: 4,
+    text: 'მხარდაჭერის გუნდი ოპერატიულად მპასუხობს და დეტალურად მიხსნის ყველაფერს.',
+  },
+  {
+    name: 'გიორგი გაბუნია',
+    rating: 5,
+    text: 'ევროპიდან გზავნილები პრობლემის გარეშე ჩამომივიდა, რეკომენდაციას ვუწევ.',
+  },
+  {
+    name: 'ნინო დავითაძე',
+    rating: 5,
+    text: 'ხარისხი საუკეთესოა, უკვე რამდენჯერმე გამოვიყენე და კმაყოფილი ვარ.',
+  },
+]
 export default function Tariffs() {
   const t = useTranslations('home');
   const tAddr = useTranslations('addresses');
@@ -139,7 +165,15 @@ export default function Tariffs() {
   const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
   const [weightKg, setWeightKg] = React.useState<string>('1');
   const [tariffPage, setTariffPage] = React.useState<number>(0);
+  const [activeIndex, setActiveIndex] = React.useState(0)
 
+  React.useEffect(() => {
+    const timerId = window.setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % REVIEWS.length)
+    }, 4200)
+
+    return () => window.clearInterval(timerId)
+  }, [])
   const tariffChunks = React.useMemo(() => {
     const splitIndex = Math.ceil(TARIFF_ROWS.length / 2);
     return [TARIFF_ROWS.slice(0, splitIndex), TARIFF_ROWS.slice(splitIndex)];
@@ -236,9 +270,8 @@ export default function Tariffs() {
                       <motion.tr
                         key={row.countryCode}
                         variants={item}
-                        className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${
-                          rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
-                        }`}
+                        className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
+                          }`}
                       >
                         <td className="px-3 py-2.5 text-xs font-medium text-gray-800 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
                           <span className="inline-flex items-center gap-2 sm:gap-3">
@@ -256,9 +289,8 @@ export default function Tariffs() {
                         </td>
 
                         <td
-                          className={`px-3 py-2.5 text-center text-xs text-gray-700 sm:px-4 sm:py-3 md:px-8 md:py-4 ${
-                            row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
-                          }`}
+                          className={`px-3 py-2.5 text-center text-xs text-gray-700 sm:px-4 sm:py-3 md:px-8 md:py-4 ${row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
+                            }`}
                         >
                           {row.deliveryNoteKey ? (
                             <span className="flex flex-col items-center leading-tight">
@@ -284,21 +316,20 @@ export default function Tariffs() {
               </table>
             </div>
             <div className="flex items-center justify-center border-t border-indigo-100/80 bg-white/70 px-3 py-2 sm:px-4">
-          
+
               <div className="flex justify-center items-center gap-3">
                 {tariffChunks.map((_, index) => (
                   <button
                     key={`tariff-page-${index}`}
                     type="button"
                     onClick={() => setTariffPage(index)}
-                    className={`h-3 w-3 rounded-full transition ${
-                      tariffPage === index ? 'bg-indigo-500' : 'bg-indigo-200 hover:bg-indigo-300'
-                    }`}
+                    className={`h-3 w-3 rounded-full transition ${tariffPage === index ? 'bg-indigo-500' : 'bg-indigo-200 hover:bg-indigo-300'
+                      }`}
                     aria-label={`Go to tariff page ${index + 1}`}
                   />
                 ))}
               </div>
-       
+
             </div>
           </motion.div>
 
@@ -346,11 +377,41 @@ export default function Tariffs() {
                 {selectedTariff.currencySymbol} {selectedTariff.pricePerKg.toFixed(0)}
               </div>
             </div>
-              <div className="h-11 mt-5 rounded-xl w-full bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
-               {selectedTariff.currencySymbol} {calculatedPrice.toFixed(0)}
+            <div className="h-11 mt-5 rounded-xl w-full bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
+              {selectedTariff.currencySymbol} {calculatedPrice.toFixed(0)}
+            </div>
+
+        <section className="mx-auto w-full max-w-7xl px-3 py-3 sm:px-4">
+          <h2 className="mb-3 text-center text-2xl font-extrabold text-gray-900  md:text-3xl">
+            მიმოხილვები
+          </h2>
+
+          <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[24px] p-2">
+            <article className="min-h-[170px] rounded-2xl border border-violet-100/80 bg-white/95 p-5 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:p-6">
+              <div className="mb-3 text-xl tracking-[2px] text-amber-500">
+                {'★'.repeat(REVIEWS[activeIndex].rating)}
               </div>
+              <p className="text-base leading-7 text-gray-700">"{REVIEWS[activeIndex].text}"</p>
+              <p className="mt-4 text-sm font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
+            </article>
+
+            <div className="mt-5 flex items-center justify-center gap-2">
+              {REVIEWS.map((review, index) => (
+                <button
+                  key={review.name}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={`h-2.5 w-2.5 rounded-full transition ${activeIndex === index ? 'bg-indigo-500' : 'bg-indigo-100 hover:bg-indigo-300'
+                    }`}
+                  aria-label={`Go to review ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
           </motion.aside>
         </div>
+
       </div>
     </motion.section>
   );
