@@ -14,7 +14,7 @@ export default function Hero() {
   return (
     <section className=" w-full overflow-hidden mt-14">
       <Image
-        src="/hero/prices3.png"
+        src="/hero/heroimage.png"
         alt="pricing background"
         fill
         priority
