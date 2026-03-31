@@ -3,6 +3,7 @@ import Hero from '../Components/Hero';
 import Services from '../Components/Services';
 import Tariffs from '../Components/Tariffs';
 import HomeMarqueeBand from '../Components/HomeMarqueeBand';
+import Why from '../Components/Why';
 
 
 const Page = () => {
@@ -10,7 +11,8 @@ const Page = () => {
     <div>
     
       <Hero />
-      <Services />
+      {/* <Services /> */}
+      <Why />
       <Tariffs />
       {/* <HomeMarqueeBand /> */}
     
