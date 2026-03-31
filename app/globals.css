@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -10,7 +11,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Arial Web", Arial, Helvetica, sans-serif;
+
 }
 
 .bg {
@@ -25,13 +26,13 @@
 }
 
 * {
-  font-family: var(--font-sans);
+  font-family: "Playwrite NZ Basic", sans-serif !important;
 }
 
 body {
   background: white;
 
-  font-family: var(--font-sans);
+  font-family: "Playwrite NZ Basic", sans-serif !important;
   overflow-x: hidden;
   width: 100%;
   padding-top: 70px; /* Space for fixed header */
