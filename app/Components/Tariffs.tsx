@@ -228,7 +228,7 @@ export default function Tariffs() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,2fr)_420px] lg:gap-6">
+        <div className="grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,2fr)_420px] lg:gap-6">
           {/* Table card */}
           <motion.div
             initial={{ opacity: 0, y: 56 }}
@@ -238,16 +238,16 @@ export default function Tariffs() {
             className="overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-white via-indigo-50/40 to-pink-50/50 shadow-[0_20px_60px_-15px_rgba(58,91,255,0.18),0_8px_24px_-12px_rgba(255,79,216,0.12)] sm:rounded-2xl"
           >
             <div className="-mx-px overflow-x-auto">
-              <table className="w-full min-w-[280px]">
+              <table className="w-full min-w-[340px] sm:min-w-[280px]">
                 <thead>
                   <tr className="border-b border-indigo-100/80 bg-gradient-to-r from-indigo-100/90 via-white to-pink-100/80">
-                    <th className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
+                    <th className="px-2 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffCountry')}
                     </th>
-                    <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
+                    <th className="px-2 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffDelivery')}
                     </th>
-                    <th className="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 md:px-8 md:py-5 md:text-sm md:normal-case md:tracking-normal md:text-[18px] md:font-semibold ">
+                    <th className="px-2 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffPrice')}
                     </th>
                   </tr>
@@ -273,14 +273,14 @@ export default function Tariffs() {
                         className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
                           }`}
                       >
-                        <td className="px-3 py-2.5 text-xs font-medium text-gray-800 sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
-                          <span className="inline-flex items-center gap-2 sm:gap-3">
+                        <td className="px-2 py-2 text-[11px] font-medium text-gray-800 sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
+                          <span className="inline-flex items-center gap-1.5 sm:gap-3">
                             {(() => {
                               const Flag = FLAGS[row.countryCode];
                               return Flag ? (
                                 <Flag
                                   title={countryName}
-                                  className="h-4 w-6 shrink-0 rounded object-cover shadow-sm ring-1 ring-gray-200/80 sm:h-5 sm:w-7 md:h-6 md:w-8"
+                                  className="h-3.5 w-5 shrink-0 rounded object-cover shadow-sm ring-1 ring-gray-200/80 sm:h-5 sm:w-7 md:h-6 md:w-8"
                                 />
                               ) : null;
                             })()}
@@ -289,15 +289,15 @@ export default function Tariffs() {
                         </td>
 
                         <td
-                          className={`px-3 py-2.5 text-center text-xs text-gray-700 sm:px-4 sm:py-3 md:px-8 md:py-4 ${row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
+                          className={`px-2 py-2 text-center text-[11px] text-gray-700 sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 ${row.deliveryNoteKey ? 'md:text-[16px]' : 'md:text-[18px]'
                             }`}
                         >
                           {row.deliveryNoteKey ? (
                             <span className="flex flex-col items-center leading-tight">
-                              <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-800">
+                              <span className="whitespace-nowrap text-[11px] text-gray-800 sm:text-[14px] md:text-[18px]">
                                 {deliveryDays}
                               </span>
-                              <span className="whitespace-nowrap text-[16px] md:text-[18px] text-gray-500 mt-0.5">
+                              <span className="mt-0.5 whitespace-nowrap text-[11px] text-gray-500 sm:text-[14px] md:text-[18px]">
                                 {deliveryNote?.replace(/[()]/g, '')}
                               </span>
                             </span>
@@ -306,7 +306,7 @@ export default function Tariffs() {
                           )}
                         </td>
 
-                        <td className="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold tabular-nums text-black sm:px-4 sm:py-3 md:px-8 md:py-4 md:text-sm md:text-[18px]">
+                        <td className="whitespace-nowrap px-2 py-2 text-right text-[11px] font-semibold tabular-nums text-black sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
                           {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                         </td>
                       </motion.tr>
@@ -340,20 +340,20 @@ export default function Tariffs() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={viewport}
               transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
-              className="rounded-[20px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-4 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)]"
+              className="rounded-[18px] border border-violet-200/70 bg-gradient-to-b from-[#f7f1ff] via-[#f6f3ff] to-[#f1f5ff] p-3.5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:rounded-[20px] sm:p-4"
             >
             <p className="mb-2 text-sm font-semibold text-violet-700">{t('tariffCountry')}</p>
             <div className="relative">
               {SelectedCountryFlag ? (
                 <SelectedCountryFlag
                   title={tAddr(selectedTariff.countryKey)}
-                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-6 -translate-y-1/2 rounded object-cover shadow-sm ring-1 ring-gray-200/80"
+                  className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-5 -translate-y-1/2 rounded object-cover shadow-sm ring-1 ring-gray-200/80 sm:h-4 sm:w-6"
                 />
               ) : null}
               <select
                 value={selectedCountryCode}
                 onChange={(event) => setSelectedCountryCode(event.target.value)}
-                className="h-11 w-full rounded-xl border border-violet-100 bg-white pl-11 pr-3 text-[15px] font-medium text-gray-800 outline-none ring-0 focus:border-violet-300"
+                className="h-10 w-full rounded-xl border border-violet-100 bg-white pl-10 pr-3 text-sm font-medium text-gray-800 outline-none ring-0 focus:border-violet-300 sm:h-11 sm:pl-11 sm:text-[15px]"
               >
                 {TARIFF_ROWS.map((row) => (
                   <option key={row.countryCode} value={row.countryCode}>
@@ -363,7 +363,7 @@ export default function Tariffs() {
               </select>
             </div>
 
-            <div className="mt-3 grid grid-cols-[2fr_auto] gap-2">
+            <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
               <input
                 type="number"
                 inputMode="decimal"
@@ -371,29 +371,29 @@ export default function Tariffs() {
                 step="0.1"
                 value={weightKg}
                 onChange={(event) => setWeightKg(event.target.value)}
-                className="h-11 w-full rounded-xl border border-violet-100 bg-white px-3 text-[20px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className="h-10 w-full rounded-xl border border-violet-100 bg-white px-3 text-[18px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none sm:h-11 sm:text-[20px]"
                 aria-label={tCalc('weight')}
               />
-              <div className="h-11 rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
+              <div className="flex h-10 items-center justify-end rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-3 text-right text-base font-extrabold leading-none text-white sm:h-11 sm:px-4 sm:text-[18px]">
                 {selectedTariff.currencySymbol} {selectedTariff.pricePerKg.toFixed(0)}
               </div>
             </div>
-            <div className="h-11 mt-5 rounded-xl w-full bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-[18px] font-extrabold leading-none text-white flex items-center justify-end">
+            <div className="mt-4 flex h-10 w-full items-center justify-end rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-base font-extrabold leading-none text-white sm:mt-5 sm:h-11 sm:text-[18px]">
               {selectedTariff.currencySymbol} {calculatedPrice.toFixed(0)}
             </div>
             </motion.aside>
             <section className="w-full">
-            <h2 className="mb-3 text-center text-2xl font-extrabold text-gray-900 md:text-3xl">
+            <h2 className="mb-3 text-center text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
               მიმოხილვები
             </h2>
 
-            <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[24px] p-2">
-              <article className="min-h-[170px] rounded-2xl border border-violet-100/80 bg-white/95 p-5 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:p-6">
-                <div className="mb-3 text-xl tracking-[2px] text-amber-500">
+            <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[20px] p-1.5 sm:rounded-[24px] sm:p-2">
+              <article className="min-h-[160px] rounded-2xl border border-violet-100/80 bg-white/95 p-4 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:min-h-[170px] sm:p-6">
+                <div className="mb-3 text-lg tracking-[2px] text-amber-500 sm:text-xl">
                   {'★'.repeat(REVIEWS[activeIndex].rating)}
                 </div>
-                <p className="text-base leading-7 text-gray-700">"{REVIEWS[activeIndex].text}"</p>
-                <p className="mt-4 text-sm font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
+                <p className="text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">"{REVIEWS[activeIndex].text}"</p>
+                <p className="mt-4 text-xs font-bold text-violet-700 sm:text-sm">{REVIEWS[activeIndex].name}</p>
               </article>
 
               <div className="mt-5 flex items-center justify-center gap-2">

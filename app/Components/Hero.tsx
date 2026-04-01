@@ -39,7 +39,7 @@ export default function Hero() {
             {t("tariffsTitle")}
           </Link>
         </div>
-        <div className="relative z-10 max-w-2xl rounded-2xl p-6 text-center text-[25px] text-white sm:p-8 md:mt-6 md:text-start md:text-[30px]">
+        <div className="relative z-10 max-w-2xl rounded-2xl p-6 text-center text-[25px] text-white  md:text-start md:text-[30px]">
           {line3}
         </div>
       </div>
