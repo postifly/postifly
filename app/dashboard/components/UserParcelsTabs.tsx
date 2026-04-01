@@ -146,7 +146,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
               type="button"
               onClick={() => setActiveStatus(status.value)}
               className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors ${isActive
-                  ? 'bg-black text-white'
+                  ? 'bg-sky-900 text-white'
                   : 'bg-white text-gray-800 hover:bg-gray-100'
                 }`}
             >
