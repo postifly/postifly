@@ -102,6 +102,7 @@ export default function AdminCreateParcelForm({
   const [comment, setComment] = useState('');
   const [weight, setWeight] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +111,19 @@ export default function AdminCreateParcelForm({
 
   const [countryOpen, setCountryOpen] = useState(false);
   const countryRef = useRef<HTMLDivElement | null>(null);
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
   const [tariffs, setTariffs] = useState<TariffRow[]>([]);
+
+  const descriptionOptions = useMemo(() => {
+    const raw = tParcels.raw('descriptionOptions');
+    return Array.isArray(raw) ? (raw as string[]) : [];
+  }, [tParcels]);
+
+  const filteredDescriptions = useMemo(() => {
+    const q = description.trim().toLowerCase();
+    if (!q) return descriptionOptions;
+    return descriptionOptions.filter((opt) => opt.toLowerCase().includes(q));
+  }, [description, descriptionOptions]);
 
   const originCountriesList = useMemo(() => {
     if (!allowedOriginCountryCodes?.length) return ORIGIN_COUNTRIES;
@@ -180,13 +193,16 @@ export default function AdminCreateParcelForm({
       if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
         setCountryOpen(false);
       }
+      if (descriptionRef.current && !descriptionRef.current.contains(e.target as Node)) {
+        setDescriptionOpen(false);
+      }
     }
 
-    if (countryOpen) {
+    if (countryOpen || descriptionOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [countryOpen]);
+  }, [countryOpen, descriptionOpen]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -520,15 +536,69 @@ export default function AdminCreateParcelForm({
         </div>
 
         <div>
-          <label className="mb-1 block text-[15px] font-semibold text-black">
+          <label
+            htmlFor="admin-parcel-description"
+            className="mb-1 block text-[15px] font-semibold text-black"
+          >
             {t('description')}
           </label>
-          <textarea
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[80px] w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
-          />
+          <div ref={descriptionRef} className="relative">
+            <input
+              id="admin-parcel-description"
+              type="text"
+              required
+              value={description}
+              onFocus={() => setDescriptionOpen(true)}
+              onClick={() => setDescriptionOpen(true)}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                setDescriptionOpen(true);
+              }}
+              className="w-full rounded-lg placeholder:font-normal placeholder:text-black placeholder:text-[14px] border border-gray-300 bg-white px-3 py-2.5 pr-10 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={descriptionOpen}
+              aria-controls="admin-parcel-description-list"
+            />
+            <button
+              type="button"
+              onClick={() => setDescriptionOpen((o) => !o)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+              aria-label="Toggle description list"
+              tabIndex={-1}
+            >
+              {descriptionOpen ? '▲' : '▼'}
+            </button>
+            {descriptionOpen && (
+              <ul
+                id="admin-parcel-description-list"
+                className="absolute left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+                role="listbox"
+              >
+                {filteredDescriptions.length === 0 ? (
+                  <li className="px-3 py-2.5 text-[15px] text-gray-500">
+                    {tParcels('descriptionNoResults')}
+                  </li>
+                ) : (
+                  filteredDescriptions.map((opt) => (
+                    <li
+                      key={opt}
+                      role="option"
+                      aria-selected={description === opt}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setDescription(opt);
+                        setDescriptionOpen(false);
+                      }}
+                      className="cursor-pointer px-3 py-2.5 text-[15px] text-black hover:bg-gray-100"
+                    >
+                      {opt}
+                    </li>
+                  ))
+                )}
+              </ul>
+            )}
+          </div>
         </div>
 
         <div>
