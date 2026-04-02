@@ -12,11 +12,14 @@ type Props = {
 type ServiceItem = {
   id: string;
   title: string;
-  content: string;
+  content: React.ReactNode;
 };
 
 export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
   const t = useTranslations("home");
+
+  const service2List = t.raw("service2List") as string[];
+  const service4List = t.raw("service4List") as string[];
 
   const services: ServiceItem[] = [
     {
@@ -26,18 +29,42 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
     },
     {
       id: "service2",
+      title: t("service2"),
+      content: (
+        <>
+          <p className="mb-3 md:mb-4">{t("service2ListIntro")}</p>
+          <ul className="list-disc list-outside space-y-2 pl-5 md:pl-6 marker:text-black/70">
+            {Array.isArray(service2List) &&
+              service2List.map((item, i) => (
+                <li key={i} className="pl-1">
+                  {item}
+                </li>
+              ))}
+          </ul>
+        </>
+      ),
+    },
+    {
+      id: "service3",
       title: t("service3"),
       content: t("service3Content"),
     },
     {
-      id: "service3",
-      title: t("service2"),
-      content: t("service2Content"),
-    },
-    {
       id: "service4",
       title: t("service4"),
-      content: t("service4Content"),
+      content: (
+        <>
+          <p className="mb-3 md:mb-4">{t("service4ListIntro")}</p>
+          <ul className="list-disc list-outside space-y-2 pl-5 md:pl-6 marker:text-black/70">
+            {Array.isArray(service4List) &&
+              service4List.map((item, i) => (
+                <li key={i} className="pl-1">
+                  {item}
+                </li>
+              ))}
+          </ul>
+        </>
+      ),
     },
   ];
 
