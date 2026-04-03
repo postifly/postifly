@@ -41,9 +41,14 @@ type Parcel = {
 type ParcelsManagerProps = {
   initialParcels: Parcel[];
   currentStatus: string;
+  allowDelete?: boolean;
 };
 
-export default function ParcelsManager({ initialParcels, currentStatus }: ParcelsManagerProps) {
+export default function ParcelsManager({
+  initialParcels,
+  currentStatus,
+  allowDelete = true,
+}: ParcelsManagerProps) {
   const [parcels, setParcels] = useState(initialParcels);
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -137,6 +142,7 @@ export default function ParcelsManager({ initialParcels, currentStatus }: Parcel
       <ParcelsTable
         parcels={parcels}
         currentStatus={currentStatus}
+        allowDelete={allowDelete}
         onParcelUpdated={handleParcelUpdated}
       />
     </div>

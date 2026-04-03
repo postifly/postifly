@@ -6,17 +6,27 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 export default function SupportSidebar() {
-  const t = useTranslations('employeeSidebar');
+  const tEmployee = useTranslations('employeeSidebar');
+  const tAdmin = useTranslations('adminsidebar');
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const items = useMemo(
     () => [
-      { label: t('home'), href: '/support' },
-      { label: t('users'), href: '/support/users' },
-      { label: t('addParcel'), href: '/support/parcels/new' },
+      { label: tEmployee('home'), href: '/support' },
+      { label: tEmployee('users'), href: '/support/users' },
+
+      // Parcels status lists (support should match admin UX)
+      { label: tAdmin('incoming'), href: '/support/incoming' },
+      { label: tAdmin('inTransit'), href: '/support/in-transit' },
+      { label: tAdmin('warehouse'), href: '/support/warehouse' },
+      { label: tAdmin('regions'), href: '/support/regions' },
+      { label: tAdmin('stopped'), href: '/support/stopped' },
+      { label: tAdmin('delivered'), href: '/support/delivered' },
+
+      { label: tEmployee('addParcel'), href: '/support/parcels/new' },
     ],
-    [t],
+    [tEmployee, tAdmin],
   );
 
   const isActiveHref = (href: string) => pathname === href || pathname.endsWith(href);

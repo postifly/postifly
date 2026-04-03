@@ -43,6 +43,7 @@ type Parcel = {
 type ParcelsTableProps = {
   parcels: Parcel[];
   currentStatus: string;
+  allowDelete?: boolean;
   onParcelUpdated?: (parcel: Parcel) => void;
 };
 
@@ -61,7 +62,12 @@ const formatPhone = (phone?: string | null) => {
   return digits;
 };
 
-export default function ParcelsTable({ parcels: initialParcels, currentStatus, onParcelUpdated }: ParcelsTableProps) {
+export default function ParcelsTable({
+  parcels: initialParcels,
+  currentStatus,
+  allowDelete = true,
+  onParcelUpdated,
+}: ParcelsTableProps) {
   const locale = useLocale();
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
@@ -725,14 +731,16 @@ export default function ParcelsTable({ parcels: initialParcels, currentStatus, o
                                 </option>
                               ))}
                             </select>
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(parcel.id)}
-                              disabled={deletingId === parcel.id}
-                              className="mt-1 rounded-md bg-red-600 px-2 py-1 text-[12px] font-medium text-white hover:bg-red-700 disabled:opacity-50"
-                            >
-                              {deletingId === parcel.id ? t.deleting : t.delete}
-                            </button>
+                            {allowDelete ? (
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(parcel.id)}
+                                disabled={deletingId === parcel.id}
+                                className="mt-1 rounded-md bg-red-600 px-2 py-1 text-[12px] font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                              >
+                                {deletingId === parcel.id ? t.deleting : t.delete}
+                              </button>
+                            ) : null}
                           </span>
                         </div>
                       </td>

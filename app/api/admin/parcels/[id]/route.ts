@@ -50,7 +50,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (session.user.role !== 'ADMIN') {
+  if (session.user.role !== 'ADMIN' && session.user.role !== 'SUPPORT') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
