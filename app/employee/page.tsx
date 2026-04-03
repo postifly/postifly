@@ -22,7 +22,7 @@ const STATUS_KEYS: Record<string, string> = {
 export default async function EmployeeHomePage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/login');
-  if (session.user.role !== 'EMPLOYEE') redirect('/');
+  if (session.user.role !== 'EMPLOYEE' && session.user.role !== 'SUPPORT') redirect('/');
 
   const parcels = await prisma.parcel.findMany({
     where: { createdById: session.user.id },

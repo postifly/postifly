@@ -18,7 +18,7 @@ export default async function DashboardBalancePage({ params }: Props) {
 
   if (!session?.user) redirect(`/${locale}/login`);
   if (session.user.role === 'ADMIN') redirect(`/${locale}/admin`);
-  if (session.user.role === 'EMPLOYEE') redirect(`/${locale}/employee`);
+  if (session.user.role === 'EMPLOYEE' || session.user.role === 'SUPPORT') redirect(`/${locale}/employee`);
 
   const userId = session.user.id;
   const user = await prisma.user.findUnique({

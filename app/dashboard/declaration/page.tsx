@@ -11,7 +11,7 @@ export default async function DeclarationPage() {
 
   if (!session?.user) redirect('/login');
   if (session.user.role === 'ADMIN') redirect('/admin');
-  if (session.user.role === 'EMPLOYEE') redirect('/employee');
+  if (session.user.role === 'EMPLOYEE' || session.user.role === 'SUPPORT') redirect('/employee');
 
   return (
     <div className=" bg-gray-100 py-8">

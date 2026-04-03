@@ -32,7 +32,7 @@ async function requireAdmin() {
 async function requireAdminOrEmployeeRead() {
   const session = await getServerSession(authOptions);
   if (!session?.user) return { ok: false as const, res: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
-  if (session.user.role !== 'ADMIN' && session.user.role !== 'EMPLOYEE') {
+  if (session.user.role !== 'ADMIN' && session.user.role !== 'EMPLOYEE' && session.user.role !== 'SUPPORT') {
     return { ok: false as const, res: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
   }
   return { ok: true as const };

@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 export default async function EmployeeNewParcelPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/login');
-  if (session.user.role !== 'EMPLOYEE') redirect('/');
+  if (session.user.role !== 'EMPLOYEE' && session.user.role !== 'SUPPORT') redirect('/');
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
@@ -30,14 +30,15 @@ export default async function EmployeeNewParcelPage() {
         ? 'Add parcel'
         : 'ამანათის დამატება';
 
-  const formCode = user?.employeeCountry
-    ? EMPLOYEE_DB_TO_FORM_ORIGIN_CODE[user.employeeCountry]
-    : undefined;
+  const formCode =
+    session.user.role === 'EMPLOYEE' && user?.employeeCountry
+      ? EMPLOYEE_DB_TO_FORM_ORIGIN_CODE[user.employeeCountry]
+      : undefined;
   const allowedOriginCountryCodes = formCode ? [formCode] : undefined;
 
   return (
     <EmployeeShell title={title} description="">
-      {!user?.employeeCountry ? (
+      {session.user.role === 'EMPLOYEE' && !user?.employeeCountry ? (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] text-amber-950">
           {t('missingEmployeeCountry')}
         </div>

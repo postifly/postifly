@@ -66,7 +66,7 @@ type UsersTableProps = {
   users: User[];
 };
 
-const ROLE_OPTIONS = ['USER', 'EMPLOYEE', 'ADMIN'] as const;
+const ROLE_OPTIONS = ['USER', 'EMPLOYEE', 'SUPPORT', 'ADMIN'] as const;
 
 const COUNTRY_OPTIONS = ['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR'] as const;
 
@@ -171,6 +171,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const roleLabels = {
     USER: isRu ? 'Пользователь' : isEn ? 'User' : 'მომხმარებელი',
     EMPLOYEE: isRu ? 'Сотрудник' : isEn ? 'Employee' : 'თანამშრომელი',
+    SUPPORT: isRu ? 'Поддержка' : isEn ? 'Support' : 'საფორთი',
     ADMIN: isRu ? 'Админ' : isEn ? 'Admin' : 'ადმინი',
   } as const;
   const countryLabels: Record<(typeof COUNTRY_OPTIONS)[number], string> = {
@@ -355,7 +356,8 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
       balance: draft.balance === '' ? undefined : Number(draft.balance),
       roomNumber: draft.roomNumber,
       role: draft.role,
-      employeeCountry: draft.role === 'EMPLOYEE' ? draft.employeeCountry : null,
+      employeeCountry:
+        draft.role === 'EMPLOYEE' ? draft.employeeCountry : null,
     };
     if (draft.password.trim()) payload.password = draft.password.trim();
 
@@ -884,7 +886,9 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                                                 },
                                               }))
                                             }
-                                            disabled={(editDraftById[user.id]?.role ?? d.user.role) !== 'EMPLOYEE'}
+                                            disabled={
+                                              (editDraftById[user.id]?.role ?? d.user.role) !== 'EMPLOYEE'
+                                            }
                                             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[14px] text-black disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
                                           >
                                             <option value="">{text.selectCountry}</option>
@@ -991,7 +995,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                                             updatingRoleId === user.id ||
                                             deletingId === user.id ||
                                             ((pendingRoleById[user.id] ?? user.role) === user.role &&
-                                              ((pendingRoleById[user.id] ?? user.role) !== 'EMPLOYEE' ||
+                                              (((pendingRoleById[user.id] ?? user.role) !== 'EMPLOYEE') ||
                                                 (pendingCountryById[user.id] ?? user.employeeCountry ?? '') ===
                                                   (user.employeeCountry ?? ''))) ||
                                             ((pendingRoleById[user.id] ?? user.role) === 'EMPLOYEE' &&

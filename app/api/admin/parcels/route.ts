@@ -84,8 +84,8 @@ const createParcelSchema = z.object({
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPE = 'application/pdf';
 
-function isParcelStaff(role: string | undefined): role is 'ADMIN' | 'EMPLOYEE' {
-  return role === 'ADMIN' || role === 'EMPLOYEE';
+function isParcelStaff(role: string | undefined): role is 'ADMIN' | 'EMPLOYEE' | 'SUPPORT' {
+  return role === 'ADMIN' || role === 'EMPLOYEE' || role === 'SUPPORT';
 }
 
 export async function GET(request: NextRequest) {

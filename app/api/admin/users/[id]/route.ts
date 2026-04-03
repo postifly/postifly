@@ -202,8 +202,9 @@ export async function PATCH(
         ? existingUser.employeeCountry
         : (data.employeeCountry as EmployeeCountry | null);
 
+    const isEmployeeRole = nextRole === UserRole.EMPLOYEE;
     if (
-      nextRole === UserRole.EMPLOYEE &&
+      isEmployeeRole &&
       (!employeeCountryRaw || !EMPLOYEE_COUNTRIES.includes(employeeCountryRaw as EmployeeCountry))
     ) {
       return NextResponse.json(
@@ -317,7 +318,7 @@ export async function PATCH(
     if (data.role !== undefined || data.employeeCountry !== undefined) {
       updateData.role = nextRole;
       updateData.employeeCountry =
-        nextRole === UserRole.EMPLOYEE ? (employeeCountryRaw as EmployeeCountry) : null;
+        isEmployeeRole ? (employeeCountryRaw as EmployeeCountry) : null;
     }
 
     if (Object.keys(updateData).length === 0) {

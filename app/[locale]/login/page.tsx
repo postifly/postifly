@@ -58,7 +58,11 @@ const LoginPage = () => {
         const session = await getSession();
         const role = session?.user?.role;
         const dest =
-          role === 'ADMIN' ? '/admin' : role === 'EMPLOYEE' ? '/employee' : '/dashboard';
+          role === 'ADMIN'
+            ? '/admin'
+            : role === 'EMPLOYEE' || role === 'SUPPORT'
+              ? '/employee'
+              : '/dashboard';
         router.push(dest);
         router.refresh();
       }

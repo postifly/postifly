@@ -15,7 +15,7 @@ export default async function EmployeeShell({
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/login');
-  if (session.user.role !== 'EMPLOYEE') redirect('/');
+  if (session.user.role !== 'EMPLOYEE' && session.user.role !== 'SUPPORT') redirect('/');
 
   return (
     <div className=" pt-20 min-h-screen  bg py-8">

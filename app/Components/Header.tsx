@@ -98,11 +98,15 @@ const Header = () => {
   const isAuthed = status === 'authenticated';
   const role = session?.user?.role;
   const panelHref =
-    role === 'ADMIN' ? '/admin' : role === 'EMPLOYEE' ? '/employee' : '/dashboard';
+    role === 'ADMIN'
+      ? '/admin'
+      : role === 'EMPLOYEE' || role === 'SUPPORT'
+        ? '/employee'
+        : '/dashboard';
   const panelLabel =
     role === 'ADMIN'
       ? t('common.adminPanel')
-      : role === 'EMPLOYEE'
+      : role === 'EMPLOYEE' || role === 'SUPPORT'
         ? t('common.employeePanel')
         : t('common.myCabinet');
 

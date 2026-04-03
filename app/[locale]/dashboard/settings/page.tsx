@@ -19,7 +19,7 @@ export default async function DashboardSettingsPage({ params }: Props) {
 
   if (!session?.user) redirect(`/${locale}/login`);
   if (session.user.role === 'ADMIN') redirect(`/${locale}/admin`);
-  if (session.user.role === 'EMPLOYEE') redirect(`/${locale}/employee`);
+  if (session.user.role === 'EMPLOYEE' || session.user.role === 'SUPPORT') redirect(`/${locale}/employee`);
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
