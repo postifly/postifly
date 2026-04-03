@@ -19,7 +19,7 @@ type ChatMessage = {
   createdAt: string;
 };
 
-export default function ChatAdmin() {
+export default function ChatAdmin({ allowDeleteThread = true }: { allowDeleteThread?: boolean }) {
   const [threads, setThreads] = useState<ChatThread[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -131,6 +131,7 @@ export default function ChatAdmin() {
   };
 
   const handleDeleteThread = async () => {
+    if (!allowDeleteThread) return;
     if (!selectedId) return;
     const confirmDelete = window.confirm('დარწმუნებული ხარ, რომ გინდა ამ ჩათის წაშლა?');
     if (!confirmDelete) return;
@@ -280,14 +281,16 @@ export default function ChatAdmin() {
                   >
                     დასრულება
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleDeleteThread}
-                    disabled={actionLoading}
-                    className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700 shadow-sm transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    წაშლა
-                  </button>
+                  {allowDeleteThread ? (
+                    <button
+                      type="button"
+                      onClick={handleDeleteThread}
+                      disabled={actionLoading}
+                      className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700 shadow-sm transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      წაშლა
+                    </button>
+                  ) : null}
                 </div>
               </div>
 

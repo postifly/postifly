@@ -29,6 +29,7 @@ export default function ChatWidget() {
   const { data: session, status: sessionStatus } = useSession();
   const isAuthed = sessionStatus === 'authenticated';
   const isGuest = sessionStatus === 'unauthenticated';
+  const supportOnline = isAuthed && session?.user?.role === 'SUPPORT';
   const [message, setMessage] = useState('');
   const [guestFirstName, setGuestFirstName] = useState('');
   const [guestLastName, setGuestLastName] = useState('');
@@ -258,6 +259,9 @@ export default function ChatWidget() {
                   </p>
                   <p className="mt-2 text-[12px] leading-snug text-gray-700">
                     {t('welcomeLine3')}
+                  </p>
+                  <p className="mt-2 text-[12px] font-medium leading-snug text-gray-800">
+                    {supportOnline ? t('supportOnline') : t('supportOffline')}
                   </p>
                 </div>
               )}

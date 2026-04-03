@@ -21,11 +21,22 @@ async function requireAdmin() {
   return { ok: true as const };
 }
 
+async function requireAdminOrSupport() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    return { ok: false as const, res: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
+  }
+  if (session.user.role !== 'ADMIN' && session.user.role !== 'SUPPORT') {
+    return { ok: false as const, res: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
+  }
+  return { ok: true as const };
+}
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireAdminOrSupport();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -69,7 +80,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireAdminOrSupport();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -131,7 +142,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireAdminOrSupport();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;

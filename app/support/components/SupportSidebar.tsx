@@ -24,6 +24,8 @@ export default function SupportSidebar() {
       { label: tAdmin('stopped'), href: '/support/stopped' },
       { label: tAdmin('delivered'), href: '/support/delivered' },
 
+      { label: tAdmin('chat'), href: '/support/chat' },
+
       { label: tEmployee('addParcel'), href: '/support/parcels/new' },
     ],
     [tEmployee, tAdmin],

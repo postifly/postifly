@@ -131,7 +131,9 @@
     "messageSent": "Message sent. Your conversation continues in this window.",
     "welcomeLine1": "Hello 👋",
     "welcomeLine2": "Get prices and conditions quickly ⏱️",
-    "welcomeLine3": "Write to us now 😊"
+    "welcomeLine3": "Write to us now 😊",
+    "supportOnline": "Support is online and will reply to your message.",
+    "supportOffline": "Support will be back soon."
   },
   "calculator": {
     "title": "Size / weight calculator",
