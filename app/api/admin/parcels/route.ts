@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { z } from 'zod';
-import crypto from 'crypto';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
-import {
-  generateNextRoomNumber,
-  withRetryOnDuplicateRoomNumber,
-} from '@/lib/roomNumber';
 import { utapi } from '@/lib/uploadthing';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
 
@@ -244,31 +239,20 @@ export async function POST(request: NextRequest) {
       shippingAmount = Math.round(parsed.weight * tariff.pricePerKg * 100) / 100;
     }
 
-    let user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email: parsed.userEmail.trim().toLowerCase() },
       select: { id: true, phone: true },
     });
 
     if (!user) {
-      const randomPassword = crypto.randomBytes(24).toString('hex');
-      const personalIdNumber = `AUTO-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
-      const created = await withRetryOnDuplicateRoomNumber(async () => {
-        const roomNumber = await generateNextRoomNumber();
-        return prisma.user.create({
-          data: {
-            email: parsed.userEmail.trim().toLowerCase(),
-            password: randomPassword,
-            personalIdNumber,
-            phone: parsed.phone || undefined,
-            city: parsed.city || undefined,
-            address: parsed.address || undefined,
-            postalIndex: null,
-            roomNumber,
-          },
-          select: { id: true, phone: true },
-        });
-      });
-      user = created;
+      return NextResponse.json(
+        {
+          error:
+            'ელფოსტა უნდა ეკუთვნოდეს სისტემაში უკვე დარეგისტრირებულ მომხმარებელს.',
+          errorCode: 'USER_EMAIL_NOT_REGISTERED',
+        },
+        { status: 400 }
+      );
     }
 
     const existing = await prisma.parcel.findUnique({

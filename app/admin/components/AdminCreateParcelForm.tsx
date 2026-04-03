@@ -301,7 +301,11 @@ export default function AdminCreateParcelForm({
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || t('createError'));
+        if (data.errorCode === 'USER_EMAIL_NOT_REGISTERED') {
+          setError(t('userEmailNotRegistered'));
+        } else {
+          setError(data.error || t('createError'));
+        }
         setLoading(false);
         return;
       }
@@ -347,6 +351,7 @@ export default function AdminCreateParcelForm({
               className="w-full placeholder:font-normal placeholder:text-black placeholder:text-[14px] rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
               placeholder={t('userEmailPlaceholder')}
             />
+            <p className="mt-1 text-[13px] text-gray-600">{t('userEmailRegisteredOnlyHint')}</p>
           </div>
 
           <div className="md:col-span-2">
