@@ -12,7 +12,8 @@ export default async function DashboardBalancePage() {
 
   if (!session?.user) redirect('/login');
   if (session.user.role === 'ADMIN') redirect('/admin');
-  if (session.user.role === 'EMPLOYEE' || session.user.role === 'SUPPORT') redirect('/employee');
+  if (session.user.role === 'EMPLOYEE') redirect('/employee');
+  if (session.user.role === 'SUPPORT') redirect('/support');
 
   const userId = session.user.id;
 

@@ -100,14 +100,18 @@ const Header = () => {
   const panelHref =
     role === 'ADMIN'
       ? '/admin'
-      : role === 'EMPLOYEE' || role === 'SUPPORT'
+      : role === 'EMPLOYEE'
         ? '/employee'
+        : role === 'SUPPORT'
+          ? '/support'
         : '/dashboard';
   const panelLabel =
     role === 'ADMIN'
       ? t('common.adminPanel')
-      : role === 'EMPLOYEE' || role === 'SUPPORT'
+      : role === 'EMPLOYEE'
         ? t('common.employeePanel')
+        : role === 'SUPPORT'
+          ? t('common.supportPanel')
         : t('common.myCabinet');
 
   const rawName = session?.user?.name?.trim();

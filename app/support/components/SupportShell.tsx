@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../../../lib/auth';
-import EmployeeSidebar from './EmployeeSidebar';
+import SupportSidebar from './SupportSidebar';
 
-export default async function EmployeeShell({
+export default async function SupportShell({
   title,
   description,
   children,
@@ -15,15 +15,16 @@ export default async function EmployeeShell({
 }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/login');
-  if (session.user.role !== 'EMPLOYEE') {
-    redirect(session.user.role === 'SUPPORT' ? '/support' : '/');
+
+  if (session.user.role !== 'SUPPORT') {
+    redirect(session.user.role === 'EMPLOYEE' ? '/employee' : '/');
   }
 
   return (
     <div className=" pt-20 min-h-screen  bg py-8">
       <div className="mx-auto w-full  px-4">
         <div className="grid grid-cols-1 mt-10 gap-6 lg:grid-cols-[280px_1fr] lg:items-start">
-          <EmployeeSidebar />
+          <SupportSidebar />
           <main className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <h1 className="text-xl font-bold text-black">{title}</h1>
             {description ? <p className="mt-2 text-[16px] text-black">{description}</p> : null}
@@ -34,3 +35,4 @@ export default async function EmployeeShell({
     </div>
   );
 }
+

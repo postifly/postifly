@@ -60,8 +60,10 @@ const LoginPage = () => {
         const dest =
           role === 'ADMIN'
             ? '/admin'
-            : role === 'EMPLOYEE' || role === 'SUPPORT'
+            : role === 'EMPLOYEE'
               ? '/employee'
+              : role === 'SUPPORT'
+                ? '/support'
               : '/dashboard';
         router.push(dest);
         router.refresh();

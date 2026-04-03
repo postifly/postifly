@@ -41,7 +41,8 @@
     "account": "Аккаунт",
     "myCabinet": "Мой кабинет",
     "adminPanel": "Панель администратора",
-    "employeePanel": "Панель сотрудника"
+    "employeePanel": "Панель сотрудника",
+    "supportPanel": "Панель поддержки"
   },
   "adminsidebar": {
     "users": "Пользователи",

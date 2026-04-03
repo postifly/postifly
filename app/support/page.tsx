@@ -3,9 +3,9 @@ import { redirect } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { getLocale } from 'next-intl/server';
 import { getTranslations } from 'next-intl/server';
-import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import EmployeeShell from './components/EmployeeShell';
+import { authOptions } from '@/lib/auth';
+import SupportShell from './components/SupportShell';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,12 +19,10 @@ const STATUS_KEYS: Record<string, string> = {
   ready_for_pickup: 'statusReadyForPickup',
 };
 
-export default async function EmployeeHomePage() {
+export default async function SupportHomePage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/login');
-  if (session.user.role !== 'EMPLOYEE') {
-    redirect(session.user.role === 'SUPPORT' ? '/support' : '/');
-  }
+  if (session.user.role !== 'SUPPORT') redirect(session.user.role === 'EMPLOYEE' ? '/employee' : '/');
 
   const parcels = await prisma.parcel.findMany({
     where: { createdById: session.user.id },
@@ -40,20 +38,20 @@ export default async function EmployeeHomePage() {
 
   const title =
     locale === 'ru'
-      ? 'Панель сотрудника'
+      ? 'Панель поддержки'
       : locale === 'en'
-        ? 'Employee dashboard'
-        : 'თანამშრომლის პანელი';
+        ? 'Support dashboard'
+        : 'საფორთის პანელი';
 
   const dateLocale = locale === 'ru' ? 'ru-RU' : locale === 'en' ? 'en-GB' : 'ka-GE';
 
   return (
-    <EmployeeShell title={title} description={t('homeDescription')}>
+    <SupportShell title={title} description={t('homeDescription')}>
       <div className="space-y-8">
         <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-6">
           <p className="text-[16px] text-black">{t('homeHint')}</p>
           <Link
-            href="/employee/parcels/new"
+            href="/support/parcels/new"
             className="mt-5 inline-flex items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"
           >
             {t('addParcelCta')}
@@ -101,6 +99,7 @@ export default async function EmployeeHomePage() {
           )}
         </section>
       </div>
-    </EmployeeShell>
+    </SupportShell>
   );
 }
+

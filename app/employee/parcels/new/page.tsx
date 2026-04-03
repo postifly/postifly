@@ -13,7 +13,9 @@ export const dynamic = 'force-dynamic';
 export default async function EmployeeNewParcelPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect('/login');
-  if (session.user.role !== 'EMPLOYEE' && session.user.role !== 'SUPPORT') redirect('/');
+  if (session.user.role !== 'EMPLOYEE') {
+    redirect(session.user.role === 'SUPPORT' ? '/support' : '/');
+  }
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },

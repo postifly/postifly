@@ -41,7 +41,8 @@
     "account": "Account",
     "myCabinet": "My Cabinet",
     "adminPanel": "Admin Panel",
-    "employeePanel": "Employee panel"
+    "employeePanel": "Employee panel",
+    "supportPanel": "Support panel"
   },
   "adminsidebar": {
     "users": "Users",

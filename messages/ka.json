@@ -140,7 +140,8 @@
     "account": "ანგარიში",
     "myCabinet": "ჩემი კაბინეტი",
     "adminPanel": "Admin Panel",
-    "employeePanel": "თანამშრომლის პანელი"
+    "employeePanel": "თანამშრომლის პანელი",
+    "supportPanel": "საფორთის პანელი"
   },
   "header": {
     "services": "სერვისები",
