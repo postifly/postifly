@@ -117,6 +117,7 @@ export default function UsersTable({
     email: isRu ? 'Эл. почта' : isEn ? 'Email' : 'ელ-ფოსტა',
     name: isRu ? 'Имя' : isEn ? 'Name' : 'სახელი',
     role: isRu ? 'Роль' : isEn ? 'Role' : 'როლი',
+    staffAssignmentCol: isRu ? 'Страна' : isEn ? 'Country' : 'ქვეყანა',
     registration: isRu ? 'Регистрация' : isEn ? 'Registered' : 'რეგისტრაცია',
     action: isRu ? 'Действие' : isEn ? 'Action' : 'მოქმედება',
     notFound: isRu ? 'Пользователь не найден.' : isEn ? 'User not found.' : 'მომხმარებელი ვერ მოიძებნა.',
@@ -125,7 +126,7 @@ export default function UsersTable({
     deleting: isRu ? 'Удаление...' : isEn ? 'Deleting...' : 'წაიშლება...',
     delete: isRu ? 'Удалить' : isEn ? 'Delete' : 'წაშლა',
     profile: isRu ? 'Профиль' : isEn ? 'Profile' : 'პროფილი',
-    employeeCountry: isRu ? 'Страна (сотрудник)' : isEn ? 'Country (employee)' : 'ქვეყანა (თანამშრომელი)',
+    employeeCountry: isRu ? 'Страна (сотрудник)' : isEn ? 'Country (support)' : 'ქვეყანა (support)',
     balance: isRu ? 'Баланс' : isEn ? 'Balance' : 'ბალანსი',
     updated: isRu ? 'Обновлено' : isEn ? 'Updated' : 'განახლდა',
     selectCountry: isRu ? 'Выберите страну' : isEn ? 'Select country' : 'აირჩიე ქვეყანა',
@@ -176,8 +177,8 @@ export default function UsersTable({
 
   const roleLabels = {
     USER: isRu ? 'Пользователь' : isEn ? 'User' : 'მომხმარებელი',
-    EMPLOYEE: isRu ? 'Сотрудник' : isEn ? 'Employee' : 'თანამშრომელი',
-    SUPPORT: isRu ? 'Поддержка' : isEn ? 'Support' : 'საფორთი',
+    EMPLOYEE: isRu ? 'Сотрудник' : isEn ? 'Employee' : 'Support',
+    SUPPORT: isRu ? 'Поддержка' : isEn ? 'Support' : 'Support',
     ADMIN: isRu ? 'Админ' : isEn ? 'Admin' : 'ადმინი',
   } as const;
   const countryLabels: Record<(typeof COUNTRY_OPTIONS)[number], string> = {
@@ -199,6 +200,19 @@ export default function UsersTable({
     delivered: isRu ? 'Доставлена' : isEn ? 'Delivered' : 'გატანილი',
     cancelled: isRu ? 'Отменена' : isEn ? 'Cancelled' : 'გაუქმებული',
   };
+
+  function staffAssignmentCell(u: User): string {
+    if (u.role === 'EMPLOYEE') {
+      if (!u.employeeCountry) return '—';
+      return (
+        countryLabels[u.employeeCountry as keyof typeof countryLabels] ?? u.employeeCountry
+      );
+    }
+    if (u.role === 'SUPPORT') {
+      return isRu ? 'Поддержка' : 'Support';
+    }
+    return '—';
+  }
 
   const [users, setUsers] = useState(initialUsers);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -652,6 +666,9 @@ export default function UsersTable({
               <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{text.name}</th>
               <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">PO</th>
               <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{text.role}</th>
+              <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">
+                {text.staffAssignmentCol}
+              </th>
               <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{text.registration}</th>
               <th className="px-4 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">{text.action}</th>
             </tr>
@@ -659,7 +676,7 @@ export default function UsersTable({
           <tbody className="divide-y divide-gray-100 bg-white">
             {pagedUsers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-[16px] text-gray-600">
+                <td colSpan={7} className="px-4 py-6 text-center text-[16px] text-gray-600">
                   {text.notFound}
                 </td>
               </tr>
@@ -682,6 +699,7 @@ export default function UsersTable({
                       <td className="px-4 py-2 text-[16px] text-black">
                         {roleLabels[(user.role as keyof typeof roleLabels)] ?? user.role}
                       </td>
+                      <td className="px-4 py-2 text-[16px] text-black">{staffAssignmentCell(user)}</td>
                       <td className="px-4 py-2 text-[16px] text-black">
                         {user.createdAt}
                       </td>
@@ -713,7 +731,7 @@ export default function UsersTable({
 
                     {isExpanded && (
                       <tr className="bg-gray-50">
-                        <td colSpan={6} className="px-4 py-4 text-black text-[14px] md:text-[18px]">
+                        <td colSpan={7} className="px-4 py-4 text-black text-[14px] md:text-[18px]">
                           {!d ? (
                             <div className="text-gray-700">{text.loading}</div>
                           ) : (
