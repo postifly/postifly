@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 
 export type UserParcel = {
@@ -45,15 +46,6 @@ type Props = {
   parcels: UserParcel[];
 };
 
-const STATUS_OPTIONS: { value: string; label: string }[] = [
-  { value: 'pending', label: 'მოლოდინში' },
-  { value: 'in_transit', label: 'გზაში' },
-  { value: 'arrived', label: 'ჩამოსული' },
-
-  { value: 'delivered', label: 'გატანილი' },
-  { value: 'cancelled', label: 'გაუქმებული' },
-];
-
 const COURIER_LABEL = 'საკურიერო ';
 const COURIER_ERR = 'შენახვა ვერ მოხერხდა. სცადეთ თავიდან.';
 /** საკურიერო ჩართულია, საკურიერო გადასახადი ჯერ არ არის დაყენებული */
@@ -64,6 +56,18 @@ const PAYABLE_AMOUNT_PENDING_NOTICE =
   'ტარიფი ვერ მოიძებნა ამ ქვეყნისა და წონისთვის. დაუკავშირდით ადმინისტრაციას.';
 
 export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
+  const tStatus = useTranslations('trackingPage.status');
+  const statusOptions = useMemo(
+    () =>
+      [
+        { value: 'pending', label: tStatus('pending') },
+        { value: 'in_transit', label: tStatus('in_transit') },
+        { value: 'arrived', label: tStatus('arrived') },
+        { value: 'delivered', label: tStatus('delivered') },
+        { value: 'cancelled', label: tStatus('cancelled') },
+      ] as { value: string; label: string }[],
+    [tStatus],
+  );
   const [activeStatus, setActiveStatus] = useState<string>('pending');
   const [parcels, setParcels] = useState<UserParcel[]>(parcelsProp);
   const [courierSavingId, setCourierSavingId] = useState<string | null>(null);
@@ -136,7 +140,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
       </div>
       {/* Status tabs */}
       <div className="flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 text-[14px] md:text-[15px]">
-        {STATUS_OPTIONS.map((status) => {
+        {statusOptions.map((status) => {
           const isActive = activeStatus === status.value;
           const count = parcels.filter((p) => p.status === status.value).length;
 

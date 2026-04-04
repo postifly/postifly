@@ -72,7 +72,7 @@ export default function ParcelsTable({
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
   const t = {
-    pending: isRu ? 'В ожидании' : isEn ? 'Pending' : 'მოლოდინში',
+    pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'საწყობი',
     inTransit: isRu ? 'В пути' : isEn ? 'In transit' : 'გზაში',
     arrived: isRu ? 'Прибывшие' : isEn ? 'Arrived' : 'ჩამოსული',
     region: isRu ? 'Регион' : isEn ? 'Region' : 'რეგიონი',

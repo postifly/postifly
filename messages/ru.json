@@ -46,7 +46,7 @@
   },
   "adminsidebar": {
     "users": "Пользователи",
-    "incoming": "Поступившие",
+    "incoming": "На складе",
     "inTransit": "В пути",
     "warehouse": "Прибывшие",
     "regions": "Регионы",
@@ -75,7 +75,7 @@
     "colCustomerName": "Имя получателя",
     "colStatus": "Статус",
     "colDate": "Добавлено",
-    "statusPending": "В ожидании",
+    "statusPending": "Склад",
     "statusInTransit": "В пути",
     "statusArrived": "Прибыли",
     "statusRegion": "В регионе",
@@ -212,7 +212,7 @@
       "network": "Ошибка сети — попробуйте снова"
     },
     "status": {
-      "pending": "Ожидает",
+      "pending": "Склад",
       "in_transit": "В пути",
       "arrived": "Прибыла",
       "region": "В регионе",
@@ -395,11 +395,12 @@
     "courierServiceLabel": "Курьерская доставка",
     "courierServiceToggleError": "Не удалось сохранить. Попробуйте снова.",
     "orderStatus": {
-      "pending": "В ожидании",
+      "pending": "Склад",
       "warehouse": "Прибыла",
       "in_transit": "В пути",
       "stopped": "Прибыла",
       "delivered": "Доставлена",
+      "cancelled": "Отменена",
       "other": "Другое"
     },
     "statusSelectLabel": "Выберите статус",

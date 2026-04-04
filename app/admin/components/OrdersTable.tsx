@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import EditOrderModal from '../in-transit/components/EditOrderModal';
 import DeleteOrderModal from '../in-transit/components/DeleteOrderModal';
 
@@ -31,23 +31,24 @@ type OrdersTableProps = {
   onOrderUpdated?: (order: Order) => void;
 };
 
-const statusOptions = [
-  { value: 'in_transit', label: 'გზაში' },
-  { value: 'warehouse', label: 'ჩამოსული' },
-  { value: 'stopped', label: 'გაჩერებული' },
-  { value: 'delivered', label: 'გაცემული' },
-  { value: 'pending', label: 'მოლოდინში' },
-  { value: 'cancelled', label: 'გაუქმებული' },
-];
-
 export default function OrdersTable({ orders: initialOrders, currentStatus, onOrderRemoved, onOrderUpdated }: OrdersTableProps) {
-  const router = useRouter();
+  const tOrderStatus = useTranslations('dashboard.orderStatus');
+  const statusOptions = useMemo(
+    () => [
+      { value: 'in_transit', label: tOrderStatus('in_transit') },
+      { value: 'warehouse', label: tOrderStatus('warehouse') },
+      { value: 'stopped', label: tOrderStatus('stopped') },
+      { value: 'delivered', label: tOrderStatus('delivered') },
+      { value: 'pending', label: tOrderStatus('pending') },
+      { value: 'cancelled', label: tOrderStatus('cancelled') },
+    ],
+    [tOrderStatus],
+  );
   const [orders, setOrders] = useState(initialOrders);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const [deletingOrder, setDeletingOrder] = useState<Order | null>(null);
-console.log(orders);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     setUpdatingId(orderId);

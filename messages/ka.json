@@ -27,7 +27,7 @@
   },
   "adminsidebar": {
     "users": "მომხმარებლები",
-    "incoming": "შემოსული",
+    "incoming": "საწყობში",
     "inTransit": "გზაში",
     "warehouse": "ჩამოსული",
     "regions": "რეგიონი",
@@ -56,7 +56,7 @@
     "colCustomerName": "მიმღების სახელი",
     "colStatus": "სტატუსი",
     "colDate": "დამატება",
-    "statusPending": "მოლოდინში",
+    "statusPending": "საწყობი",
     "statusInTransit": "გზაში",
     "statusArrived": "ჩამოსული",
     "statusRegion": "რეგიონში",
@@ -212,7 +212,7 @@
       "network": "ქსელის შეცდომა, სცადეთ ხელახლა"
     },
     "status": {
-      "pending": "მოლოდინში",
+      "pending": "საწყობი",
       "in_transit": "გზაში",
       "arrived": "ჩამოსული",
       "region": "რეგიონში",
@@ -396,11 +396,12 @@
     "courierServiceLabel": "საკურიერო მომსახურება",
     "courierServiceToggleError": "შენახვა ვერ მოხერხდა. სცადეთ თავიდან.",
     "orderStatus": {
-      "pending": "მოლოდინში",
+      "pending": "საწყობი",
       "warehouse": "ჩამოსული",
       "in_transit": "გზაში",
       "stopped": "ჩამოსული",
       "delivered": "გატანილი",
+      "cancelled": "გაუქმებული",
       "other": "სხვა"
     },
     "statusSelectLabel": "სტატუსის არჩევა",

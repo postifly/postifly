@@ -40,7 +40,7 @@ export default function OrdersTable({ orders: initialOrders, onOrderRemoved, onO
     warehouse: isRu ? 'Прибыла' : isEn ? 'Arrived' : 'ჩამოსული',
     stopped: isRu ? 'Остановлена' : isEn ? 'Stopped' : 'გაჩერებული',
     delivered: isRu ? 'Выдана' : isEn ? 'Delivered' : 'გაცემული',
-    pending: isRu ? 'В ожидании' : isEn ? 'Pending' : 'მოლოდინში',
+    pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'საწყობი',
     cancelled: isRu ? 'Отменена' : isEn ? 'Cancelled' : 'გაუქმებული',
     statusUpdateError: isRu ? 'Ошибка при обновлении статуса' : isEn ? 'Failed to update status' : 'სტატუსის განახლებისას მოხდა შეცდომა',
     genericError: isRu ? 'Произошла ошибка. Пожалуйста, попробуйте снова.' : isEn ? 'An error occurred. Please try again.' : 'დაფიქსირდა შეცდომა. გთხოვთ სცადოთ თავიდან.',

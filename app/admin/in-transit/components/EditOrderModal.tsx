@@ -251,7 +251,7 @@ export default function EditOrderModal({ isOpen, onClose, order, onOrderUpdated 
                   <option value="warehouse">ჩამოსული</option>
                   <option value="stopped">გაჩერებული</option>
                   <option value="delivered">გაცემული</option>
-                  <option value="pending">მოლოდინში</option>
+                  <option value="pending">საწყობი</option>
                   <option value="processing">დამუშავებაში</option>
                   <option value="completed">დასრულებული</option>
                   <option value="cancelled">გაუქმებული</option>

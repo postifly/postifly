@@ -46,7 +46,7 @@
   },
   "adminsidebar": {
     "users": "Users",
-    "incoming": "Incoming",
+    "incoming": "In warehouse",
     "inTransit": "In transit",
     "warehouse": "Arrived",
     "regions": "Regions",
@@ -75,7 +75,7 @@
     "colCustomerName": "Recipient name",
     "colStatus": "Status",
     "colDate": "Added",
-    "statusPending": "Pending",
+    "statusPending": "Warehouse",
     "statusInTransit": "In transit",
     "statusArrived": "Arrived",
     "statusRegion": "Region",
@@ -212,7 +212,7 @@
       "network": "Network error — please try again"
     },
     "status": {
-      "pending": "Pending",
+      "pending": "Warehouse",
       "in_transit": "In transit",
       "arrived": "Arrived",
       "region": "In your region",
@@ -395,11 +395,12 @@
     "courierServiceLabel": "Courier delivery",
     "courierServiceToggleError": "Could not save. Please try again.",
     "orderStatus": {
-      "pending": "Pending",
+      "pending": "Warehouse",
       "warehouse": "Arrived",
       "in_transit": "In transit",
       "stopped": "Arrived",
       "delivered": "Delivered",
+      "cancelled": "Cancelled",
       "other": "Other"
     },
     "statusSelectLabel": "Select status",

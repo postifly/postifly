@@ -192,7 +192,7 @@ export default function UsersTable({
     TR: isRu ? 'Турция' : isEn ? 'Turkey' : 'თურქეთი',
   };
   const statusLabels: Record<string, string> = {
-    pending: isRu ? 'В ожидании' : isEn ? 'Pending' : 'მოლოდინში',
+    pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'საწყობი',
     in_transit: isRu ? 'В пути' : isEn ? 'In transit' : 'გზაში',
     arrived: isRu ? 'Прибыла' : isEn ? 'Arrived' : 'ჩამოსული',
     region: isRu ? 'Регион' : isEn ? 'Region' : 'რეგიონი',
