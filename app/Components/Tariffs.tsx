@@ -60,7 +60,7 @@ const TARIFF_ROWS: TariffRow[] = [
     countryCode: 'CN',
     pricePerKg: 12,
     deliveryDaysPrefix: '5-8',
-    currencySymbol: '$',
+    currencySymbol: '¥',
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
@@ -108,7 +108,7 @@ const TARIFF_ROWS: TariffRow[] = [
     countryCode: 'TR',
     pricePerKg: 4,
     deliveryDaysPrefix: '3-6',
-    currencySymbol: '$',
+    currencySymbol: '₺',
     deliveryNoteKey: 'tariffLandShipping',
   },
 ];
@@ -392,7 +392,9 @@ export default function Tariffs() {
                 <div className="mb-3 text-lg tracking-[2px] text-amber-500 sm:text-xl">
                   {'★'.repeat(REVIEWS[activeIndex].rating)}
                 </div>
-                <p className="text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">"{REVIEWS[activeIndex].text}"</p>
+                <p className="text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">
+                  &ldquo;{REVIEWS[activeIndex].text}&rdquo;
+                </p>
                 <p className="mt-4 text-xs font-bold text-violet-700 sm:text-sm">{REVIEWS[activeIndex].name}</p>
               </article>
 
