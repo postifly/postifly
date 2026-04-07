@@ -90,6 +90,7 @@ export default function ParcelsTable({
     tracking: isRu ? 'Трекинг' : isEn ? 'Tracking' : 'თრექინგი',
     quantity: isRu ? 'Количество' : isEn ? 'Quantity' : 'რაოდენობა',
     weight: isRu ? 'Вес' : isEn ? 'Weight' : 'წონა',
+    itemValue: isRu ? 'Стоимость товара' : isEn ? 'Item value' : 'ნივთის ღირებულება',
     amount: isRu ? 'Сумма' : isEn ? 'Amount' : 'თანხა',
     phone: isRu ? 'Телефон' : isEn ? 'Phone' : 'ტელეფონი',
     city: isRu ? 'Город' : isEn ? 'City' : 'ქალაქი',
@@ -364,10 +365,20 @@ export default function ParcelsTable({
                   {parcel.weight != null ? `${parcel.weight} kg` : '—'}
                 </span>
 
-                <span className="text-black">{t.amount}</span>
+                <span className="text-black">{t.itemValue}</span>
                 <span className="text-black">
-                  {(parcel.shippingAmount ?? parcel.price).toFixed(2)} {parcel.currency || 'GEL'}
+                  {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
                 </span>
+
+                {currentStatus === 'arrived' || currentStatus === 'delivered' ? (
+                  <>
+                    <span className="text-black">{t.amount}</span>
+                    <span className="text-black">
+                      {(parcel.shippingAmount ?? parcel.price).toFixed(2)}{' '}
+                      {parcel.currency || 'GEL'}
+                    </span>
+                  </>
+                ) : null}
 
                 <span className="text-black">{t.phone}</span>
                 <span className="text-black">
@@ -600,10 +611,20 @@ export default function ParcelsTable({
                             {parcel.weight != null ? `${parcel.weight} kg` : '—'}
                           </span>
 
-                          <span className="text-black">{t.amount}</span>
+                          <span className="text-black">{t.itemValue}</span>
                           <span>
-                            {(parcel.shippingAmount ?? parcel.price).toFixed(2)} {parcel.currency || 'GEL'}
+                            {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
                           </span>
+
+                          {currentStatus === 'arrived' || currentStatus === 'delivered' ? (
+                            <>
+                              <span className="text-black">{t.amount}</span>
+                              <span>
+                                {(parcel.shippingAmount ?? parcel.price).toFixed(2)}{' '}
+                                {parcel.currency || 'GEL'}
+                              </span>
+                            </>
+                          ) : null}
 
                           <span className="text-black">{t.phone}</span>
                           <span>{formatPhone(parcel.user.phone)}</span>
