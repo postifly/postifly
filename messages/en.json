@@ -56,7 +56,8 @@
     "payments": "Payments",
     "editTariffs": "Edit tariffs",
     "chat": "Chat",
-    "settings": "Settings"
+    "settings": "Settings",
+    "currencyRates": "Currency rates"
   },
   "employeeSidebar": {
     "home": "Home",

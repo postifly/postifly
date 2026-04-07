@@ -41,7 +41,7 @@ export default function EmployeeSidebar() {
 
       <aside className="hidden lg:block">
         <div className="sticky top-4 rounded-xl border border-slate-200 bg-white shadow-lg shadow-slate-200/70 overflow-hidden">
-          <div className="max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden py-2">
+          <div className="max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden py-2">
             <nav className="flex flex-col gap-0.5 px-2">
               <Link
                 href="/employee"

@@ -8,6 +8,18 @@ import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
+const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+  GB: 'GBP',
+  US: 'USD',
+  CN: 'CNY',
+  IT: 'EUR',
+  GR: 'EUR',
+  ES: 'EUR',
+  FR: 'EUR',
+  DE: 'EUR',
+  TR: 'TRY',
+};
+
 const createTariffSchema = z.object({
   originCountry: z.string().min(1),
   destinationCountry: z.string().min(1),
@@ -50,7 +62,10 @@ export async function GET() {
       {
         tariffs: tariffs.map((t) => ({
           ...t,
-          currency: t.currency || 'GEL',
+          currency:
+            t.currency ||
+            CURRENCY_BY_ORIGIN_ISO[t.originCountry?.toUpperCase?.() as string] ||
+            'GEL',
         })),
       },
       {
@@ -74,6 +89,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const data = createTariffSchema.parse(body);
+    const derivedCurrency =
+      CURRENCY_BY_ORIGIN_ISO[data.originCountry.toUpperCase()] ?? data.currency;
     const tariff = await prisma.tariff.create({
       data: {
         originCountry: data.originCountry,
@@ -81,7 +98,7 @@ export async function POST(request: NextRequest) {
         minWeight: data.minWeight,
         maxWeight: data.maxWeight ?? null,
         pricePerKg: data.pricePerKg,
-        currency: data.currency,
+        currency: derivedCurrency,
         isActive: data.isActive ?? true,
       },
     });
@@ -108,6 +125,8 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const data = updateTariffSchema.parse(body);
+    const derivedCurrency =
+      CURRENCY_BY_ORIGIN_ISO[data.originCountry.toUpperCase()] ?? data.currency;
 
     if (data.maxWeight !== undefined && data.maxWeight !== null && data.maxWeight < data.minWeight) {
       return NextResponse.json({ error: 'Max kg უნდა იყოს >= Min kg ან ცარიელი (∞)' }, { status: 400 });
@@ -121,7 +140,7 @@ export async function PUT(request: NextRequest) {
         minWeight: data.minWeight,
         maxWeight: data.maxWeight ?? null,
         pricePerKg: data.pricePerKg,
-        currency: data.currency,
+        currency: derivedCurrency,
         isActive: data.isActive ?? true,
       },
     });

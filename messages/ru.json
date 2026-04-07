@@ -56,7 +56,8 @@
     "payments": "Платежи",
     "editTariffs": "Изменить тарифы",
     "chat": "Чат",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "currencyRates": "Курсы валют"
   },
   "employeeSidebar": {
     "home": "Главная",

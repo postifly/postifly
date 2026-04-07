@@ -37,7 +37,8 @@
     "payments": "გადახდები",
     "editTariffs": "ტარიფების შეცვლა",
     "chat": "ჩათი",
-    "settings": "პარამეტრები"
+    "settings": "პარამეტრები",
+    "currencyRates": "ვალუტის კურსები"
   },
   "employeeSidebar": {
     "home": "მთავარი",

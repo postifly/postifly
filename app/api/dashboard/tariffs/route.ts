@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +33,7 @@ export async function GET() {
   }
 
   try {
+    const nbgRates = await fetchNbgRates().catch(() => null);
     const tariffs = await prisma.tariff.findMany({
       where: {
         destinationCountry: 'GE',
@@ -46,7 +48,15 @@ export async function GET() {
       const formCode = Object.entries(FORM_TO_TARIFF_COUNTRY).find(
         ([_, db]) => db === t.originCountry
       )?.[0];
-      if (formCode != null) byFormCountry[formCode] = t.pricePerKg;
+      if (formCode == null) continue;
+      const amountGel =
+        nbgRates && t.currency
+          ? convertToGel(nbgRates, t.pricePerKg, t.currency)
+          : null;
+      byFormCountry[formCode] =
+        amountGel != null
+          ? Math.round(amountGel * 100) / 100
+          : t.pricePerKg;
     }
 
     return NextResponse.json(

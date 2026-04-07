@@ -17,6 +17,18 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   TR,
 };
 
+const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+  GB: 'GBP',
+  US: 'USD',
+  CN: 'CNY',
+  IT: 'EUR',
+  GR: 'EUR',
+  ES: 'EUR',
+  FR: 'EUR',
+  DE: 'EUR',
+  TR: 'TRY',
+};
+
 /** DB `originCountry` (ISO) + ფორმის კოდი → `parcels.originCountryLabels` */
 const ORIGIN_COUNTRIES: { code: string; formCode: string }[] = [
   { code: 'GB', formCode: 'uk' },
@@ -50,6 +62,7 @@ type CountryRow = {
   formCode: string;
   tariffId: string | null;
   pricePerKg: number | '';
+  currency: string;
 };
 
 export default function TariffsManager() {
@@ -85,11 +98,13 @@ export default function TariffsManager() {
         );
         const tariff =
           candidates.find((x) => x.maxWeight == null) ?? candidates[0] ?? null;
+        const currency = CURRENCY_BY_ORIGIN_ISO[code] ?? tariff?.currency ?? 'GEL';
         return {
           code,
           formCode,
           tariffId: tariff?.id ?? null,
           pricePerKg: tariff != null ? tariff.pricePerKg : ('' as const),
+          currency,
         };
       });
       built.forEach((r) => {
@@ -132,7 +147,7 @@ export default function TariffsManager() {
             minWeight: 0,
             maxWeight: null,
             pricePerKg: price,
-            currency: 'GEL',
+            currency: row.currency,
             isActive: true,
           }),
         });
@@ -151,7 +166,7 @@ export default function TariffsManager() {
             minWeight: 0,
             maxWeight: null,
             pricePerKg: price,
-            currency: 'GEL',
+            currency: row.currency,
             isActive: true,
           }),
         });
@@ -192,7 +207,7 @@ export default function TariffsManager() {
             minWeight: 0,
             maxWeight: null,
             pricePerKg: 0,
-            currency: 'GEL',
+            currency: row.currency,
             isActive: true,
           }),
         });
@@ -264,7 +279,10 @@ export default function TariffsManager() {
                 ქვეყანა
               </th>
               <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">
-                ფასი 1 კგ (GEL)
+                ფასი 1 კგ
+              </th>
+              <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">
+                ვალუტა
               </th>
               <th className="px-3 py-2 text-left text-[16px] md:text-[18px] font-semibold text-black">
                 მოქმედებები
@@ -303,6 +321,9 @@ export default function TariffsManager() {
                     placeholder=""
                     className="w-28 rounded-md border border-gray-300 px-2 py-1 text-[16px] text-black focus:outline-none focus:ring-2 focus:ring-black"
                   />
+                </td>
+                <td className="px-3 py-2 text-[16px] font-semibold text-black">
+                  {row.currency}
                 </td>
                 <td className="px-3 py-2">
                   <div className="flex flex-wrap items-center gap-2">
