@@ -28,6 +28,7 @@ export function computeShippingAmountGel(
 
 export type ShippingGelBreakdown = {
   amountGel: number;
+  pricePerKgGel: number;
   formula: string;
 };
 
@@ -54,10 +55,11 @@ export function computeShippingGelBreakdown(
   const gel = convertToGel(nbgRates, resolved.shippingTotal, resolved.currency);
   if (gel == null) return null;
   const amountGel = Math.round(gel * 100) / 100;
+  const pricePerKgGel = Math.round(resolved.pricePerKg * rate * 100) / 100;
 
   const w = parcel.weight;
   const pricePerKg = resolved.pricePerKg;
   const cur = resolved.currency.toUpperCase();
   const formula = `${w.toFixed(3)} kg × ${pricePerKg.toFixed(2)} ${cur}/kg × ${rate.toFixed(4)} GEL/${cur}`;
-  return { amountGel, formula };
+  return { amountGel, pricePerKgGel, formula };
 }

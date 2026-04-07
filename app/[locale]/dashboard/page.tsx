@@ -8,6 +8,8 @@ import {
   formKeyForTariffIso,
   resolveTariffForParcel,
 } from '@/lib/tariffLookup';
+import { fetchNbgRates } from '@/lib/nbgRates';
+import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
 import DashboardAddressesSection from '@/app/dashboard/components/DashboardAddressesSection';
 import DashboardTariffsSection from '@/app/dashboard/components/DashboardTariffsSection';
 import UserParcelsTabs, { UserParcel } from '@/app/dashboard/components/UserParcelsTabs';
@@ -31,7 +33,7 @@ export default async function DashboardPage({ params }: Props) {
 
   const userId = session.user.id;
 
-  const [parcels, tariffs, user] = await Promise.all([
+  const [parcels, tariffs, user, nbgRates] = await Promise.all([
     prisma.parcel.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -52,6 +54,7 @@ export default async function DashboardPage({ params }: Props) {
       where: { id: userId },
       select: { balance: true, firstName: true, lastName: true, roomNumber: true },
     }),
+    fetchNbgRates().catch(() => null),
   ]);
 
   const intlLocale =
@@ -95,13 +98,20 @@ export default async function DashboardPage({ params }: Props) {
       parcel.originCountry,
       parcel.weight,
     );
+    const breakdown = computeShippingGelBreakdown(
+      { originCountry: parcel.originCountry, weight: parcel.weight },
+      tariffs,
+      nbgRates,
+    );
     return {
       id: parcel.id,
       trackingNumber: parcel.trackingNumber,
       status: parcel.status,
       price: parcel.price,
-      shippingAmount: parcel.shippingAmount ?? null,
-      currency: parcel.currency || 'GEL',
+      shippingAmount:
+        breakdown?.amountGel ?? parcel.shippingAmount ?? null,
+      currency: 'GEL',
+      shippingFormula: breakdown?.formula ?? null,
       weight: parcel.weight != null ? `${parcel.weight} kg` : '',
       weightKg: parcel.weight ?? null,
       originCountry: parcel.originCountry || null,
@@ -111,8 +121,8 @@ export default async function DashboardPage({ params }: Props) {
       courierServiceRequested: parcel.courierServiceRequested,
       courierFeeAmount: parcel.courierFeeAmount,
       payableAmount: parcel.payableAmount,
-      tariffShippingPayable: resolved?.shippingTotal ?? null,
-      tariffPricePerKg: resolved?.pricePerKg ?? null,
+      tariffShippingPayable: breakdown?.amountGel ?? null,
+      tariffPricePerKg: breakdown?.pricePerKgGel ?? null,
     };
   });
 

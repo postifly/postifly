@@ -12,6 +12,7 @@ export type UserParcel = {
   price: number;
   shippingAmount: number | null;
   currency: string;
+  shippingFormula?: string | null;
   weight: string;
   /** წონა კგ-ში — ტარიფის მიბმა */
   weightKg: number | null;
@@ -31,7 +32,6 @@ export type UserParcel = {
 };
 
 function baseShippingDue(p: UserParcel): number {
-  if (p.tariffShippingPayable != null) return p.tariffShippingPayable;
   return p.shippingAmount ?? p.payableAmount ?? 0;
 }
 
@@ -238,8 +238,11 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                     {parcel.weight || '—'}
                   </td>
                   <td className="px-4 py-3 text-[15px] text-black">
-                    {(parcel.shippingAmount ?? parcel.price).toFixed(2)}{' '}
-                    {parcel.currency}
+                    {parcel.shippingAmount != null
+                      ? `${parcel.shippingAmount.toFixed(2)} ${parcel.currency}${
+                          parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
+                        }`
+                      : '—'}
                   </td>
                   <td className="px-4 py-3 text-[15px] text-black">
                     {parcel.createdAt}
@@ -253,13 +256,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                               {parcel.tariffShippingPayable.toFixed(2)}{' '}
                               {parcel.currency}
                             </span>
-                            {parcel.tariffPricePerKg != null &&
-                              parcel.weightKg != null && (
-                                <span className="text-[12px] text-gray-600">
-                                  ({parcel.tariffPricePerKg.toFixed(2)}{' '}
-                                  {parcel.currency}/კგ × {parcel.weightKg} კგ)
-                                </span>
-                              )}
+                           
                           </>
                         ) : (
                           <span
@@ -377,8 +374,14 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
 
                 <span className="text-black">თანხა</span>
                 <span className="text-black">
-                  {(parcel.shippingAmount ?? parcel.price).toFixed(2)}{' '}
-                  {parcel.currency}
+                  {parcel.shippingAmount != null
+                    ? `${parcel.shippingAmount.toFixed(2)} ${parcel.currency}`
+                    : '—'}
+                  {parcel.shippingFormula ? (
+                    <span className="mt-0.5 block text-[12px] text-gray-600">
+                      ({parcel.shippingFormula})
+                    </span>
+                  ) : null}
                 </span>
               </div>
 

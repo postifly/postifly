@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { authOptions } from '../../lib/auth';
 import prisma from '../../lib/prisma';
 import { resolveTariffForParcel } from '../../lib/tariffLookup';
+import { fetchNbgRates } from '../../lib/nbgRates';
+import { computeShippingGelBreakdown } from '../../lib/parcelShippingGel';
 import DashboardHeader from './components/DashboardHeader';
 import UserParcelsTabs, { UserParcel } from './components/UserParcelsTabs';
 
@@ -17,7 +19,7 @@ export default async function DashboardPage() {
   if (session.user.role === 'SUPPORT') redirect('/support');
 
   const userId = session.user.id;
-  const [parcels, tariffs] = await Promise.all([
+  const [parcels, tariffs, nbgRates] = await Promise.all([
     prisma.parcel.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -34,6 +36,7 @@ export default async function DashboardPage() {
         isActive: true,
       },
     }),
+    fetchNbgRates().catch(() => null),
   ]);
 
   const formattedParcels: UserParcel[] = parcels.map((parcel) => {
@@ -42,13 +45,20 @@ export default async function DashboardPage() {
       parcel.originCountry,
       parcel.weight,
     );
+    const breakdown = computeShippingGelBreakdown(
+      { originCountry: parcel.originCountry, weight: parcel.weight },
+      tariffs,
+      nbgRates,
+    );
     return {
       id: parcel.id,
       trackingNumber: parcel.trackingNumber,
       status: parcel.status,
       price: parcel.price,
-      shippingAmount: parcel.shippingAmount ?? null,
-      currency: parcel.currency || 'GEL',
+      shippingAmount:
+        breakdown?.amountGel ?? parcel.shippingAmount ?? null,
+      currency: 'GEL',
+      shippingFormula: breakdown?.formula ?? null,
       weight: parcel.weight != null ? `${parcel.weight} kg` : '',
       weightKg: parcel.weight ?? null,
       originCountry: parcel.originCountry || null,
@@ -58,8 +68,8 @@ export default async function DashboardPage() {
       courierServiceRequested: parcel.courierServiceRequested,
       courierFeeAmount: parcel.courierFeeAmount,
       payableAmount: parcel.payableAmount,
-      tariffShippingPayable: resolved?.shippingTotal ?? null,
-      tariffPricePerKg: resolved?.pricePerKg ?? null,
+      tariffShippingPayable: breakdown?.amountGel ?? null,
+      tariffPricePerKg: breakdown?.pricePerKgGel ?? null,
     };
   });
 
