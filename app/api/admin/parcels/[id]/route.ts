@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
+import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
 
 const allowedStatuses = [
   'pending',
@@ -102,6 +103,16 @@ export async function PATCH(
 
       return next;
     });
+
+    if (statusChanged && data.status !== undefined) {
+      void notifyParcelOwnerStatusSms({
+        parcelId: id,
+        previousStatus: parcel.status,
+        newStatus: data.status,
+        trackingNumber: updatedParcel.trackingNumber,
+        ownerPhone: updatedParcel.user.phone,
+      });
+    }
 
     return NextResponse.json(
       {

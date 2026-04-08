@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
+import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
 
 /** თანამშრომელს შეუძლია მხოლოდ მოლოდინი / გზაში */
 const allowedStatuses = ['pending', 'in_transit'] as const;
@@ -33,7 +34,12 @@ export async function PATCH(
 
     const parcel = await prisma.parcel.findFirst({
       where: { id, createdById: session.user.id },
-      select: { id: true, status: true },
+      select: {
+        id: true,
+        status: true,
+        trackingNumber: true,
+        user: { select: { phone: true } },
+      },
     });
 
     if (!parcel) {
@@ -62,6 +68,16 @@ export async function PATCH(
 
       return row;
     });
+
+    if (statusChanged) {
+      void notifyParcelOwnerStatusSms({
+        parcelId: parcel.id,
+        previousStatus: parcel.status,
+        newStatus: nextStatus,
+        trackingNumber: parcel.trackingNumber,
+        ownerPhone: parcel.user.phone,
+      });
+    }
 
     return NextResponse.json(
       {
