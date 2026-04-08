@@ -15,7 +15,8 @@ export const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
  * ვალუტა `originCountry`-ზე უნდა განისაზღვროს (ქვეყნის მიხედვით),
  * რადგან DB-ში `currency` ველი ხშირად არ არის თანმიმდევრული.
  */
-const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
+/** ტარიფის origin ISO → ISO ვალუტის კოდი (NBG კურსისთვის). */
+export const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'CNY',

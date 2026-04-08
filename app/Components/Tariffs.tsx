@@ -14,6 +14,7 @@ import {
   DE,
   TR,
 } from 'country-flag-icons/react/3x2';
+import { CURRENCY_BY_ORIGIN_ISO } from '@/lib/tariffLookup';
 
 const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
   GB,
@@ -113,6 +114,22 @@ const TARIFF_ROWS: TariffRow[] = [
   },
 ];
 
+/** DB ტარიფის გარეშე: იგივე NBG კურსი რაც `/api/nbg/rates` + ცხრილის ფასი → ₾ */
+function estimateGelFromTable(
+  countryCode: string,
+  weightKg: number,
+  rates: Record<string, number | null>,
+): { amountGel: number } | null {
+  const row = TARIFF_ROWS.find((r) => r.countryCode === countryCode);
+  if (!row) return null;
+  const cur = CURRENCY_BY_ORIGIN_ISO[countryCode];
+  if (!cur) return null;
+  const gelPerUnit = rates[cur];
+  if (gelPerUnit == null || !Number.isFinite(gelPerUnit) || gelPerUnit <= 0) return null;
+  const amountGel = Math.round(weightKg * row.pricePerKg * gelPerUnit * 100) / 100;
+  return { amountGel };
+}
+
 const viewport = { once: true, amount: 0.15, margin: '-60px 0px -60px 0px' };
 
 const container = {
@@ -162,18 +179,88 @@ export default function Tariffs() {
   const t = useTranslations('home');
   const tAddr = useTranslations('addresses');
   const tCalc = useTranslations('calculator');
+  const tCommon = useTranslations('common');
   const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
   const [weightKg, setWeightKg] = React.useState<string>('1');
   const [tariffPage, setTariffPage] = React.useState<number>(0);
-  const [activeIndex, setActiveIndex] = React.useState(0)
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [shippingCalc, setShippingCalc] = React.useState<{ amountGel: number } | null>(null);
+  const [shippingCalcLoading, setShippingCalcLoading] = React.useState(true);
+  const [shippingCalcUnavailable, setShippingCalcUnavailable] = React.useState(false);
 
   React.useEffect(() => {
     const timerId = window.setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % REVIEWS.length)
-    }, 4200)
+      setActiveIndex((prev) => (prev + 1) % REVIEWS.length);
+    }, 4200);
 
-    return () => window.clearInterval(timerId)
-  }, [])
+    return () => window.clearInterval(timerId);
+  }, []);
+
+  React.useEffect(() => {
+    const ac = new AbortController();
+    const w = Number.parseFloat(weightKg.replace(',', '.'));
+    if (!Number.isFinite(w) || w <= 0) {
+      setShippingCalc(null);
+      setShippingCalcLoading(false);
+      setShippingCalcUnavailable(false);
+      return () => ac.abort();
+    }
+
+    setShippingCalcLoading(true);
+    setShippingCalcUnavailable(false);
+    const qs = new URLSearchParams({
+      originCountry: selectedCountryCode,
+      weight: String(w),
+    });
+
+    void (async () => {
+      try {
+        const res = await fetch(`/api/public/shipping-calculator?${qs.toString()}`, {
+          signal: ac.signal,
+        });
+        if (res.ok) {
+          const data = (await res.json()) as { amountGel: number };
+          if (!ac.signal.aborted) {
+            setShippingCalc({
+              amountGel: data.amountGel,
+            });
+            setShippingCalcUnavailable(false);
+          }
+          return;
+        }
+
+        const nbgRes = await fetch('/api/nbg/rates', { signal: ac.signal });
+        if (!nbgRes.ok) {
+          if (!ac.signal.aborted) {
+            setShippingCalc(null);
+            setShippingCalcUnavailable(true);
+          }
+          return;
+        }
+        const nbgJson = (await nbgRes.json()) as { rates: Record<string, number | null> };
+        const fallback = estimateGelFromTable(selectedCountryCode, w, nbgJson.rates);
+        if (!ac.signal.aborted) {
+          if (fallback) {
+            setShippingCalc(fallback);
+            setShippingCalcUnavailable(false);
+          } else {
+            setShippingCalc(null);
+            setShippingCalcUnavailable(true);
+          }
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'AbortError') return;
+        if (!ac.signal.aborted) {
+          setShippingCalc(null);
+          setShippingCalcUnavailable(true);
+        }
+      } finally {
+        if (!ac.signal.aborted) setShippingCalcLoading(false);
+      }
+    })();
+
+    return () => ac.abort();
+  }, [selectedCountryCode, weightKg]);
   const tariffChunks = React.useMemo(() => {
     const splitIndex = Math.ceil(TARIFF_ROWS.length / 2);
     return [TARIFF_ROWS.slice(0, splitIndex), TARIFF_ROWS.slice(splitIndex)];
@@ -194,9 +281,6 @@ export default function Tariffs() {
     () => TARIFF_ROWS.find((row) => row.countryCode === selectedCountryCode) ?? TARIFF_ROWS[0],
     [selectedCountryCode]
   );
-  const parsedWeight = Number.parseFloat(weightKg);
-  const effectiveWeight = Number.isFinite(parsedWeight) && parsedWeight > 0 ? parsedWeight : 0;
-  const calculatedPrice = selectedTariff.pricePerKg * effectiveWeight;
   const SelectedCountryFlag = FLAGS[selectedCountryCode];
 
   return (
@@ -379,7 +463,20 @@ export default function Tariffs() {
               </div>
             </div>
             <div className="mt-4 flex h-10 w-full items-center justify-end rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-4 text-right text-base font-extrabold leading-none text-white sm:mt-5 sm:h-11 sm:text-[18px]">
-              {selectedTariff.currencySymbol} {calculatedPrice.toFixed(0)}
+              {shippingCalcLoading ? (
+                <span className="text-[15px] font-semibold opacity-95">{tCommon('loading')}</span>
+              ) : shippingCalc != null ? (
+                <>₾ {shippingCalc.amountGel.toFixed(0)}</>
+              ) : (
+                <span
+                  className="text-[15px] font-semibold opacity-95"
+                  title={
+                    shippingCalcUnavailable ? tCommon('networkError') : undefined
+                  }
+                >
+                  —
+                </span>
+              )}
             </div>
             </motion.aside>
             <section className="w-full">
