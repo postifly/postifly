@@ -188,7 +188,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                 წონა
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
-                თანხა
+                ნივთის ღირებულება
               </th>
               <th className="px-4 py-3 text-left text-[16px] font-semibold text-black">
                 თარიღი
@@ -239,11 +239,7 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                     {parcel.weight || '—'}
                   </td>
                   <td className="px-4 py-3 text-[15px] text-black">
-                    {parcel.shippingAmount != null
-                      ? `${parcel.shippingAmount.toFixed(2)} ${parcel.currency}${
-                          parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
-                        }`
-                      : '—'}
+                    {parcel.price.toFixed(2)} {parcel.currency}
                   </td>
                   <td className="px-4 py-3 text-[15px] text-black">
                     {parcel.createdAt}
@@ -373,16 +369,9 @@ export default function UserParcelsTabs({ parcels: parcelsProp }: Props) {
                 <span className="text-black">წონა</span>
                 <span className="text-black">{parcel.weight || '—'}</span>
 
-                <span className="text-black">თანხა</span>
+                <span className="text-black">ნივთის ღირებულება</span>
                 <span className="text-black">
-                  {parcel.shippingAmount != null
-                    ? `${parcel.shippingAmount.toFixed(2)} ${parcel.currency}`
-                    : '—'}
-                  {parcel.shippingFormula ? (
-                    <span className="mt-0.5 block text-[12px] text-gray-600">
-                      ({parcel.shippingFormula})
-                    </span>
-                  ) : null}
+                  {parcel.price.toFixed(2)} {parcel.currency}
                 </span>
               </div>
 
