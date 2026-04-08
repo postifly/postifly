@@ -1,7 +1,6 @@
 import AdminShell from '../components/AdminShell';
 import prisma from '@/lib/prisma';
 import ParcelsManager from '../components/ParcelsManager';
-import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
 
@@ -25,7 +24,6 @@ export default async function AdminInWarehousePage() {
         : {
             title: 'საწყობში',
             description: 'საწყობში მყოფი ამანათების მართვა.',
-            newParcel: 'ახალი ამანათის შექმნა',
           };
 
   const parcels = await prisma.parcel.findMany({
@@ -41,17 +39,7 @@ export default async function AdminInWarehousePage() {
 
   return (
     <AdminShell title={text.title} description={text.description}>
-      <div className="space-y-6">
-        <div className="flex justify-end">
-          <Link
-            href="/admin/incoming/new"
-            className="inline-flex items-center rounded-lg bg-black px-4 py-2 text-[15px] font-semibold text-white hover:bg-gray-900"
-          >
-            {text.newParcel}
-          </Link>
-        </div>
-        <ParcelsManager initialParcels={formattedParcels} currentStatus="in_warehouse" />
-      </div>
+      <ParcelsManager initialParcels={formattedParcels} currentStatus="in_warehouse" />
     </AdminShell>
   );
 }
