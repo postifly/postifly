@@ -66,13 +66,13 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
 const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
-  CN: 'CNY',
+  CN: 'USD',
   IT: 'EUR',
   GR: 'EUR',
   ES: 'EUR',
   FR: 'EUR',
   DE: 'EUR',
-  TR: 'TRY',
+  TR: 'USD',
 };
 
 type TariffRow = {
@@ -205,7 +205,7 @@ export default function AdminCreateParcelForm({
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch('/api/nbg/rates?codes=GBP,USD,CNY,EUR,TRY', {
+        const res = await fetch('/api/nbg/rates?codes=GBP,USD,EUR', {
           cache: 'no-store',
           headers: { 'Cache-Control': 'no-cache' },
         });

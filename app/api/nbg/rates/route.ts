@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { fetchNbgRates, gelPer1Unit } from '@/lib/nbgRates';
 
-const DEFAULT_CODES = ['USD', 'EUR', 'GBP', 'CNY', 'TRY'] as const;
+const DEFAULT_CODES = ['USD', 'EUR', 'GBP'] as const;
 
 function parseCodes(url: URL): string[] {
   const raw = url.searchParams.get('codes');

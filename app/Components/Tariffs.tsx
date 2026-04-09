@@ -61,7 +61,7 @@ const TARIFF_ROWS: TariffRow[] = [
     countryCode: 'CN',
     pricePerKg: 12,
     deliveryDaysPrefix: '5-8',
-    currencySymbol: '¥',
+    currencySymbol: '$',
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
@@ -109,7 +109,7 @@ const TARIFF_ROWS: TariffRow[] = [
     countryCode: 'TR',
     pricePerKg: 4,
     deliveryDaysPrefix: '3-6',
-    currencySymbol: '₺',
+    currencySymbol: '$',
     deliveryNoteKey: 'tariffLandShipping',
   },
 ];

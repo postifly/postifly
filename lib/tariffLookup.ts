@@ -19,13 +19,13 @@ export const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
 export const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
-  CN: 'CNY',
+  CN: 'USD',
   IT: 'EUR',
   GR: 'EUR',
   ES: 'EUR',
   FR: 'EUR',
   DE: 'EUR',
-  TR: 'TRY',
+  TR: 'USD',
 };
 
 export type TariffPick = {

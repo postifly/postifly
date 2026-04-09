@@ -20,13 +20,13 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
 const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
-  CN: 'CNY',
+  CN: 'USD',
   IT: 'EUR',
   GR: 'EUR',
   ES: 'EUR',
   FR: 'EUR',
   DE: 'EUR',
-  TR: 'TRY',
+  TR: 'USD',
 };
 
 /** DB `originCountry` (ISO) + ფორმის კოდი → `parcels.originCountryLabels` */

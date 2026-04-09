@@ -113,7 +113,7 @@ export default function AdminSidebar() {
     const loadRates = async () => {
       try {
         setCurrencyRatesLoading(true);
-        const res = await fetch('/api/nbg/rates?codes=GBP,USD,CNY,EUR,TRY', {
+        const res = await fetch('/api/nbg/rates?codes=GBP,USD,EUR', {
           cache: 'no-store',
           headers: { 'Cache-Control': 'no-cache' },
         });
@@ -208,9 +208,7 @@ export default function AdminSidebar() {
   const ratesEntries = [
     { code: 'GBP', label: 'UK' },
     { code: 'USD', label: 'US' },
-    { code: 'CNY', label: 'CN' },
     { code: 'EUR', label: 'EU' },
-    { code: 'TRY', label: 'TR' },
   ] as const;
 
   const CurrencyRatesBlock = (
