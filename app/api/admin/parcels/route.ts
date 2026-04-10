@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
   const [parcels, tariffs, nbgRates] = await Promise.all([
     prisma.parcel.findMany({
       where: { status },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
       include: adminParcelInclude,
     }),
     prisma.tariff.findMany({

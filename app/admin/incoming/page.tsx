@@ -18,7 +18,7 @@ export default async function AdminIncomingPage() {
     where: {
       status: 'pending',
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -36,12 +36,16 @@ export default async function AdminIncomingPage() {
         <div className="flex justify-end">
           <Link
             href="/admin/incoming/new"
-            className="inline-flex items-center rounded-lg bg-black px-4 py-2 text-[15px] font-semibold text-white hover:bg-gray-900"
+            className="inline-flex items-center rounded-lg bg-[#3a5bff] px-4 py-2 text-[15px] font-semibold text-white "
           >
             {text.newParcel}
           </Link>
         </div>
-        <ParcelsManager initialParcels={formattedParcels} currentStatus="pending" />
+        <ParcelsManager
+          initialParcels={formattedParcels}
+          currentStatus="pending"
+          countryHub
+        />
       </div>
     </AdminShell>
   );

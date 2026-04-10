@@ -26,7 +26,7 @@ export default async function AdminStoppedPage() {
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'stopped' },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -37,7 +37,11 @@ export default async function AdminStoppedPage() {
 
   return (
     <AdminShell title={text.title} description={text.description}>
-      <ParcelsManager initialParcels={formattedParcels} currentStatus="stopped" />
+      <ParcelsManager
+        initialParcels={formattedParcels}
+        currentStatus="stopped"
+        countryHub
+      />
     </AdminShell>
   );
 }

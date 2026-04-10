@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import ParcelsTable from './ParcelsTable';
+import IncomingCountryHub, { parcelOriginKey } from './IncomingCountryHub';
 
 type Parcel = {
   id: string;
@@ -38,17 +41,71 @@ type Parcel = {
   } | null;
 };
 
-type ParcelsManagerProps = {
+export type ParcelsManagerProps = {
   initialParcels: Parcel[];
   currentStatus: string;
   allowDelete?: boolean;
+  /** ქვეყნის დროშების ჰაბი, შიგნით — არჩეული ქვეყნის ამანათები (`?country=`) */
+  countryHub?: boolean;
 };
 
-export default function ParcelsManager({
+function HubSuspenseFallback() {
+  return (
+    <div className="flex min-h-[200px] items-center justify-center rounded-2xl border border-gray-200 bg-white">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black" />
+    </div>
+  );
+}
+
+function ParcelsManagerWithCountryUrl(props: ParcelsManagerProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const countryFilter = searchParams.get('country')?.trim().toLowerCase() ?? null;
+
+  const onSelectCountry = (key: string) => {
+    const p = new URLSearchParams(searchParams.toString());
+    p.set('country', key);
+    router.replace(`${pathname}?${p.toString()}`, { scroll: false });
+  };
+
+  const onClearCountry = () => {
+    router.replace(pathname, { scroll: false });
+  };
+
+  return (
+    <ParcelsManagerContent
+      {...props}
+      incomingHub
+      countryFilter={countryFilter}
+      onSelectCountry={onSelectCountry}
+      onClearCountry={onClearCountry}
+    />
+  );
+}
+
+type ParcelsManagerContentProps = ParcelsManagerProps & {
+  incomingHub?: boolean;
+  countryFilter?: string | null;
+  onSelectCountry?: (key: string) => void;
+  onClearCountry?: () => void;
+};
+
+function ParcelsManagerContent({
   initialParcels,
   currentStatus,
   allowDelete = true,
-}: ParcelsManagerProps) {
+  incomingHub = false,
+  countryFilter = null,
+  onSelectCountry,
+  onClearCountry,
+}: ParcelsManagerContentProps) {
+  const locale = useLocale();
+  const isEn = locale === 'en';
+  const isRu = locale === 'ru';
+  const backLabel =
+    isRu ? '← Все страны' : isEn ? '← All countries' : '← ყველა ქვეყანა';
+
   const [parcels, setParcels] = useState(initialParcels);
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -129,23 +186,60 @@ export default function ParcelsManager({
     }
   };
 
+  const filteredParcels = useMemo(() => {
+    if (!incomingHub || !countryFilter) return parcels;
+    return parcels.filter((p) => parcelOriginKey(p.originCountry) === countryFilter);
+  }, [incomingHub, countryFilter, parcels]);
+
+  const showMainHub = incomingHub && !countryFilter;
+  const showCountryParcels = incomingHub && countryFilter;
+
+  const tableParcels = incomingHub ? filteredParcels : parcels;
+
   return (
     <div className="relative">
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justifycenter bg-white bg-opacity-75 rounded-2xl">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white bg-opacity-75">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black"></div>
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black" />
             <p className="text-[16px] text-gray-600">იტვირთება...</p>
           </div>
         </div>
       )}
-      <ParcelsTable
-        parcels={parcels}
-        currentStatus={currentStatus}
-        allowDelete={allowDelete}
-        onParcelUpdated={handleParcelUpdated}
-      />
+      {showMainHub ? (
+        <IncomingCountryHub parcels={parcels} onSelectCountry={onSelectCountry!} />
+      ) : (
+        <>
+          {showCountryParcels ? (
+            <div className="mb-4">
+              <button
+                type="button"
+                onClick={onClearCountry}
+                className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-[15px] font-medium text-black transition hover:bg-gray-50"
+              >
+                {backLabel}
+              </button>
+            </div>
+          ) : null}
+          <ParcelsTable
+            parcels={tableParcels}
+            currentStatus={currentStatus}
+            allowDelete={allowDelete}
+            onParcelUpdated={handleParcelUpdated}
+          />
+        </>
+      )}
     </div>
   );
 }
 
+export default function ParcelsManager(props: ParcelsManagerProps) {
+  if (props.countryHub) {
+    return (
+      <Suspense fallback={<HubSuspenseFallback />}>
+        <ParcelsManagerWithCountryUrl {...props} />
+      </Suspense>
+    );
+  }
+  return <ParcelsManagerContent {...props} />;
+}

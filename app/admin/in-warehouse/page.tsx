@@ -28,7 +28,7 @@ export default async function AdminInWarehousePage() {
 
   const parcels = await prisma.parcel.findMany({
     where: { status: 'in_warehouse' },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -39,7 +39,11 @@ export default async function AdminInWarehousePage() {
 
   return (
     <AdminShell title={text.title} description={text.description}>
-      <ParcelsManager initialParcels={formattedParcels} currentStatus="in_warehouse" />
+      <ParcelsManager
+        initialParcels={formattedParcels}
+        currentStatus="in_warehouse"
+        countryHub
+      />
     </AdminShell>
   );
 }

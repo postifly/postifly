@@ -19,7 +19,7 @@ export default async function AdminWarehousePage() {
       where: {
         status: 'arrived',
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
       include: adminParcelInclude,
     }),
     prisma.tariff.findMany({
@@ -59,7 +59,11 @@ export default async function AdminWarehousePage() {
       description={text.description}
     >
       <div className="space-y-6">
-        <ParcelsManager initialParcels={formattedParcels} currentStatus="arrived" />
+        <ParcelsManager
+          initialParcels={formattedParcels}
+          currentStatus="arrived"
+          countryHub
+        />
       </div>
     </AdminShell>
   );

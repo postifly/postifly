@@ -15,7 +15,7 @@ export default async function AdminDeliveredPage() {
     where: {
       status: 'delivered',
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
     include: adminParcelInclude,
   });
 
@@ -30,7 +30,11 @@ export default async function AdminDeliveredPage() {
       description={text.description}
     >
       <div className="space-y-6">
-        <ParcelsManager initialParcels={formattedParcels} currentStatus="delivered" />
+        <ParcelsManager
+          initialParcels={formattedParcels}
+          currentStatus="delivered"
+          countryHub
+        />
       </div>
     </AdminShell>
   );
