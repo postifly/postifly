@@ -191,7 +191,7 @@
     "metaTitle": "Parcel tracking — Postifly",
     "metaDescription": "Enter your tracking number to see shipment status and history.",
     "title": "Track your parcel",
-    "subtitle": "Enter your tracking code.",
+    "subtitle": "Enter your tracking code",
     "placeholder": "Tracking number",
     "search": "Track",
     "searching": "Searching…",
