@@ -29,7 +29,7 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
 
 const COUNTRY_KA: Record<string, string> = {
   GB: 'დიდი ბრიტანეთი',
-  US: 'ამერიკის შტატები',
+  US: 'ამერიკა',
   CN: 'ჩინეთი',
   IT: 'იტალია',
   GR: 'საბერძნეთი',
