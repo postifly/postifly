@@ -52,7 +52,7 @@ const Why = () => {
 
   return (
     <section
-      className="pointer-events-none absolute bottom-0 left-0 right-0 z-30 mt-0 w-full -translate-y-1/2 px-4 pb-0 md:px-5"
+      className="pointer-events-none relative md:absolute bottom-0 left-0 right-0 z-30 mt-0 w-full -translate-y-1/2 px-4 pb-0 md:px-5"
       aria-labelledby="why-heading"
     >
       
