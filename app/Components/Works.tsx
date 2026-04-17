@@ -76,12 +76,8 @@ export default function Works() {
           <div className="mt-5 grid grid-cols-1 justify-items-center gap-4 md:mt-6 lg:justify-items-stretch lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
             {STEPS.map((s, idx) => (
               <React.Fragment key={s.id}>
-                <div className="flex flex-col items-center gap-3 rounded-2xl bg-white/70 px-4 py-4 text-center ring-1 ring-[#e8eaf0] backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0">
-                  <div
-                    className={`relative w-[170px] shrink-0 ${
-                      s.id === 3 ? "h-[140px]" : "h-[170px]"
-                    }`}
-                  >
+                <div className="flex flex-col items-center gap-3  h-[250px] w-[250px] md:h-full md:w-full rounded-2xl bg-white/70 px-4 py-4 text-center ring-1 ring-[#e8eaf0] backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0">
+                  <div className="relative h-[170px] w-[170px] shrink-0">
                     <Image
                       src={s.imageSrc}
                       alt={t(s.altKey)}

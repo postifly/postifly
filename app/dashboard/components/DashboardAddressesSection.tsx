@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import type React from 'react';
 import { getTranslations } from 'next-intl/server';
+import CopyableText from './CopyableText';
 import {
   GB,
   US,
@@ -209,11 +210,23 @@ export default async function DashboardAddressesSection() {
                 <>
                   <div className="mb-1 flex justify-between gap-2">
                     <span className="shrink-0 font-semibold text-neutral-800">{tAddr('name')}</span>
-                    <span className="break-all text-right text-neutral-800">{userFirstName} </span>
+                    <CopyableText
+                      text={userFirstName}
+                      ariaLabel="Copy first name"
+                      className="break-all text-right text-neutral-800"
+                    >
+                      {userFirstName}{' '}
+                    </CopyableText>
                   </div>
                   <div className="mb-1 flex justify-between gap-2">
                     <span className="shrink-0 font-semibold text-neutral-800">{tAddr('lastname')}</span>
-                    <span className="break-all text-right text-neutral-800">{userLastName} </span>
+                    <CopyableText
+                      text={userLastName}
+                      ariaLabel="Copy last name"
+                      className="break-all text-right text-neutral-800"
+                    >
+                      {userLastName}{' '}
+                    </CopyableText>
                   </div>
                 </>
               ) : null}
@@ -222,25 +235,47 @@ export default async function DashboardAddressesSection() {
                 <div className="mb-1 flex justify-between gap-2">
                 
                   <span className="shrink-0 font-semibold text-neutral-800">{fullAddressLabel}</span>
-                  <span className="break-all text-right text-neutral-800">{fullAddressValue(row)}</span>
+                  <CopyableText
+                    text={fullAddressValue(row)}
+                    ariaLabel="Copy full address"
+                    className="break-all text-right text-neutral-800"
+                  >
+                    {fullAddressValue(row)}
+                  </CopyableText>
                 </div>
               ) : null}
               <div className="mb-1 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street')}</span>
-                <span className="break-all text-right text-neutral-800">{row.adress}</span>
+                <CopyableText text={row.adress} ariaLabel="Copy street" className="break-all text-right text-neutral-800">
+                  {row.adress}
+                </CopyableText>
               </div>
               <div className="mb-1 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street2')}</span>
-                <span className="break-words text-right text-neutral-800">{street2Value(row)}</span>
+                <CopyableText
+                  text={street2Value(row)}
+                  ariaLabel="Copy street 2"
+                  className="break-words text-right text-neutral-800"
+                >
+                  {street2Value(row)}
+                </CopyableText>
               </div>
               <div className="mb-2 flex items-start justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('country')}</span>
 
-                <span className="text-[14px] font-semibold text-neutral-800">{row.country}</span>
+                <CopyableText
+                  text={row.country}
+                  ariaLabel="Copy country"
+                  className="text-[14px] font-semibold text-neutral-800"
+                >
+                  {row.country}
+                </CopyableText>
               </div>
               <div className="mb-1 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('city')}</span>
-                <span className="text-right text-neutral-800">{row.city}</span>
+                <CopyableText text={row.city} ariaLabel="Copy city" className="text-right text-neutral-800">
+                  {row.city}
+                </CopyableText>
               </div>
 
               {row.state ? (
@@ -248,18 +283,28 @@ export default async function DashboardAddressesSection() {
                   <span className="shrink-0 font-semibold text-neutral-800">
                     {row.countryCode === 'CN' ? tAddr('province') : tAddr('state')}
                   </span>
-                  <span className="text-right text-neutral-800">{row.state}</span>
+                  <CopyableText text={row.state} ariaLabel="Copy state" className="text-right text-neutral-800">
+                    {row.state}
+                  </CopyableText>
                 </div>
               ) : null}
 
               <div className="flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('postalCode')}</span>
-                <span className="font-medium text-neutral-800">{row.postalCode}</span>
+                <CopyableText
+                  text={row.postalCode}
+                  ariaLabel="Copy postal code"
+                  className="font-medium text-neutral-800"
+                >
+                  {row.postalCode}
+                </CopyableText>
               </div>
               {row.phone ? (
                 <div className="mt-1 flex justify-between gap-2">
                   <span className="shrink-0 font-semibold text-neutral-800">{tAddr('phone')}</span>
-                  <span className="font-medium text-neutral-800">{row.phone}</span>
+                  <CopyableText text={row.phone} ariaLabel="Copy phone" className="font-medium text-neutral-800">
+                    {row.phone}
+                  </CopyableText>
                 </div>
               ) : null}
             </div>
@@ -288,35 +333,65 @@ export default async function DashboardAddressesSection() {
               <>
                 <div className="mb-1 flex justify-between gap-2">
                   <span className="shrink-0 font-semibold text-neutral-800">{tAddr('name')}</span>
-                  <span className="break-all text-right text-neutral-800">{userFirstName} </span>
+                  <CopyableText
+                    text={userFirstName}
+                    ariaLabel="Copy first name"
+                    className="break-all text-right text-neutral-800"
+                  >
+                    {userFirstName}{' '}
+                  </CopyableText>
                 </div>
                 <div className="mb-1 flex justify-between gap-2">
                   <span className="shrink-0 font-semibold text-neutral-800">{tAddr('lastname')}</span>
-                  <span className="break-all text-right text-neutral-800">{userLastName} </span>
+                  <CopyableText
+                    text={userLastName}
+                    ariaLabel="Copy last name"
+                    className="break-all text-right text-neutral-800"
+                  >
+                    {userLastName}{' '}
+                  </CopyableText>
                 </div>
               </>
             ) : null}
             {row.fullAddress ? (
               <div className="mb-2 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{fullAddressLabel}</span>
-                <span className="break-all text-right text-neutral-800">{fullAddressValue(row)}</span>
+                <CopyableText
+                  text={fullAddressValue(row)}
+                  ariaLabel="Copy full address"
+                  className="break-all text-right text-neutral-800"
+                >
+                  {fullAddressValue(row)}
+                </CopyableText>
               </div>
             ) : null}
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street')}</span>
-              <span className="break-all text-right text-neutral-800">{row.adress}</span>
+              <CopyableText text={row.adress} ariaLabel="Copy street" className="break-all text-right text-neutral-800">
+                {row.adress}
+              </CopyableText>
             </div>
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street2')}</span>
-              <span className="break-words text-right text-neutral-800">{street2Value(row)}</span>
+              <CopyableText
+                text={street2Value(row)}
+                ariaLabel="Copy street 2"
+                className="break-words text-right text-neutral-800"
+              >
+                {street2Value(row)}
+              </CopyableText>
             </div>
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('country')}</span>
-              <span className="text-right text-neutral-800">{row.country}</span>
+              <CopyableText text={row.country} ariaLabel="Copy country" className="text-right text-neutral-800">
+                {row.country}
+              </CopyableText>
             </div>
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('city')}</span>
-              <span className="text-right text-neutral-800">{row.city}</span>
+              <CopyableText text={row.city} ariaLabel="Copy city" className="text-right text-neutral-800">
+                {row.city}
+              </CopyableText>
             </div>
 
             {row.state ? (
@@ -324,18 +399,28 @@ export default async function DashboardAddressesSection() {
                 <span className="shrink-0 font-semibold text-neutral-800">
                   {row.countryCode === 'CN' ? tAddr('province') : tAddr('state')}
                 </span>
-                <span className="text-right text-neutral-800">{row.state}</span>
+                <CopyableText text={row.state} ariaLabel="Copy state" className="text-right text-neutral-800">
+                  {row.state}
+                </CopyableText>
               </div>
             ) : null}
 
             <div className="flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('postalCode')}</span>
-              <span className="font-medium text-neutral-800">{row.postalCode}</span>
+              <CopyableText
+                text={row.postalCode}
+                ariaLabel="Copy postal code"
+                className="font-medium text-neutral-800"
+              >
+                {row.postalCode}
+              </CopyableText>
             </div>
             {row.phone ? (
               <div className="mt-1 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('phone')}</span>
-                <span className="font-medium text-neutral-800">{row.phone}</span>
+                <CopyableText text={row.phone} ariaLabel="Copy phone" className="font-medium text-neutral-800">
+                  {row.phone}
+                </CopyableText>
               </div>
             ) : null}
           </div>
