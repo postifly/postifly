@@ -14,15 +14,7 @@ export default function GuideSection({ title, text }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <motion.h1
-        className="text-center text-black md:text-[32px] text-[22px] font-extrabold mb-6 md:mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.6 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        {title}
-      </motion.h1>
+    
 
       <motion.div
         className="relative overflow-hidden rounded-3xl border border-pink-200/60 bg-gradient-to-br from-white via-pink-50 to-indigo-50 shadow-xl p-5 md:p-8"
