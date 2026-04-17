@@ -45,6 +45,7 @@ type AddressRow = {
   cityKey?: string;
   stateKey?: string;
   adress: string;
+  fullAddress?: string;
   adress2?: string;
   postalCode: string;
   phone?: string;
@@ -77,6 +78,7 @@ const ADDRESS_ROWS: AddressRow[] = [
     postalCode: '510407',
     countryCode: 'CN',
     adress: 'BaiYun District/白云区, ',
+    fullAddress: '广州市白云区聚源街50/号欣凯科创园C栋102',
     adress2: 'ShiJing Street/石井街道',
     phone: '+86 16602079929',
   },
@@ -141,6 +143,11 @@ export default async function DashboardAddressesSection() {
   const userLastName = user?.lastName ?? '';
   const hasUserName = Boolean(userFirstName || userLastName);
   const userRoomNumber = user?.roomNumber ?? '';
+  const fullAddressLabel = tAddr.has('fullAddress') ? tAddr('fullAddress') : 'Full address';
+  const fullAddressValue = (row: { fullAddress?: string }) => {
+    if (!row.fullAddress) return '';
+    return userRoomNumber ? `${row.fullAddress}, ${userRoomNumber}` : row.fullAddress;
+  };
   const street2Value = (row: { adress2?: string }) => {
     if (!row.adress2) return userRoomNumber;
     return userRoomNumber ? `${row.adress2}, ${userRoomNumber}` : row.adress2;
@@ -163,6 +170,7 @@ export default async function DashboardAddressesSection() {
       city,
       state,
       adress: row.adress,
+      fullAddress: row.fullAddress,
       adress2: row.adress2,
       postalCode: row.postalCode,
       phone: row.phone,
@@ -208,6 +216,14 @@ export default async function DashboardAddressesSection() {
                     <span className="break-all text-right text-neutral-800">{userLastName} </span>
                   </div>
                 </>
+              ) : null}
+              {row.fullAddress ? (
+                
+                <div className="mb-1 flex justify-between gap-2">
+                
+                  <span className="shrink-0 font-semibold text-neutral-800">{fullAddressLabel}</span>
+                  <span className="break-all text-right text-neutral-800">{fullAddressValue(row)}</span>
+                </div>
               ) : null}
               <div className="mb-1 flex justify-between gap-2">
                 <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street')}</span>
@@ -279,6 +295,12 @@ export default async function DashboardAddressesSection() {
                   <span className="break-all text-right text-neutral-800">{userLastName} </span>
                 </div>
               </>
+            ) : null}
+            {row.fullAddress ? (
+              <div className="mb-2 flex justify-between gap-2">
+                <span className="shrink-0 font-semibold text-neutral-800">{fullAddressLabel}</span>
+                <span className="break-all text-right text-neutral-800">{fullAddressValue(row)}</span>
+              </div>
             ) : null}
             <div className="mb-2 flex justify-between gap-2">
               <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street')}</span>

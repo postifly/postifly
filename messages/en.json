@@ -504,6 +504,7 @@
     "state": "State",
     "province": "Province",
     "street": "Adress 1",
+    "fullAddress": "Full address",
     "street2": "Address 2",
     "name": "Name",
     "lastname": "Last name",

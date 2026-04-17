@@ -504,6 +504,7 @@
     "state": "Штат",
     "province": "Провинция",
     "street": "Адрес 1",
+    "fullAddress": "Полный адрес",
     "street2": "Адрес 2",
     "name": "Имя",
     "lastname": "Фамилия",
