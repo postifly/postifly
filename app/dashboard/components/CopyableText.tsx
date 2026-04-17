@@ -104,7 +104,7 @@ export default function CopyableText({
           triggerCopy();
         }}
         className={[
-          'inline-flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-[#3a5bff] px-2 py-1 text-xs font-medium text-white',
+          'inline-flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-[#3a5bff] px-1 py-1 text-xs font-medium text-white',
           'shadow-sm transition-colors  active:bg-neutral-100',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a5bff]/40 focus-visible:ring-offset-2',
         ].join(' ')}
