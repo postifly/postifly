@@ -4,26 +4,26 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import {
+  FR,
   GB,
   US,
   CN,
   IT,
   GR,
   ES,
-  FR,
   DE,
   TR,
 } from 'country-flag-icons/react/3x2';
 import { CURRENCY_BY_ORIGIN_ISO } from '@/lib/tariffLookup';
 
 const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
+  FR,
   GB,
   US,
   CN,
   IT,
   GR,
   ES,
-  FR,
   DE,
   TR,
 };
@@ -41,11 +41,11 @@ type TariffRow = {
 
 const TARIFF_ROWS: TariffRow[] = [
   {
-    countryKey: 'unitedkingdom' as const,
-    countryCode: 'GB',
-    pricePerKg: 8,
-    deliveryDaysPrefix: '3-7',
-    currencySymbol: '£',
+    countryKey: 'france' as const,
+    countryCode: 'FR',
+    pricePerKg: 7,
+    deliveryDaysPrefix: '1-3',
+    currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
@@ -54,6 +54,14 @@ const TARIFF_ROWS: TariffRow[] = [
     pricePerKg: 9,
     deliveryDaysPrefix: '3-7',
     currencySymbol: '$',
+    deliveryNoteKey: 'tariffAirShipping',
+  },
+  {
+    countryKey: 'unitedkingdom' as const,
+    countryCode: 'GB',
+    pricePerKg: 8,
+    deliveryDaysPrefix: '3-7',
+    currencySymbol: '£',
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
@@ -84,14 +92,6 @@ const TARIFF_ROWS: TariffRow[] = [
     countryKey: 'spain' as const,
     countryCode: 'ES',
     pricePerKg: 8,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
-    countryKey: 'france' as const,
-    countryCode: 'FR',
-    pricePerKg: 7,
     deliveryDaysPrefix: '1-3',
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
