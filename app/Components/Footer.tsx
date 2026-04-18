@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { FaWhatsapp, FaFacebook } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 const Footer = () => {
   const t = useTranslations('footer');
 
@@ -50,7 +50,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://www.facebook.com/"
+                href="https://www.facebook.com/profile.php?id=61575386941224&mibextid=wwXIfr&rdid=v7WrhFLtvEm2Mx8J&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1CbEcSx9Cd%2F%3Fmibextid%3DwwXIfr#"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center rounded-full bg-[#1877F2] hover:bg-[#0f65d8] border border-white/20 w-11 h-11 transition-colors"
@@ -58,6 +58,16 @@ const Footer = () => {
               >
                 {/* Facebook icon */}
                 <FaFacebook className="text-white text-[22px]" />
+              </a>
+
+              <a
+                href="https://www.instagram.com/postifly__?igsh=M2xtNzA1b2t3bWtt"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-[#C13584] hover:bg-[#9e2d6d] border border-white/20 w-11 h-11 transition-colors"
+                aria-label="Instagram"
+              >
+                <FaInstagram className="text-white text-[22px]" />
               </a>
             </div>
           </div>
