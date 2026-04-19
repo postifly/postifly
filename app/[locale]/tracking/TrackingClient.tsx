@@ -261,7 +261,7 @@ function TrackingSearch() {
                 </button>
               </div>
             </div>
-            <p className="mt-3 text-[15px] text-gray-500">{t('shareHint')}</p>
+       
 
             <dl className="mt-6 grid gap-3 border-t border-gray-100 pt-6 text-[17px] sm:grid-cols-2">
               <div className="flex justify-between gap-4 sm:block">
