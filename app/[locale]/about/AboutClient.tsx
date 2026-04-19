@@ -26,11 +26,11 @@ const paragraphVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export default function AboutClient(_props: Props) {
+export default function AboutClient({ locale }: Props) {
   const t = useTranslations('about');
 
   return (
-    <section className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50">
+    <section className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50" data-locale={locale}>
       <div className="max-w-4xl mx-auto px-4 md:px-0">
         <div className="relative mb-8 md:mb-12">
           <div className="absolute -inset-x-10 -inset-y-4 bg-gradient-to-r from-[#7C3AED]/10 via-[#EC4899]/10 to-[#22C55E]/10 blur-3xl pointer-events-none" />

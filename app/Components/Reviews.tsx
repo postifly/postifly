@@ -51,7 +51,11 @@ const Reviews = () => {
           <div className="mb-3 text-xl tracking-[2px] text-amber-500">
             {'★'.repeat(REVIEWS[activeIndex].rating)}
           </div>
-          <p className="text-base leading-7 text-gray-700">"{REVIEWS[activeIndex].text}"</p>
+          <p className="text-base leading-7 text-gray-700">
+            <span className="text-gray-500">&ldquo;</span>
+            {REVIEWS[activeIndex].text}
+            <span className="text-gray-500">&rdquo;</span>
+          </p>
           <p className="mt-4 text-sm font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
         </article>
 

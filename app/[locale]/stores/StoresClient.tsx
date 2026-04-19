@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
@@ -77,13 +78,14 @@ export default function StoresClient() {
                   className="flex flex-col items-center rounded-xl border border-gray-200 bg-white p-5 md:p-6 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200"
                 >
                   <div className="w-14 h-14 md:w-16 md:h-16 relative mb-3 flex items-center justify-center">
-                    <img
+                    <Image
                       src={storeLogoUrl(store.url)}
                       alt=""
                       width={64}
                       height={64}
                       className="w-full h-full object-contain"
                       style={{ opacity: 1 }}
+                      unoptimized
                     />
                   </div>
                   <span className="text-black font-medium text-[14px] md:text-[15px] text-center">

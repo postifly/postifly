@@ -85,7 +85,7 @@ export default function EditDashboardParcelPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, tCommon]);
+  }, [id, t, tCommon]);
 
   const originOptions = useMemo(
     () => ORIGIN_COUNTRIES,

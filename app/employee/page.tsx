@@ -1,6 +1,5 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
 import { getLocale } from 'next-intl/server';
 import { getTranslations } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';

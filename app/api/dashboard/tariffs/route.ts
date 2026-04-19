@@ -61,7 +61,7 @@ export async function GET() {
     for (const t of tariffs) {
       if (t.minWeight !== 0 || t.maxWeight != null) continue;
       const formCode = Object.entries(FORM_TO_TARIFF_COUNTRY).find(
-        ([_, db]) => db === t.originCountry
+        ([, db]) => db === t.originCountry
       )?.[0];
       if (formCode == null) continue;
       const derivedCurrency =

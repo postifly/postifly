@@ -28,10 +28,6 @@ const allowedStatuses = [
   'stopped',
 ] as const;
 
-const updateParcelStatusSchema = z.object({
-  status: z.enum(allowedStatuses),
-});
-
 function isAllowedStatus(status: string): status is (typeof allowedStatuses)[number] {
   return (allowedStatuses as readonly string[]).includes(status);
 }

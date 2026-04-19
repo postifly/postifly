@@ -492,7 +492,7 @@
         "onlineShop": "Online shop",
         "country": "Country",
         "weight": "Weight (kg)",
-        "description": "Description",
+        "description": "Category",
         "comment": "Comment"
       }
     }
@@ -624,7 +624,7 @@
     "senderAddressPlaceholder": "Full address (optional)",
     "weight": "Weight (kg)",
     "weightPlaceholder": "0",
-    "description": "Description ",
+    "description": "Category ",
     "submit": "Add",
     "weightError": "If provided, weight must be a positive number",
     "calculatedPrice": "Amount to pay (weight × country tariff)",
@@ -641,7 +641,7 @@
       "de": "Germany",
       "tr": "Turkey"
     },
-    "descriptionRequired": "Description is required",
+    "descriptionRequired": "Category is required",
     "descriptionNoResults": "No matches",
     "descriptionOptions": [
       "Auto parts",
@@ -712,7 +712,7 @@
     "userEmailRegisteredOnlyHint": "Use only an email that is already registered in the system.",
     "userEmailNotRegistered": "This email is not registered. Use a registered customer’s email or create the user first.",
     "originCountryRequired": "Origin country is required",
-    "descriptionRequired": "Description is required",
+    "descriptionRequired": "Category is required",
     "pdfRequired": "PDF file is required",
     "onlyPdf": "Only PDF files are allowed",
     "maxSize": "File size must not exceed 5 MB",

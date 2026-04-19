@@ -142,7 +142,7 @@ export default function OrdersManager({ initialOrders }: OrdersManagerProps) {
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
+  }, [fetchOrders]);
 
   const handleOrderCreated = useCallback(async (newOrder: Order) => {
     console.log('[OrdersManager] handleOrderCreated called with full order:', newOrder);

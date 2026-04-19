@@ -9,6 +9,17 @@ import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
 import { convertToGel, fetchNbgRates } from '../../../../lib/nbgRates';
 
+function isPrismaClientKnownRequestError(
+  err: unknown,
+): err is { code: string; meta?: { target?: string[] | string } } {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'code' in err &&
+    typeof (err as { code?: unknown }).code === 'string'
+  );
+}
+
 export const dynamic = 'force-dynamic';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -220,15 +231,15 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    if (err && typeof err === 'object' && 'code' in err) {
+    if (isPrismaClientKnownRequestError(err)) {
       // Prisma errors are opaque in Turbopack logs; print meta for debugging.
       try {
         console.error('Create parcel prisma error:', JSON.stringify(err, null, 2));
       } catch {
         console.error('Create parcel prisma error:', err);
       }
-      const code = (err as any).code as string | undefined;
-      const target = (err as any)?.meta?.target as string[] | string | undefined;
+      const code = err.code;
+      const target = err.meta?.target;
       if (code === 'P2011') {
         return NextResponse.json(
           {

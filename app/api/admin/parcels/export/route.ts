@@ -3,7 +3,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { adminParcelInclude } from '@/lib/adminParcelInclude';
+import type { Prisma } from '@/app/generated/prisma/client';
 import * as XLSX from 'xlsx';
+
+type AdminParcelExportRow = Prisma.ParcelGetPayload<{ include: typeof adminParcelInclude }>;
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +43,10 @@ export async function GET(request: NextRequest) {
     include: adminParcelInclude,
   });
 
-  const columns: { headerKa: string; get: (p: any) => any }[] = [
+  const columns: {
+    headerKa: string;
+    get: (p: AdminParcelExportRow) => string | number | null;
+  }[] = [
     { headerKa: 'ID', get: (p) => safeString(p.id) },
     { headerKa: 'თრექინგი', get: (p) => safeString(p.trackingNumber) },
     { headerKa: 'სტატუსი', get: (p) => safeString(p.status) },

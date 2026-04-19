@@ -81,7 +81,6 @@ export default function NewParcelPage() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
-  const [tariffs, setTariffs] = useState<Record<string, number>>({});
   const countryRef = useRef<HTMLDivElement>(null);
   const descriptionRef = useRef<HTMLDivElement>(null);
   const priceNumForUi = useMemo(() => parseFloat(price.replace(',', '.')), [price]);
@@ -90,10 +89,11 @@ export default function NewParcelPage() {
     [priceNumForUi],
   );
   const resolvedCustomerName = useMemo(() => {
-    const firstName = (session?.user as any)?.firstName as string | undefined;
-    const lastName = (session?.user as any)?.lastName as string | undefined;
-    const email = (session?.user as any)?.email as string | undefined;
-    const full = `${firstName ?? ''} ${lastName ?? ''}`.trim();
+    const u = session?.user;
+    const firstName = u?.firstName ?? '';
+    const lastName = u?.lastName ?? '';
+    const email = u?.email;
+    const full = `${firstName} ${lastName}`.trim();
     return full || email || '';
   }, [session]);
   const pdfLabel = useMemo(() => {
@@ -162,29 +162,6 @@ export default function NewParcelPage() {
       return next;
     });
   }
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch('/api/dashboard/tariffs', { cache: 'no-store', credentials: 'include' });
-        const data = await res.json();
-        if (res.ok && data.tariffs && !cancelled) setTariffs(data.tariffs);
-      } catch {
-        // ignore
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-  const calculatedPrice = useMemo(() => {
-    if (!originCountry || !weight.trim()) return null;
-    const w = parseFloat(weight.replace(',', '.'));
-    if (Number.isNaN(w) || w <= 0) return null;
-    const pricePerKg = tariffs[originCountry];
-    if (pricePerKg == null) return null;
-    return Math.round(w * pricePerKg * 100) / 100;
-  }, [originCountry, weight, tariffs]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

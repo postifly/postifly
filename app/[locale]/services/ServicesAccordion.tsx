@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 type Props = {
@@ -77,12 +77,9 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-0">
-      
+      <h1 className="sr-only">{pageTitle}</h1>
       <div className="space-y-3 md:space-y-4">
         {visibleServices.map((service) => {
-          const indexInAll = services.findIndex((s) => s.id === service.id);
-          const number = indexInAll + 1;
-
           return (
             <motion.div
               key={service.id}

@@ -492,7 +492,7 @@
         "onlineShop": "Интернет-магазин",
         "country": "Страна",
         "weight": "Вес (кг)",
-        "description": "Описание",
+        "description": "Категория",
         "comment": "Комментарий"
       }
     }
@@ -624,7 +624,7 @@
     "senderAddressPlaceholder": "Полный адрес (необязательно)",
     "weight": "Вес (кг)",
     "weightPlaceholder": "0",
-    "description": "Описание ",
+    "description": "Категория ",
     "submit": "Добавить",
     "weightError": "Если указан, вес должен быть положительным числом",
     "calculatedPrice": "Сумма к оплате (вес × тариф страны)",
@@ -641,7 +641,7 @@
       "de": "Германия",
       "tr": "Турция"
     },
-    "descriptionRequired": "Описание обязательно",
+    "descriptionRequired": "Категория обязательна",
     "descriptionNoResults": "Ничего не найдено",
     "descriptionOptions": [
       "Автозапчасти",
@@ -698,7 +698,7 @@
     "weight": "Вес (кг)",
     "weightPlaceholder": "1.0",
     "shippingAmountLabel": "Сумма к оплате (вес × тариф страны)",
-    "description": "Описание",
+    "description": "Категория",
     "comment": "Комментарий (необязательно)",
     "pdfLabel": "PDF посылки",
     "pdfHelp": "Максимальный размер файла 5 MB, только PDF.",
@@ -712,7 +712,7 @@
     "userEmailRegisteredOnlyHint": "Укажите только эл. почту пользователя, который уже зарегистрирован в системе.",
     "userEmailNotRegistered": "Этот адрес не зарегистрирован. Укажите почту зарегистрированного пользователя или сначала создайте пользователя.",
     "originCountryRequired": "Страна отправления обязательна",
-    "descriptionRequired": "Описание обязательно",
+    "descriptionRequired": "Категория обязательна",
     "pdfRequired": "PDF-файл обязателен",
     "onlyPdf": "Разрешены только PDF-файлы",
     "maxSize": "Размер файла не должен превышать 5 MB",

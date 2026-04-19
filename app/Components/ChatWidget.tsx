@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 type WebhookResponse = {
@@ -43,6 +43,11 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [threadContact, setThreadContact] = useState<ThreadContact | null>(null);
   const pollRef = useRef<number | null>(null);
+  const messagesRef = useRef<ChatMessage[]>([]);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -52,7 +57,7 @@ export default function ChatWidget() {
     }
   }, []);
 
-  const loadMessages = async (id: string, opts?: { withSpinner?: boolean }) => {
+  const loadMessages = useCallback(async (id: string, opts?: { withSpinner?: boolean }) => {
     const withSpinner = opts?.withSpinner ?? false;
     try {
       if (withSpinner) {
@@ -90,9 +95,10 @@ export default function ChatWidget() {
       }
 
       // თუ არაფერი შეცვლილა, state არ განვაახლოთ რომ ზედმეტი რერენდერი არ იყოს
+      const prev = messagesRef.current;
       if (
-        messages.length === incoming.length &&
-        messages[messages.length - 1]?.id === incoming[incoming.length - 1]?.id
+        prev.length === incoming.length &&
+        prev[prev.length - 1]?.id === incoming[incoming.length - 1]?.id
       ) {
         return;
       }
@@ -106,7 +112,7 @@ export default function ChatWidget() {
         setLoadingMessages(false);
       }
     }
-  };
+  }, []);
 
   const handleToggleOpen = () => {
     setOpen((prev) => {
@@ -140,7 +146,7 @@ export default function ChatWidget() {
         pollRef.current = null;
       }
     };
-  }, [threadId, open]);
+  }, [threadId, open, loadMessages]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -291,6 +297,9 @@ export default function ChatWidget() {
                     </div>
                   )}
                   <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3">
+                    {loadingMessages && (
+                      <p className="text-[11px] text-gray-500">{t('loading')}</p>
+                    )}
                     {threadId ? (
                       messages.length === 0 ? (
                         <p className="text-[12px] text-gray-600">
@@ -341,6 +350,12 @@ export default function ChatWidget() {
               {error && (
                 <div className="rounded-2xl border border-red-200 bg-red-50 px-3 py-2">
                   <p className="text-[13px] text-red-800">{error}</p>
+                </div>
+              )}
+
+              {success && (
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+                  <p className="text-[13px] text-emerald-800">{success}</p>
                 </div>
               )}
 

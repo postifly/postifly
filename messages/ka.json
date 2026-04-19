@@ -493,7 +493,7 @@
         "onlineShop": "ონლაინ მაღაზია",
         "country": "ქვეყანა",
         "weight": "წონა (კგ)",
-        "description": "აღწერა",
+        "description": "კატეგორია",
         "comment": "კომენტარი"
       }
     }
@@ -625,7 +625,7 @@
     "senderAddressPlaceholder": "სრული მისამართი (არასავალდებულო)",
     "weight": "წონა (კგ)",
     "weightPlaceholder": "0",
-    "description": "აღწერა ",
+    "description": "კატეგორია ",
     "submit": "დამატება",
     "weightError": "წონა უნდა იყოს დადებითი რიცხვი",
     "calculatedPrice": "გადასახდელი (წონა × ქვეყნის ტარიფი)",
@@ -642,7 +642,7 @@
       "de": "გერმანია",
       "tr": "თურქეთი"
     },
-    "descriptionRequired": "აღწერა აუცილებელია",
+    "descriptionRequired": "კატეგორია აუცილებელია",
     "descriptionNoResults": "ვერ მოიძებნა",
     "descriptionOptions": [
       "ავტო ნაწილები",
@@ -699,7 +699,7 @@
     "weight": "წონა (კგ)",
     "weightPlaceholder": "1.0",
     "shippingAmountLabel": "გადასახდელი (წონა × ქვეყნის ტარიფი)",
-    "description": "აღწერა",
+    "description": "კატეგორია",
     "comment": "კომენტარი (არასავალდებულო)",
     "pdfLabel": "ამანათის PDF",
     "pdfHelp": "მაქს. 5 MB, მხოლოდ PDF",
@@ -713,7 +713,7 @@
     "userEmailRegisteredOnlyHint": "მიუთითეთ მხოლოდ იმ მომხმარებლის ელფოსტა, რომელიც უკვე დარეგისტრირებულია სისტემაში.",
     "userEmailNotRegistered": "ეს ელფოსტა სისტემაში არ არის რეგისტრირებული. დარეგისტრირებული მომხმარებლის ელფოსტა მიუთითეთ ან ჯერ შექმენით მომხმარებელი.",
     "originCountryRequired": "ქვეყანა აუცილებელია",
-    "descriptionRequired": "აღწერა აუცილებელია",
+    "descriptionRequired": "კატეგორია აუცილებელია",
     "pdfRequired": "PDF ფაილის ატვირთვა აუცილებელია",
     "onlyPdf": "მხოლოდ PDF ფორმატია დაშვებული",
     "maxSize": "ფაილის ზომა არ უნდა აღემატებოდეს 5 MB-ს",

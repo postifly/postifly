@@ -5,7 +5,8 @@ export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ locale: string }> };
 
-export default function AdminUsersNewPageLocale(_props: Props) {
+export default function AdminUsersNewPageLocale(props: Props) {
+  void props;
   return (
     <AdminShell
       title="ახალი მომხმარებელი"

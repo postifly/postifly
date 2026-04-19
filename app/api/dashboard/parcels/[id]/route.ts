@@ -9,7 +9,6 @@ import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
 
-const EDITABLE_STATUSES = ['pending'] as const;
 const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
 
 const optionalNumberFromString = z.preprocess(
@@ -78,7 +77,7 @@ export async function GET(
   });
 
   if (!parcel) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  if (!EDITABLE_STATUSES.includes(parcel.status as any)) {
+  if (parcel.status !== 'pending') {
     return NextResponse.json({ error: 'This parcel can no longer be edited.' }, { status: 400 });
   }
 
@@ -110,7 +109,7 @@ export async function PATCH(
     });
 
     if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    if (!EDITABLE_STATUSES.includes(existing.status as any)) {
+    if (existing.status !== 'pending') {
       return NextResponse.json({ error: 'This parcel can no longer be edited.' }, { status: 400 });
     }
 

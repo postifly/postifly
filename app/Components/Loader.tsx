@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import './Loader.css';
 
 export default function Loader() {
   const t = useTranslations('loader');
-  const loaderTexts = [t('line1'), t('line2'), t('line3')];
+  const loaderTexts = useMemo(() => [t('line1'), t('line2'), t('line3')], [t]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
@@ -49,7 +49,7 @@ export default function Loader() {
     return () => {
       clearInterval(textInterval);
     };
-  }, [isLoading]);
+  }, [isLoading, loaderTexts]);
 
   if (!isLoading) return null;
 
