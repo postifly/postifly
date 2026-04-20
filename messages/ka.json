@@ -25,6 +25,10 @@
     "tsqaltubo": "წყალტუბო",
     "khashuri": "ხაშური"
   },
+  "contact": {
+    "addressesTitle": "საკონტაქტო მისამართები",
+    "workingHoursTitle": "სამუშაო საათები"
+  },
   "adminsidebar": {
     "users": "მომხმარებლები",
     "incoming": "მოლოდინში",

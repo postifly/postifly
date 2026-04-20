@@ -36,7 +36,7 @@ const conditionsLinks: NavLinkItem[] = [
 
 const faqLinks: NavLinkItem[] = [
   { href: '/faq', labelKey: 'header.faq' },
-  { href: '/contact', labelKey: 'header.contact' },
+  
   { href: '/help#guide', labelKey: 'header.onlineGuide' },
 ];
 

@@ -1,6 +1,7 @@
 import React from "react";
 import type { Metadata } from 'next';
 import { getPageSeoMetadata } from '@/lib/seo';
+import { getTranslations } from 'next-intl/server';
 
 type ContactAddress = {
   countryKey: string;
@@ -86,16 +87,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return getPageSeoMetadata(locale, '/contact');
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const t = await getTranslations('contact');
+
   return (
     <main className="min-h-screen mt-24  px-4 py-12 sm:px-6 lg:px-10">
       <section className="mx-auto max-w-6xl">
-        <h1 className="text-center text-3xl font-semibold text-slate-900 sm:text-4xl">
-          Contact Addresses
+        <h1 className="text-center text-2xl font-semibold text-slate-900 sm:text-3xl">
+          {t('addressesTitle')}
         </h1>
-        <p className="mt-2 text-center text-slate-600">
-          ჩვენი საწყობების მისამართები და ლოკაციები რუკაზე.
-        </p>
+       
 
         <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {addresses.map((address) => (
@@ -127,7 +128,7 @@ export default function ContactPage() {
                 <p className="font-medium">{address.phone}</p>
                 {address.workingHours?.length ? (
                   <div className="pt-2">
-                    <p className="mb-1 font-semibold text-slate-900">სამუშაო საათები</p>
+                    <p className="mb-1 font-semibold text-slate-900">{t('workingHoursTitle')}</p>
                     <div className="space-y-1 text-xs sm:text-sm">
                       {address.workingHours.map((row) => (
                         <div key={row.day} className="flex justify-between gap-3">

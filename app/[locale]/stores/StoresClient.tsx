@@ -58,7 +58,7 @@ export default function StoresClient() {
             initial={{ opacity: 0, y: -24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="text-center text-black md:text-[32px] text-[22px] font-bold mb-10 md:mb-14"
+            className="text-center text-2xl font-semibold text-slate-900 sm:text-3xl mb-10 md:mb-14"
           >
             {t('title')}
           </motion.h1>

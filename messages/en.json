@@ -44,6 +44,10 @@
     "employeePanel": "Employee panel",
     "supportPanel": "Support panel"
   },
+  "contact": {
+    "addressesTitle": "Contact Addresses",
+    "workingHoursTitle": "Working hours"
+  },
   "adminsidebar": {
     "users": "Users",
     "incoming": "Incoming",
