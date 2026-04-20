@@ -861,16 +861,12 @@ nav.nav-desktop .header-dropdown-trigger.nav-link {
 }
 
 .auth-button-mobile-outline {
-  background: transparent;
+  background:  #3a5bff;
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.35);
   margin-top: 0.75rem;
 }
 
-.auth-button-mobile-outline:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.5);
-}
 
 
 
