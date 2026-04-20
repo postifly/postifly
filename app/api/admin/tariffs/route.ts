@@ -13,11 +13,8 @@ const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'USD',
-  IT: 'EUR',
   GR: 'EUR',
-  ES: 'EUR',
   FR: 'EUR',
-  DE: 'EUR',
   TR: 'USD',
 };
 

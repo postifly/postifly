@@ -9,7 +9,7 @@ import { adminUpdateUserSchema } from '../../../../../lib/validations';
 import { normalizePhone } from '../../../../../lib/sms';
 import { Prisma } from '../../../../../app/generated/prisma/client';
 
-const EMPLOYEE_COUNTRIES = ['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR'] as const;
+const EMPLOYEE_COUNTRIES = ['GB', 'US', 'CN', 'GR', 'FR', 'TR'] as const;
 type EmployeeCountry = (typeof EMPLOYEE_COUNTRIES)[number];
 
 export async function GET(

@@ -58,23 +58,12 @@ const addresses: ContactAddress[] = [
       { day: "პარ", time: "09:30 - 17:00" },
     ],
   },
-  {
-    countryKey: "it",
-    countryCode: "IT",
-    cityKey: "paris",
-    adress: "7 bis rue decres",
-    postalCode: "75014",
-    phone: "+33 7 53 19 86 83",
-    mapEmbedUrl:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2626.328197308618!2d2.3150323999999998!3d48.8328782!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e6704bdd5bb8e3%3A0xb2d5e813f3d73b2d!2s7%20bis%20Rue%20Decr%C3%A8s%2C%2075014%20Paris%2C%20France!5e0!3m2!1sen!2sge!4v1774941512645!5m2!1sen!2sge",
-  },
 ];
 
 const countryTitle: Record<string, string> = {
   GE: "Georgia",
   GB: "United Kingdom",
   US: "United States",
-  IT: "Italy",
 };
 
 function mapQuery(address: ContactAddress) {

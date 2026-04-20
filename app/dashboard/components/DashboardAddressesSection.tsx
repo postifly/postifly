@@ -8,11 +8,8 @@ import {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 } from 'country-flag-icons/react/3x2';
 
@@ -20,11 +17,8 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 };
 
@@ -32,11 +26,8 @@ const COUNTRY_KA: Record<string, string> = {
   GB: 'დიდი ბრიტანეთი',
   US: 'ამერიკა',
   CN: 'ჩინეთი',
-  IT: 'იტალია',
   GR: 'საბერძნეთი',
-  ES: 'ესპანეთი',
   FR: 'საფრანგეთი',
-  DE: 'გერმანია',
   TR: 'თურქეთი',
 };
 
@@ -94,34 +85,8 @@ const ADDRESS_ROWS: AddressRow[] = [
   },
 
   {
-    countryKey: 'it',
-    countryCode: 'IT',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
-
-  {
     countryKey: 'gr',
     countryCode: 'GR',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
-  {
-    countryKey: 'es',
-    countryCode: 'ES',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
-
-  {
-    countryKey: 'de',
-    countryCode: 'DE',
     cityKey: 'paris',
     adress: '7 bis rue decres',
     postalCode: '75014',

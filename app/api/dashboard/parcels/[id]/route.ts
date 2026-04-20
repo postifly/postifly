@@ -9,7 +9,7 @@ import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 
 export const dynamic = 'force-dynamic';
 
-const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 
 const optionalNumberFromString = z.preprocess(
   (v) => {

@@ -8,10 +8,7 @@ import {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
-  DE,
   TR,
 } from 'country-flag-icons/react/3x2';
 import { CURRENCY_BY_ORIGIN_ISO } from '@/lib/tariffLookup';
@@ -21,10 +18,7 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
-  DE,
   TR,
 };
 
@@ -73,33 +67,9 @@ const TARIFF_ROWS: TariffRow[] = [
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
-    countryKey: 'italy' as const,
-    countryCode: 'IT',
-    pricePerKg: 7,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
     countryKey: 'greece' as const,
     countryCode: 'GR',
     pricePerKg: 7,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
-    countryKey: 'spain' as const,
-    countryCode: 'ES',
-    pricePerKg: 8,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
-    countryKey: 'germany' as const,
-    countryCode: 'DE',
-    pricePerKg: 8,
     deliveryDaysPrefix: '1-3',
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
@@ -174,7 +144,7 @@ const REVIEWS = [
     rating: 5,
     text: 'ხარისხი საუკეთესოა, უკვე რამდენჯერმე გამოვიყენე და კმაყოფილი ვარ.',
   },
-]
+];
 export default function Tariffs() {
   const t = useTranslations('home');
   const tAddr = useTranslations('addresses');
@@ -182,7 +152,6 @@ export default function Tariffs() {
   const tCommon = useTranslations('common');
   const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
   const [weightKg, setWeightKg] = React.useState<string>('1');
-  const [tariffPage, setTariffPage] = React.useState<number>(0);
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [shippingCalc, setShippingCalc] = React.useState<{ amountGel: number } | null>(null);
   const [shippingCalcLoading, setShippingCalcLoading] = React.useState(true);
@@ -261,21 +230,6 @@ export default function Tariffs() {
 
     return () => ac.abort();
   }, [selectedCountryCode, weightKg]);
-  const tariffChunks = React.useMemo(() => {
-    const splitIndex = Math.ceil(TARIFF_ROWS.length / 2);
-    return [TARIFF_ROWS.slice(0, splitIndex), TARIFF_ROWS.slice(splitIndex)];
-  }, []);
-  const activeTariffRows = tariffChunks[tariffPage] ?? tariffChunks[0];
-
-  React.useEffect(() => {
-    if (tariffChunks.length <= 1) return;
-
-    const intervalId = window.setInterval(() => {
-      setTariffPage((prev) => (prev + 1) % tariffChunks.length);
-    }, 3500);
-
-    return () => window.clearInterval(intervalId);
-  }, [tariffChunks.length]);
 
   const selectedTariff = React.useMemo(
     () => TARIFF_ROWS.find((row) => row.countryCode === selectedCountryCode) ?? TARIFF_ROWS[0],
@@ -338,14 +292,13 @@ export default function Tariffs() {
                 </thead>
 
                 <motion.tbody
-                  key={tariffPage}
+                  key="tariffs-all"
                   variants={container}
                   initial="hidden"
                   whileInView="visible"
                   viewport={viewport}
                 >
-                  {activeTariffRows.map((row, i) => {
-                    const rowIndex = tariffPage * Math.ceil(TARIFF_ROWS.length / 2) + i;
+                  {TARIFF_ROWS.map((row, rowIndex) => {
                     const countryName = tAddr(row.countryKey);
                     const deliveryDaysLabel = t('tariffDeliveryDays').trim();
                     const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
@@ -398,22 +351,6 @@ export default function Tariffs() {
                   })}
                 </motion.tbody>
               </table>
-            </div>
-            <div className="flex items-center justify-center border-t border-indigo-100/80 bg-white/70 px-3 py-2 sm:px-4">
-
-              <div className="flex justify-center items-center gap-3">
-                {tariffChunks.map((_, index) => (
-                  <button
-                    key={`tariff-page-${index}`}
-                    type="button"
-                    onClick={() => setTariffPage(index)}
-                    className={`h-3 w-3 rounded-full transition ${tariffPage === index ? 'bg-indigo-500' : 'bg-indigo-200 hover:bg-indigo-300'
-                      }`}
-                    aria-label={`Go to tariff page ${index + 1}`}
-                  />
-                ))}
-              </div>
-
             </div>
           </motion.div>
 

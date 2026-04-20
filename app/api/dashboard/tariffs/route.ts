@@ -11,11 +11,8 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   uk: 'GB',
   us: 'US',
   cn: 'CN',
-  it: 'IT',
   gr: 'GR',
-  es: 'ES',
   fr: 'FR',
-  de: 'DE',
   tr: 'TR',
 };
 
@@ -27,11 +24,8 @@ const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'USD',
-  IT: 'EUR',
   GR: 'EUR',
-  ES: 'EUR',
   FR: 'EUR',
-  DE: 'EUR',
   TR: 'USD',
 };
 

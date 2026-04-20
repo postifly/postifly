@@ -25,7 +25,7 @@ export const dynamic = 'force-dynamic';
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPE = 'application/pdf';
 
-const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 
 const optionalNumberFromString = (emptyMessage: string) =>
   z.preprocess(

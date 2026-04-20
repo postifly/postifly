@@ -3,11 +3,8 @@ const LABELS: Record<string, Record<'ka' | 'en' | 'ru', string>> = {
   GB: { ka: 'დიდი ბრიტანეთი', en: 'United Kingdom', ru: 'Великобритания' },
   US: { ka: 'აშშ', en: 'USA', ru: 'США' },
   CN: { ka: 'ჩინეთი', en: 'China', ru: 'Китай' },
-  IT: { ka: 'იტალია', en: 'Italy', ru: 'Италия' },
   GR: { ka: 'საბერძნეთი', en: 'Greece', ru: 'Греция' },
-  ES: { ka: 'ესპანეთი', en: 'Spain', ru: 'Испания' },
   FR: { ka: 'საფრანგეთი', en: 'France', ru: 'Франция' },
-  DE: { ka: 'გერმანია', en: 'Germany', ru: 'Германия' },
   TR: { ka: 'თურქეთი', en: 'Turkey', ru: 'Турция' },
 };
 

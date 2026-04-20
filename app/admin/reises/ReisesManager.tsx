@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import dayjs from '@/lib/dayjs';
 
-const ORIGIN_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 // Allow "24" hour (24:00) as end-of-day. We'll convert it to next day 00:xx for ISO storage.
 const HOUR_OPTIONS = Array.from({ length: 25 }, (_, i) => String(i).padStart(2, '0'));
 const MINUTE_OPTIONS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));

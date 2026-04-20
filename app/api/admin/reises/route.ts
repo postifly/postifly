@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-const ORIGIN_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 
 function parseOptionalDate(v: unknown): Date | null {
   if (v == null || v === '') return null;

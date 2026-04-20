@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ADMIN_CREATE_PARCEL_MAX_FILE_BYTES = 5 * 1024 * 1024;
 
-const ORIGIN_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 
 export type AdminParcelFormMessages = {
   userEmailRequired: string;

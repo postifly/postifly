@@ -146,7 +146,7 @@ export const adminUpdateUserSchema = z
     balance: z.number().finite('ბალანსი არასწორია').optional(),
     roomNumber: z.string().optional().or(z.literal('')),
     role: z.enum(['USER', 'ADMIN', 'EMPLOYEE', 'SUPPORT']).optional(),
-    employeeCountry: z.enum(['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR']).optional().nullable(),
+    employeeCountry: z.enum(['GB', 'US', 'CN', 'GR', 'FR', 'TR']).optional().nullable(),
   })
   .strict();
 

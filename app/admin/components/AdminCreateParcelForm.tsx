@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
+import { GB, US, CN, GR, FR, TR } from 'country-flag-icons/react/3x2';
 import { useTranslations } from 'next-intl';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import { REGISTRATION_CITIES } from '@/lib/georgianCities';
@@ -18,11 +18,8 @@ const FLAGS: Record<string, FlagComponent> = {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 };
 
@@ -31,11 +28,8 @@ const CODE_TO_FLAG: Record<string, string> = {
   uk: 'GB',
   us: 'US',
   cn: 'CN',
-  it: 'IT',
   gr: 'GR',
-  es: 'ES',
   fr: 'FR',
-  de: 'DE',
   tr: 'TR',
 };
 
@@ -43,11 +37,8 @@ const ORIGIN_COUNTRIES: { code: string }[] = [
   { code: 'uk' },
   { code: 'us' },
   { code: 'cn' },
-  { code: 'it' },
   { code: 'gr' },
-  { code: 'es' },
   { code: 'fr' },
-  { code: 'de' },
   { code: 'tr' },
 ];
 
@@ -55,11 +46,8 @@ const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   uk: 'GB',
   us: 'US',
   cn: 'CN',
-  it: 'IT',
   gr: 'GR',
-  es: 'ES',
   fr: 'FR',
-  de: 'DE',
   tr: 'TR',
 };
 
@@ -67,11 +55,8 @@ const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'USD',
-  IT: 'EUR',
   GR: 'EUR',
-  ES: 'EUR',
   FR: 'EUR',
-  DE: 'EUR',
   TR: 'USD',
 };
 

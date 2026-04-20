@@ -10,11 +10,8 @@ import {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 } from 'country-flag-icons/react/3x2';
 
@@ -22,11 +19,8 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 };
 
@@ -35,25 +29,19 @@ const CODE_TO_FLAG: Record<string, string> = {
   uk: 'GB',
   us: 'US',
   cn: 'CN',
-  it: 'IT',
   gr: 'GR',
-  es: 'ES',
   fr: 'FR',
-  de: 'DE',
   tr: 'TR',
 };
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const ORIGIN_COUNTRIES: { code: string }[] = [
+  { code: 'fr' },
   { code: 'uk' },
   { code: 'us' },
   { code: 'cn' },
-  { code: 'it' },
   { code: 'gr' },
-  { code: 'es' },
-  { code: 'fr' },
-  { code: 'de' },
   { code: 'tr' },
 ];
 

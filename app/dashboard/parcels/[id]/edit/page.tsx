@@ -9,11 +9,8 @@ const ORIGIN_COUNTRIES: { code: string; label: string }[] = [
   { code: 'uk', label: 'UK' },
   { code: 'us', label: 'US' },
   { code: 'cn', label: 'CN' },
-  { code: 'it', label: 'IT' },
   { code: 'gr', label: 'GR' },
-  { code: 'es', label: 'ES' },
   { code: 'fr', label: 'FR' },
-  { code: 'de', label: 'DE' },
   { code: 'tr', label: 'TR' },
 ];
 
