@@ -91,7 +91,7 @@ export default function CopyableText({
     : { className };
 
   return (
-    <span className="inline-flex max-w-full items-center justify-end gap-2">
+    <span className="inline-flex max-w-full items-center justify-end gap-1">
       <span {...textSpanProps}>
         {children}
       </span>
@@ -104,7 +104,7 @@ export default function CopyableText({
           triggerCopy();
         }}
         className={[
-          'inline-flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-[#3a5bff] px-1 py-1 text-xs font-medium text-white',
+          'inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-neutral-300 bg-[#3a5bff] px-0 text-xs font-medium text-white',
           'shadow-sm transition-colors  active:bg-neutral-100',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3a5bff]/40 focus-visible:ring-offset-2',
         ].join(' ')}
@@ -113,7 +113,7 @@ export default function CopyableText({
           <svg
             aria-hidden="true"
             viewBox="0 0 24 24"
-            className="h-3.5 w-3.5"
+            className="h-3 w-3"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -126,7 +126,7 @@ export default function CopyableText({
           <svg
             aria-hidden="true"
             viewBox="0 0 24 24"
-            className="h-3.5 w-3.5"
+            className="h-3 w-3"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -137,7 +137,6 @@ export default function CopyableText({
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
         )}
-        <span>{copied ? '' : ''}</span>
       </button>
     </span>
   );
