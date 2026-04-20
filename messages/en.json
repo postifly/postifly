@@ -704,7 +704,7 @@
     "userEmailNotRegistered": "This email is not registered. Use a registered customer’s email or create the user first.",
     "originCountryRequired": "Origin country is required",
     "descriptionRequired": "Category is required",
-    "pdfRequired": "PDF file is required",
+    "pdfRequired": "Invoice PDF file is required",
     "onlyPdf": "Only PDF files are allowed",
     "maxSize": "File size must not exceed 5 MB",
     "priceInvalid": "Price is invalid",

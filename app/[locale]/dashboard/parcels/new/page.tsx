@@ -271,7 +271,7 @@ export default function NewParcelPage() {
                 suppressHydrationWarning
               />
               {fieldErrors.trackingNumber && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.trackingNumber}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.trackingNumber}</p>
               )}
             </div>
             <div>
@@ -293,7 +293,7 @@ export default function NewParcelPage() {
                 suppressHydrationWarning
               />
               {fieldErrors.price && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.price}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.price}</p>
               )}
           
             </div>
@@ -314,7 +314,7 @@ export default function NewParcelPage() {
                 suppressHydrationWarning
               />
               {fieldErrors.onlineShop && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.onlineShop}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.onlineShop}</p>
               )}
             </div>
             <div>
@@ -335,7 +335,7 @@ export default function NewParcelPage() {
                 suppressHydrationWarning
               />
               {fieldErrors.quantity && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.quantity}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.quantity}</p>
               )}
             </div>
             <div ref={countryRef} className="relative">
@@ -407,7 +407,7 @@ export default function NewParcelPage() {
                 </ul>
               )}
               {fieldErrors.originCountry && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.originCountry}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.originCountry}</p>
               )}
             </div>
             <div>
@@ -428,7 +428,7 @@ export default function NewParcelPage() {
                 suppressHydrationWarning
               />
               {fieldErrors.weight && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.weight}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.weight}</p>
               )}
             
             </div>
@@ -497,7 +497,7 @@ export default function NewParcelPage() {
                 )}
               </div>
               {fieldErrors.description && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.description}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.description}</p>
               )}
             </div>
             <div>
@@ -541,7 +541,7 @@ export default function NewParcelPage() {
                 className="block w-full text-[15px] md:text-[18px] text-black file:mr-3 file:rounded-md file:border file:border-gray-300 file:bg-white file:px-3 file:py-1.5 file:text-[15px] md:text-[18px] file:font-medium file:text-black hover:file:bg-gray-50"
               />
               {fieldErrors.file && (
-                <p className="mt-1 text-[13px] text-red-600">{fieldErrors.file}</p>
+                <p className="mt-1 text-[16px] text-red-600">{fieldErrors.file}</p>
               )}
              
               <p className="mt-1 text-[14px]  text-black font-medium">{tDeclaration('maxFileSize')}</p>

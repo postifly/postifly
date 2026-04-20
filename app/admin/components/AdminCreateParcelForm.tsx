@@ -369,7 +369,7 @@ export default function AdminCreateParcelForm({
   function FieldError({ name }: { name: string }) {
     const msg = fieldErrors[name];
     if (!msg) return null;
-    return <p className="mt-1 text-[13px] text-red-600">{msg}</p>;
+    return <p className="mt-1 text-[16px] text-red-600">{msg}</p>;
   }
 
   return (

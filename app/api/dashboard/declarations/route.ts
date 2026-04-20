@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     }
     if (!file || file.size === 0) {
       return NextResponse.json(
-        { error: 'PDF ფაილის ატვირთვა აუცილებელია' },
+        { error: 'ინვოისისPDF ფაილის ატვირთვა აუცილებელია' },
         { status: 400 }
       );
     }

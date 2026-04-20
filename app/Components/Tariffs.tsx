@@ -285,7 +285,7 @@ export default function Tariffs() {
                     <th className="px-2 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffDelivery')}
                     </th>
-                    <th className="px-2 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
+                    <th className="px-2 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffPrice')}
                     </th>
                   </tr>
@@ -343,7 +343,7 @@ export default function Tariffs() {
                           )}
                         </td>
 
-                        <td className="whitespace-nowrap px-2 py-2 text-right font-semibold tabular-nums text-black text-[14px] md:text-[16px]">
+                        <td className="whitespace-nowrap px-2 py-2 text-center font-semibold tabular-nums text-black text-[14px] md:text-[16px]">
                           {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                         </td>
                       </motion.tr>
