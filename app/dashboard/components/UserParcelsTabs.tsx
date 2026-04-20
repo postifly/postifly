@@ -148,8 +148,10 @@ export default function UserParcelsTabs({
 
   return (
     <div className="mt-10 space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-[18px] md:text-[20px] font-semibold text-black">{t('title')}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="w-full text-center text-[18px] font-semibold text-black md:w-auto md:text-left md:text-[20px]">
+          {t('title')}
+        </h2>
         <Link
           href="/dashboard/parcels/new"
           className="inline-flex w-full md:w-auto items-center justify-center rounded-lg border border-slate-200 bg-[#3a5bff] px-4 py-3 text-center text-[16px] font-semibold text-white shadow-sm transition "
@@ -158,7 +160,7 @@ export default function UserParcelsTabs({
         </Link>
       </div>
       {/* Status tabs */}
-      <div className="flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 text-[14px] md:text-[15px]">
+      <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2 text-[14px] md:flex-row md:flex-wrap md:text-[15px]">
         {statusOptions.map((status) => {
           const isActive = selectedStatus === status.value;
           const count = statusCounts[status.value] ?? 0;
@@ -168,12 +170,12 @@ export default function UserParcelsTabs({
               key={status.value}
               href={listHref(dashboardBasePath, status.value, 1)}
               scroll={false}
-              className={`inline-flex items-center gap-2 rounded-lg px-3 py-1.5 transition-colors ${isActive
+              className={`inline-flex w-full items-center justify-between gap-2 rounded-lg px-3 py-1.5 transition-colors md:w-auto ${isActive
                   ? 'bg-sky-900 text-white'
                   : 'bg-white text-gray-800 hover:bg-gray-100'
                 }`}
             >
-              <span>{status.label}</span>
+              <span className="truncate">{status.label}</span>
               <span
                 className={`min-w-[1.75rem] rounded-full px-2 py-0.5 text-center text-[12px] ${isActive ? 'bg-[#3a5bff]' : 'bg-gray-100 text-gray-700'
                   }`}
@@ -255,7 +257,7 @@ export default function UserParcelsTabs({
                   <td className="px-4 py-3 text-[15px] text-black">
                     {parcel.customerName}
                   </td>
-                  <td className="px-4 py-3 text-[15px] text-black tabular-nums">
+                  <td className="px-4 py-3 text-[15px]  text-black tabular-nums">
                     {parcel.quantity}
                   </td>
                   <td className="px-4 py-3 text-[15px] text-black">
@@ -434,18 +436,18 @@ export default function UserParcelsTabs({
 
               <div className="grid grid-cols-2 gap-2 text-[13px] text-black">
                 <span className="text-black">{t('fields.quantity')}</span>
-                <span className="text-black tabular-nums">{parcel.quantity}</span>
+                <span className="text-black text-end tabular-nums">{parcel.quantity}</span>
 
                 <span className="text-black">{t('fields.from')}</span>
-                <span className="text-black">
+                <span className="text-black text-end">
                   {formatOriginCountryLabel(parcel.originCountry)}
                 </span>
 
-                <span className="text-black">{t('fields.weight')}</span>
-                <span className="text-black">{parcel.weight || '—'}</span>
+                <span className="text-black ">{t('fields.weight')}</span>
+                <span className="text-black text-end">{parcel.weight || '—'}</span>
 
                 <span className="text-black">{t('fields.itemValue')}</span>
-                <span className="text-black">
+                <span className="text-black text-end">
                   {parcel.price.toFixed(2)} {parcel.currency}
                 </span>
               </div>

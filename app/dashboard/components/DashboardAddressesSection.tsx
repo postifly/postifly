@@ -151,7 +151,9 @@ export default async function DashboardAddressesSection() {
       className="mt-8 scroll-mt-28 border-t border-gray-200 pt-8 text-neutral-900"
     >
      
-      <h2 className="mb-4 text-lg font-semibold text-neutral-900 sm:mb-6 sm:text-xl">{tAddr('title')}</h2>
+      <h2 className="mb-4 w-full text-center text-lg font-semibold text-neutral-900 sm:mb-6 sm:w-auto sm:text-left sm:text-xl">
+        {tAddr('title')}
+      </h2>
 
       <div className="space-y-3 md:hidden">
         {addressList.map((row, i) => (
