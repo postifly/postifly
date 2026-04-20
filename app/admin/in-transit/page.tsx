@@ -34,7 +34,7 @@ export default async function AdminInTransitPage({
         <div className="flex justify-end">
           <Link
             href="/api/admin/parcels/export?status=in_transit"
-            className="inline-flex items-center rounded-lg bg-[#3a5bff] px-4 py-2 text-[15px] font-semibold text-white "
+            className="inline-flex items-center rounded-lg bg-[#3a5bff] px-4 py-2 text-[16px] font-semibold text-white "
           >
             {text.exportExcel}
           </Link>

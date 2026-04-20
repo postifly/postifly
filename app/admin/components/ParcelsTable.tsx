@@ -855,7 +855,7 @@ export default function ParcelsTable({
                         onClick={() =>
                           setExpandedId(expandedId === parcel.id ? null : parcel.id)
                         }
-                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 hover:bg-blue-50"
+                        className="inline-flex text-[16px] items-center gap-1 rounded-md px-2 py-1 hover:bg-blue-50"
                       >
                         <span>{t.details}</span>
                         <span

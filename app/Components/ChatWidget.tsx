@@ -232,7 +232,7 @@ export default function ChatWidget() {
       >
         {open && (
           <div className="w-[520px] max-w-[92vw] overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl shadow-black/10 md:w-[420px]">
-            <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-gray-900 via-black to-gray-800 px-4 py-3">
+            <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-[#3a5bff] px-4 py-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-lg">
                   💬
@@ -445,7 +445,7 @@ export default function ChatWidget() {
                     <button
                       type="submit"
                       disabled={loading || sessionStatus === 'loading'}
-                      className="inline-flex items-center gap-1 rounded-full bg-[#3a5bff] px-4 py-1.5 text-[15px] md:text-[15px] font-semibold text-white shadow-sm transition  disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-1 rounded-full bg-[#3a5bff] px-4 py-1.5 text-[16px] md:text-[16px] font-semibold text-white shadow-sm transition  disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {loading ? t('loading') : t('send')}
                     </button>
@@ -461,10 +461,10 @@ export default function ChatWidget() {
       <button
         type="button"
         onClick={handleToggleOpen}
-        className="pointer-events-auto chatbutton p-12 inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#3a5bff] px-4 text-[14px] md:text-[16px] text-white shadow-xl shadow-black/20 transition hover:bg-gray-900 md:h-12 md:px-6 md:text-[15px]"
+        className="pointer-events-auto chatbutton p-12 inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#3a5bff] px-4 text-[14px] md:text-[16px] text-white shadow-xl shadow-black/20 transition  md:h-12 md:px-6 md:text-[16px]"
         aria-label={t('title')}
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full  text-[15px]">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full  text-[16px]">
           💬 {open ? t('close') : t('start')}
         </span>
         

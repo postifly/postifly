@@ -34,7 +34,7 @@ export default async function AdminIncomingPage({
         <div className="flex justify-end">
           <Link
             href="/admin/incoming/new"
-            className="inline-flex items-center rounded-lg bg-[#3a5bff] px-4 py-2 text-[15px] font-semibold text-white "
+            className="inline-flex items-center rounded-lg bg-[#3a5bff] px-4 py-2 text-[16px] font-semibold text-white "
           >
             {text.newParcel}
           </Link>
