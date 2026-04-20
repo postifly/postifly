@@ -15,14 +15,14 @@ const Footer = () => {
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="text-white/90 text-[14px] leading-relaxed md:max-w-[min(100%,28rem)] md:text-left">
             <div className="font-semibold text-[16px] md:text-[18px] mb-1">{t('contactsTitle')}</div>
-            <div>
+            <div className="text-[14px] md:text-[16px]">
               {t('addressLabel')}: {t('addressValue')}
             </div>
 
-            <div className="mt-1">
+            <div className="mt-1 text-[14px] md:text-[16px]">
               {t('hoursLabel')}: {t('hoursValue')}
             </div>
-            <div className="mt-1">
+            <div className="mt-1 text-[14px] md:text-[16px]">
               {t('phoneLabel')}:{" "}
               <a
                 className="underline decoration-white/40 hover:decoration-white/80"

@@ -52,7 +52,7 @@ const Why = () => {
 
   return (
     <section
-      className="pointer-events-none mt-14 relative bottom-0 left-0 right-0 z-30 mt-0 w-full translate-y-0 px-4 pb-0 md:absolute md:-translate-y-1/2 md:px-5"
+      className="pointer-events-none relative bottom-0 left-0 right-0 z-30 mt-14 w-full translate-y-0 px-4 pb-0 md:absolute md:mt-0 md:-translate-y-1/2 md:px-5"
       aria-labelledby="why-heading"
     >
       
@@ -77,10 +77,10 @@ const Why = () => {
                 <Icon className="h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0 text-left">
-                <h3 className="text-sm font-bold leading-snug text-[#1a2550] sm:text-[0.95rem] md:text-base">
+                <h3 className="text-4 font-bold leading-snug text-[#1a2550] sm:text-[0.95rem] md:text-[18px]">
                   {t(titleKey)}
                 </h3>
-                <p className="mt-0.5 text-xs leading-snug text-[#6b7280] sm:text-[0.8125rem] md:text-sm">
+                <p className="mt-0.5 text-xs leading-snug text-[#6b7280] sm:text-[0.8125rem] md:text-[16px]">
                   {t(descKey)}
                 </p>
               </div>

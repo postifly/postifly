@@ -378,10 +378,10 @@ export default function Tariffs() {
                         >
                           {row.deliveryNoteKey ? (
                             <span className="flex flex-col items-center leading-tight">
-                              <span className="whitespace-nowrap text-[11px] text-gray-800 sm:text-[14px] md:text-[18px]">
+                              <span className="whitespace-nowrap text-gray-800 text-[14px] md:text-[16px]">
                                 {deliveryDays}
                               </span>
-                              <span className="mt-0.5 whitespace-nowrap text-[11px] text-gray-500 sm:text-[14px] md:text-[18px]">
+                              <span className="mt-0.5 whitespace-nowrap text-gray-500 text-[14px] md:text-[16px]">
                                 {deliveryNote?.replace(/[()]/g, '')}
                               </span>
                             </span>
@@ -390,7 +390,7 @@ export default function Tariffs() {
                           )}
                         </td>
 
-                        <td className="whitespace-nowrap px-2 py-2 text-right text-[11px] font-semibold tabular-nums text-black sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
+                        <td className="whitespace-nowrap px-2 py-2 text-right font-semibold tabular-nums text-black text-[14px] md:text-[16px]">
                           {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                         </td>
                       </motion.tr>

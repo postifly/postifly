@@ -76,7 +76,7 @@ export default function Works() {
           <div className="mt-5 grid grid-cols-1 justify-items-center gap-4 md:mt-6 lg:justify-items-stretch lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
             {STEPS.map((s, idx) => (
               <React.Fragment key={s.id}>
-                <div className="flex flex-col items-center gap-3  h-[250px] w-[250px] md:h-full md:w-full rounded-2xl bg-white/70 px-4 py-4 text-center ring-1 ring-[#e8eaf0] backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0">
+                <div className="flex flex-col items-center gap-3  h-[250px] w-[250px] md:h-full md:w-full rounded-2xl  px-4 py-4 text-center  backdrop-blur-[2px] md:flex-row md:items-center md:gap-4 md:bg-transparent md:px-0 md:py-0 md:text-left md:ring-0 md:backdrop-blur-0">
                   <div className="relative h-[170px] w-[170px] shrink-0">
                     <Image
                       src={s.imageSrc}
@@ -89,10 +89,10 @@ export default function Works() {
                     <StepBadge n={s.id} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 md:text-[15px]">
+                    <p className="text-4 font-semibold text-slate-900 md:text-[18px]">
                       {t(s.titleKey)}
                     </p>
-                    <p className="mt-1 text-sm leading-snug text-slate-500">
+                    <p className="mt-1 text-base leading-snug text-slate-500">
                       {t(s.subtitleKey)}
                     </p>
                   </div>
