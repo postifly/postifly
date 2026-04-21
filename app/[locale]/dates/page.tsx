@@ -4,9 +4,7 @@ import prisma from "@/lib/prisma";
 import { getPageSeoMetadata } from '@/lib/seo';
 import { getTranslations } from 'next-intl/server';
 import { CheckCircle2, XCircle } from 'lucide-react';
-import kaMessages from '../../../messages/ka.json';
-import enMessages from '../../../messages/en.json';
-import ruMessages from '../../../messages/ru.json';
+import { getFlightDisplayName } from '@/lib/datesFlightNames';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -80,12 +78,6 @@ export default async function Page({ params }: Props) {
   const countryName = countryNameByLocale[locale] ?? countryNameByLocale.ka;
   const routeSeparator = t('routeSeparator');
   const notSpecified = t('notSpecified');
-  const messagesByLocale: Record<string, typeof kaMessages> = {
-    ka: kaMessages,
-    en: enMessages as typeof kaMessages,
-    ru: ruMessages as typeof kaMessages,
-  };
-  const messages = messagesByLocale[locale] ?? kaMessages;
 
   const flights = await prisma.reis.findMany({
     orderBy: [{ departureAt: "asc" }, { createdAt: "desc" }],
@@ -123,7 +115,7 @@ export default async function Page({ params }: Props) {
                 countryName[flight.destinationCountry] ?? flight.destinationCountry
               }`;
               const flightDisplayName =
-                messages?.dates?.flightNames?.[flight.name] ?? flight.name;
+                getFlightDisplayName(locale, flight.name);
 
               return (
                 <article

@@ -137,6 +137,8 @@ function ParcelsManagerContent({
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
+  const lastSuccessfulFetchAtRef = useRef<number>(Date.now());
+  const refetchOnFocusStaleMs = 30_000;
 
   const buildPageHref = (nextPage: number) => {
     const p = new URLSearchParams(searchParams.toString());
@@ -178,6 +180,7 @@ function ParcelsManagerContent({
             setOriginCounts(data.originCounts as Record<string, number>)
           );
         }
+        lastSuccessfulFetchAtRef.current = Date.now();
       } catch (error) {
         console.error('Failed to fetch parcels:', error);
       } finally {
@@ -210,7 +213,12 @@ function ParcelsManagerContent({
           intervalRef.current = null;
         }
       } else {
-        fetchParcels();
+        // Avoid "refreshing" UI on quick tab switches; only refetch if data is stale.
+        const isStale =
+          Date.now() - lastSuccessfulFetchAtRef.current > refetchOnFocusStaleMs;
+        if (isStale) {
+          fetchParcels(false);
+        }
         startPolling();
       }
     };

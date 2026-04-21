@@ -32,6 +32,8 @@ export default function OrdersManager({ initialOrders, currentStatus }: OrdersMa
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
+  const lastSuccessfulFetchAtRef = useRef<number>(Date.now());
+  const refetchOnFocusStaleMs = 30_000;
 
   useEffect(() => {
     const fetchOrders = async (showLoading = true) => {
@@ -52,6 +54,7 @@ export default function OrdersManager({ initialOrders, currentStatus }: OrdersMa
           // Polling updates are non-urgent; keep INP snappy.
           startTransition(() => setOrders(data.orders));
         }
+        lastSuccessfulFetchAtRef.current = Date.now();
       } catch (error) {
         console.error('Failed to fetch orders:', error);
       } finally {
@@ -87,7 +90,12 @@ export default function OrdersManager({ initialOrders, currentStatus }: OrdersMa
           intervalRef.current = null;
         }
       } else {
-        fetchOrders(); // Fetch immediately when page becomes visible
+        // Avoid "refreshing" UI on quick tab switches; only refetch if data is stale.
+        const isStale =
+          Date.now() - lastSuccessfulFetchAtRef.current > refetchOnFocusStaleMs;
+        if (isStale) {
+          fetchOrders(false); // don't show loading overlay on focus
+        }
         startPolling();
       }
     };
