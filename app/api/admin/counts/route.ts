@@ -23,7 +23,6 @@ export async function GET() {
       'counts:v1',
       { role: session.user.role },
       async () => {
-        console.log('FETCHING COUNTS FROM DB');
         const [users, payments, parcelCounts] = await Promise.all([
           prisma.user.count(),
           prisma.payment.count(),

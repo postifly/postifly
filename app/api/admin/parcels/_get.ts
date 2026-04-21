@@ -90,7 +90,6 @@ export async function handleAdminParcelsGet(request: NextRequest) {
   };
 
   const orderBy = adminParcelsOrderBy(status);
-  const cacheKey = `role=${session.user.role}|status=${status}|page=${page}|limit=${limit}|country=${countryParam}`;
   try {
     const data = await cachedAdmin(
       'parcels:list:v1',
@@ -108,7 +107,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
           }),
           prisma.parcel.groupBy({
             by: ['originCountry'],
-            where: { status },
+            // Keep counts consistent with the active filter (incl. country if provided).
+            where,
             _count: { _all: true },
           }),
           getCachedActiveTariffsForGeorgia(),
