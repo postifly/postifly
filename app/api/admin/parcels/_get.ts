@@ -37,6 +37,22 @@ function countryFilterWhere(country: string | null): Prisma.ParcelWhereInput | u
   return { originCountry: { equals: country, mode: 'insensitive' } };
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`timeout_${ms}ms`)), ms);
+    promise.then(
+      (v) => {
+        clearTimeout(t);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(t);
+        reject(e);
+      },
+    );
+  });
+}
+
 export async function handleAdminParcelsGet(request: NextRequest) {
   const t0 = Date.now();
   const session = await getServerSession(authOptions);
@@ -96,7 +112,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
             _count: { _all: true },
           }),
           getCachedActiveTariffsForGeorgia(),
-          fetchNbgRates().catch(() => null),
+          withTimeout(fetchNbgRates().catch(() => null), 1200).catch(() => null),
         ]);
 
         const originCounts: Record<string, number> = {};
@@ -129,7 +145,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         };
       },
       {
-        ttlSeconds: 60,
+        ttlSeconds: 20,
+        staleSeconds: 120,
         tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
       },
     );

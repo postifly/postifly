@@ -29,6 +29,7 @@ export function adminParcelsTag(status?: string | null) {
 
 type AdminCacheOptions = {
   ttlSeconds?: number;
+  staleSeconds?: number;
   tags?: string[];
 };
 
@@ -40,6 +41,11 @@ export async function cachedAdmin<T>(
 ): Promise<T> {
   const cacheKey = makeDeterministicCacheKey(`admin:${id}`, params);
   const ttlSeconds = opts.ttlSeconds ?? 60;
-  return await cacheAside(cacheKey, fetcher, { ttlSeconds, tags: opts.tags ?? [] });
+  const staleSeconds = opts.staleSeconds ?? Math.min(ttlSeconds, 60);
+  return await cacheAside(cacheKey, fetcher, {
+    ttlSeconds,
+    staleSeconds,
+    tags: opts.tags ?? [],
+  });
 }
 

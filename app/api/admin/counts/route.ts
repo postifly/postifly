@@ -58,7 +58,7 @@ export async function GET() {
           payments,
         };
       },
-      { ttlSeconds: 60, tags: [AdminCacheTags.counts] },
+      { ttlSeconds: 30, staleSeconds: 120, tags: [AdminCacheTags.counts] },
     );
 
     return NextResponse.json(
