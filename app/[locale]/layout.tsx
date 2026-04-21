@@ -7,7 +7,7 @@ import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 
 import { Metadata } from 'next';
-import ChatWidget from '../Components/ChatWidget';
+import ChatWidgetLazy from '../Components/ChatWidgetLazy';
 import { getPageSeoMetadata, getSiteUrl } from '@/lib/seo';
 
 type Props = {
@@ -90,7 +90,10 @@ export default async function LocaleLayout({ children, params }: Props) {
       />
       <Header />
       <div className="flex min-h-[100vh] flex-col">
-        <main className="flex flex-1 flex-col">   <ChatWidget />  {children}</main>
+        <main className="flex flex-1 flex-col">
+          <ChatWidgetLazy />
+          {children}
+        </main>
         <Footer />
       </div>
     </NextIntlClientProvider>

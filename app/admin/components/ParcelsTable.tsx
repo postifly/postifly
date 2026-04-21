@@ -702,7 +702,7 @@ export default function ParcelsTable({
                         type="button"
                         disabled={payableSavingId === parcel.id}
                         onClick={() => handleSavePayable(parcel)}
-                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                       >
                         {payableSavingId === parcel.id ? '...' : t.save}
                       </button>
@@ -741,7 +741,7 @@ export default function ParcelsTable({
                         type="button"
                         disabled={courierFeeSavingId === parcel.id}
                         onClick={() => handleSaveCourierFee(parcel)}
-                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                       >
                         {courierFeeSavingId === parcel.id ? '...' : t.save}
                       </button>
@@ -930,7 +930,7 @@ export default function ParcelsTable({
                                 type="button"
                                 disabled={weightSavingId === parcel.id}
                                 onClick={() => handleSaveWeight(parcel)}
-                                className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                               >
                                 {weightSavingId === parcel.id ? t.saving : t.save}
                               </button>
@@ -1024,7 +1024,7 @@ export default function ParcelsTable({
                                   type="button"
                                   disabled={payableSavingId === parcel.id}
                                   onClick={() => handleSavePayable(parcel)}
-                                  className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                  className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                                 >
                                   {payableSavingId === parcel.id ? t.saving : t.save}
                                 </button>

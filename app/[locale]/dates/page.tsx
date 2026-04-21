@@ -5,6 +5,7 @@ import { getPageSeoMetadata } from '@/lib/seo';
 import { getTranslations } from 'next-intl/server';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { getFlightDisplayName } from '@/lib/datesFlightNames';
+import { unstable_cache } from 'next/cache';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -12,7 +13,40 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return getPageSeoMetadata(locale, '/dates');
+  const base = getPageSeoMetadata(locale, '/dates');
+  const { upcomingCount, nextUpcoming } = await getDatesFlightsSummary();
+
+  const nextDateLabel =
+    nextUpcoming?.departureAt != null
+      ? new Intl.DateTimeFormat(getDateTimeLocale(locale), {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }).format(nextUpcoming.departureAt)
+      : null;
+
+  const titleSuffix =
+    nextDateLabel != null
+      ? ` — ${nextDateLabel}`
+      : upcomingCount > 0
+        ? ` — ${upcomingCount}`
+        : '';
+
+  const descriptionSuffix =
+    nextDateLabel != null
+      ? ` Next departure: ${nextDateLabel}.`
+      : upcomingCount > 0
+        ? ` Upcoming flights: ${upcomingCount}.`
+        : '';
+
+  return {
+    ...base,
+    title:
+      typeof base.title === 'string'
+        ? `${base.title}${titleSuffix}`
+        : base.title,
+    description: `${base.description ?? ''}${descriptionSuffix}`.trim(),
+  };
 }
 
 const countryNameByLocale: Record<string, Record<string, string>> = {
@@ -72,6 +106,53 @@ function formatDateTime(date: Date | null, locale: string, fallback: string) {
   }).format(date);
 }
 
+export const revalidate = 300;
+
+const getDatesFlights = unstable_cache(
+  async () => {
+    return prisma.reis.findMany({
+      orderBy: [{ departureAt: "asc" }, { createdAt: "desc" }],
+      select: {
+        id: true,
+        name: true,
+        originCountry: true,
+        destinationCountry: true,
+        departureAt: true,
+        arrivalAt: true,
+        status: true,
+      },
+    });
+  },
+  ['public:dates:flights:v1'],
+  { revalidate: 300 },
+);
+
+const getDatesFlightsSummary = unstable_cache(
+  async () => {
+    const now = new Date();
+    const [upcomingCount, nextUpcoming] = await Promise.all([
+      prisma.reis.count({
+        where: {
+          status: 'open',
+          departureAt: { gte: now },
+        },
+      }),
+      prisma.reis.findFirst({
+        where: {
+          status: 'open',
+          departureAt: { gte: now },
+        },
+        orderBy: [{ departureAt: 'asc' }, { createdAt: 'desc' }],
+        select: { departureAt: true },
+      }),
+    ]);
+
+    return { upcomingCount, nextUpcoming };
+  },
+  ['public:dates:flights:summary:v1'],
+  { revalidate: 300 },
+);
+
 export default async function Page({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'dates' });
@@ -79,21 +160,52 @@ export default async function Page({ params }: Props) {
   const routeSeparator = t('routeSeparator');
   const notSpecified = t('notSpecified');
 
-  const flights = await prisma.reis.findMany({
-    orderBy: [{ departureAt: "asc" }, { createdAt: "desc" }],
-    select: {
-      id: true,
-      name: true,
-      originCountry: true,
-      destinationCountry: true,
-      departureAt: true,
-      arrivalAt: true,
-      status: true,
-    },
-  });
+  const flights = await getDatesFlights();
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.postifly.ge';
+  const pageUrl = `${siteUrl}/${locale}/dates`;
+  const eventSchema = flights
+    .filter((f) => f.departureAt != null)
+    .slice(0, 25)
+    .map((flight) => {
+      const origin = countryName[flight.originCountry] ?? flight.originCountry;
+      const destination =
+        countryName[flight.destinationCountry] ?? flight.destinationCountry;
+
+      return {
+        '@type': 'Event',
+        name: `Postifly ${getFlightDisplayName(locale, flight.name)}`,
+        startDate: flight.departureAt?.toISOString(),
+        endDate: flight.arrivalAt?.toISOString() ?? undefined,
+        eventStatus:
+          flight.status === 'open'
+            ? 'https://schema.org/EventScheduled'
+            : 'https://schema.org/EventCancelled',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: {
+          '@type': 'Place',
+          name: `${origin} ${routeSeparator} ${destination}`,
+        },
+      };
+    });
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: eventSchema.map((e, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      item: e,
+    })),
+    url: pageUrl,
+  };
 
   return (
     <main className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto w-full max-w-5xl">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">

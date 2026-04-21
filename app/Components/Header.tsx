@@ -248,7 +248,6 @@ const Header = () => {
             height={130}
             className="rounded-full"
             priority
-            unoptimized
             style={{
               opacity: 1,
               display: 'block',
