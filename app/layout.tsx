@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Postifly",
   description: "Postifly international shipping and parcel forwarding platform.",
 };
-console.log('s')
+console.log('sas')
 export default function RootLayout({
   children,
 }: Readonly<{
