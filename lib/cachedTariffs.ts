@@ -2,6 +2,7 @@ import { revalidateTag } from 'next/cache';
 import prisma from '@/lib/prisma';
 import type { TariffPick } from '@/lib/tariffLookup';
 import { cacheAside, invalidateCacheTags, makeDeterministicCacheKey } from '@/lib/cache/redisCache';
+import { DashboardCacheTags } from '@/lib/cache/dashboardCache';
 
 export const ACTIVE_TARIFFS_CACHE_TAG = 'tariffs-active-ge';
 
@@ -39,5 +40,5 @@ export async function getCachedActiveTariffsForGeorgia(): Promise<TariffPick[]> 
 export function revalidateActiveTariffsCache() {
   revalidateTag(ACTIVE_TARIFFS_CACHE_TAG, 'max');
   // Best-effort Redis invalidation (cache-aside).
-  void invalidateCacheTags([ACTIVE_TARIFFS_CACHE_TAG]);
+  void invalidateCacheTags([ACTIVE_TARIFFS_CACHE_TAG, DashboardCacheTags.tariffs]);
 }
