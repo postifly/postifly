@@ -93,6 +93,10 @@ async function resolveShippingAfterWeightChange(
       OR: [{ maxWeight: null }, { maxWeight: { gte: weight } }],
     },
     orderBy: { minWeight: 'desc' },
+    select: {
+      pricePerKg: true,
+      currency: true,
+    },
   });
   if (!tariff) {
     return {
@@ -135,6 +139,11 @@ export async function PATCH(
 
     const parcel = await prisma.parcel.findUnique({
       where: { id },
+      select: {
+        id: true,
+        status: true,
+        originCountry: true,
+      },
     });
 
     if (!parcel) {

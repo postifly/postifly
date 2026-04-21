@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     const data = topUpSchema.parse(body);
     const userId = session.user.id;
 
-    await prisma.$transaction([
+    const [, updatedUser] = await prisma.$transaction([
       prisma.payment.create({
         data: {
           userId,
@@ -80,14 +80,11 @@ export async function POST(request: NextRequest) {
       prisma.user.update({
         where: { id: userId },
         data: { balance: { increment: data.amount } },
+        select: { balance: true },
       }),
     ]);
 
-    const updated = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { balance: true },
-    });
-    const newBalance = updated?.balance ?? 0;
+    const newBalance = updatedUser?.balance ?? 0;
 
     void invalidateCacheTags([dashUserBalanceTag(userId)]);
 

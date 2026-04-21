@@ -176,6 +176,10 @@ export async function handleAdminParcelsPost(request: NextRequest) {
           OR: [{ maxWeight: null }, { maxWeight: { gte: parsed.weight } }],
         },
         orderBy: { minWeight: 'desc' },
+        select: {
+          pricePerKg: true,
+          currency: true,
+        },
       });
       if (!tariff) {
         return NextResponse.json(
@@ -210,6 +214,7 @@ export async function handleAdminParcelsPost(request: NextRequest) {
 
     const existing = await prisma.parcel.findUnique({
       where: { trackingNumber: parsed.trackingNumber.trim() },
+      select: { userId: true },
     });
 
     if (existing) {
