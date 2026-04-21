@@ -6,6 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import prisma from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import SupportShell from './components/SupportShell';
+import { cachedAdmin, AdminCacheTags } from '@/lib/cache/adminCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,14 +25,21 @@ export default async function SupportHomePage() {
   if (!session?.user) redirect('/login');
   if (session.user.role !== 'SUPPORT') redirect(session.user.role === 'EMPLOYEE' ? '/employee' : '/');
 
-  const parcels = await prisma.parcel.findMany({
-    where: { createdById: session.user.id },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-    include: {
-      user: { select: { email: true } },
+  const parcels = await cachedAdmin(
+    'support:myParcels:list:v1',
+    { supportId: session.user.id },
+    async () => {
+      return await prisma.parcel.findMany({
+        where: { createdById: session.user.id },
+        orderBy: { createdAt: 'desc' },
+        take: 100,
+        include: {
+          user: { select: { email: true } },
+        },
+      });
     },
-  });
+    { ttlSeconds: 30, tags: [AdminCacheTags.parcels] },
+  );
 
   const locale = await getLocale();
   const t = await getTranslations('employeeDashboard');

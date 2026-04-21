@@ -1,8 +1,6 @@
 import { getLocale } from 'next-intl/server';
-import prisma from '@/lib/prisma';
 import SupportShell from '../components/SupportShell';
 import ParcelsManager from '@/app/admin/components/ParcelsManager';
-import { adminParcelInclude } from '@/lib/adminParcelInclude';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -24,17 +22,6 @@ export default async function SupportIncomingPage() {
             newParcel: 'ამანათის დამატება',
           };
 
-  const parcels = await prisma.parcel.findMany({
-    where: { status: 'pending' },
-    orderBy: [{ originCountry: 'asc' }, { createdAt: 'desc' }],
-    include: adminParcelInclude,
-  });
-
-  const formattedParcels = parcels.map((parcel) => ({
-    ...parcel,
-    createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
-  }));
-
   return (
     <SupportShell title={text.title} description={text.description}>
       <div className="space-y-6">
@@ -47,7 +34,9 @@ export default async function SupportIncomingPage() {
           </Link>
         </div>
         <ParcelsManager
-          initialParcels={formattedParcels}
+          // Let the client manager fetch paginated data from /api/admin/parcels
+          // to avoid server-side heavy DB reads for large statuses.
+          initialParcels={[]}
           currentStatus="pending"
           allowDelete={false}
           countryHub
