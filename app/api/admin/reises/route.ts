@@ -55,7 +55,8 @@ export async function GET() {
           include: { _count: { select: { parcels: true } } },
         });
       },
-      { ttlSeconds: 60, tags: [AdminCacheTags.reises] },
+      // Reises update occasionally; prioritize stable admin UX under load.
+      { ttlSeconds: 120, staleSeconds: 600, tags: [AdminCacheTags.reises] },
     );
     return NextResponse.json(
       { reises },

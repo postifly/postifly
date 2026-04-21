@@ -52,7 +52,8 @@ export async function GET(
 
         return { thread, messages };
       },
-      { ttlSeconds: 30, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
+      // Prefer fast UI even if a few seconds stale while messages update.
+      { ttlSeconds: 10, staleSeconds: 60, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
     );
 
     if (!data) {

@@ -82,6 +82,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
     ),
   );
   const countryParam = searchParams.get('country')?.trim() || null;
+  const includeShipping =
+    (searchParams.get('includeShipping') ?? '').trim() === '1';
 
   const countryWhere = countryFilterWhere(countryParam);
   const where: Prisma.ParcelWhereInput = {
@@ -94,7 +96,15 @@ export async function handleAdminParcelsGet(request: NextRequest) {
     const data = await cachedAdmin(
       'parcels:list:v1',
       // Keep params deterministic: cache key stability matters.
-      { role: session.user.role, status, page, limit, country: countryParam, orderBy },
+      {
+        role: session.user.role,
+        status,
+        page,
+        limit,
+        country: countryParam,
+        orderBy,
+        includeShipping,
+      },
       async () => {
         const [totalCount, parcels, originGroups, tariffs, nbgRates] = await Promise.all([
           prisma.parcel.count({ where }),
@@ -111,8 +121,10 @@ export async function handleAdminParcelsGet(request: NextRequest) {
             where,
             _count: { _all: true },
           }),
-          getCachedActiveTariffsForGeorgia(),
-          withTimeout(fetchNbgRates().catch(() => null), 1200).catch(() => null),
+          includeShipping ? getCachedActiveTariffsForGeorgia() : Promise.resolve([]),
+          includeShipping
+            ? withTimeout(fetchNbgRates().catch(() => null), 1200).catch(() => null)
+            : Promise.resolve(null),
         ]);
 
         const originCounts: Record<string, number> = {};
@@ -125,11 +137,13 @@ export async function handleAdminParcelsGet(request: NextRequest) {
 
         return {
           parcels: parcels.map((p) => {
-            const breakdown = computeShippingGelBreakdown(
-              { originCountry: p.originCountry, weight: p.weight },
-              tariffs,
-              nbgRates,
-            );
+            const breakdown = includeShipping
+              ? computeShippingGelBreakdown(
+                  { originCountry: p.originCountry, weight: p.weight },
+                  tariffs,
+                  nbgRates,
+                )
+              : null;
             return {
               ...p,
               createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),

@@ -12,18 +12,22 @@ export async function GET() {
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
   if (session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   try {
     const threads = await cachedAdmin(
-      'chat:threads:list:v1',
-      { role: session.user.role, take: 100 },
+      'chat:threads:list:v2', // version bump (cache reset)
+      {
+        role: session.user.role,
+        take: 50, // ↓ smaller payload
+      },
       async () => {
         return await prisma.chatThread.findMany({
           orderBy: { createdAt: 'desc' },
-          take: 100,
+          take: 50,
           select: {
             id: true,
             firstName: true,
@@ -37,21 +41,29 @@ export async function GET() {
           },
         });
       },
-      { ttlSeconds: 30, tags: [AdminCacheTags.chatThreads] },
+      {
+        ttlSeconds: 60,       // ↑ longer cache
+        staleSeconds: 300,    // serve stale while refreshing
+        tags: [AdminCacheTags.chatThreads],
+      },
     );
 
-    return NextResponse.json({
-      threads: threads.map((t) => ({
-        ...t,
-        createdAt: new Date(t.createdAt).toLocaleString('ka-GE'),
-      })),
-    });
+    return NextResponse.json(
+      {
+        threads, // ❗ no toLocaleString → faster
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      }
+    );
   } catch (e) {
     console.error('Get chat threads error:', e);
+
     return NextResponse.json(
       { error: 'შეცდომა ჩათების წამოღებისას' },
       { status: 500 }
     );
   }
 }
-

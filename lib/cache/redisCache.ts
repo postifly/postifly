@@ -166,7 +166,7 @@ export async function cacheAside<T>(
   // many workers miss cache, fail to acquire lock, then all hit DB simultaneously.
   // These defaults trade a bit more waiting for much lower tail latency.
   const lockTtlMs = opts.lockTtlMs ?? 15_000;
-  const waitForLockMs = opts.waitForLockMs ?? 8_000;
+  const waitForLockMs = opts.waitForLockMs ?? 1500;
   const tags = opts.tags ?? [];
 
   const redis = await safeConnect();

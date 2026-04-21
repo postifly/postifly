@@ -63,7 +63,8 @@ export async function GET() {
           orderBy: [{ isActive: 'desc' }, { originCountry: 'asc' }, { minWeight: 'asc' }],
         });
       },
-      { ttlSeconds: 60, tags: [AdminCacheTags.tariffs] },
+      // Tariffs are invalidated explicitly on CRUD; keep cache warm for admin UI.
+      { ttlSeconds: 300, staleSeconds: 3600, tags: [AdminCacheTags.tariffs] },
     );
     return NextResponse.json(
       {
