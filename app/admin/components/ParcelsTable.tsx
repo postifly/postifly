@@ -72,6 +72,12 @@ export default function ParcelsTable({
   const locale = useLocale();
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
+  const formatDate = (v: string) => {
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return v;
+    const l = locale === 'ka' ? 'ka-GE' : locale;
+    return d.toLocaleDateString(l);
+  };
   const t = {
     pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'მოლოდინში',
     inWarehouse: isRu ? 'На складе' : isEn ? 'In warehouse' : 'საწყობში',
@@ -225,61 +231,27 @@ export default function ParcelsTable({
 
     const ids = [...selectedIds];
     try {
-      const results = await Promise.allSettled(
-        ids.map(async (parcelId) => {
-          const res = await fetch(`/api/admin/parcels/${parcelId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus }),
-          });
-          const data = await res.json();
-          if (!res.ok) {
-            throw new Error(
-              typeof data.error === 'string' ? data.error : t.statusUpdateError,
-            );
-          }
-          return { parcelId, parcel: data.parcel as Parcel };
-        }),
-      );
-
-      const succeeded: { parcelId: string; parcel: Parcel }[] = [];
-      let failCount = 0;
-      for (const r of results) {
-        if (r.status === 'fulfilled') {
-          succeeded.push(r.value);
-        } else {
-          failCount++;
-        }
+      const res = await fetch('/api/admin/parcels/bulk-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids, status: newStatus }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || t.statusUpdateError);
+        return;
       }
+
+      const updatedIds = new Set<string>(Array.isArray(data.updatedIds) ? data.updatedIds : ids);
 
       setParcels((prev) => {
-        let next = [...prev];
-        for (const { parcelId, parcel } of succeeded) {
-          if (parcel.status !== currentStatus) {
-            next = next.filter((p) => p.id !== parcelId);
-          } else {
-            next = next.map((p) => (p.id === parcelId ? parcel : p));
-          }
+        if (newStatus !== currentStatus) {
+          return prev.filter((p) => !updatedIds.has(p.id));
         }
-        return next;
+        return prev.map((p) => (updatedIds.has(p.id) ? { ...p, status: newStatus } : p));
       });
 
-      const okIds = new Set(succeeded.map((s) => s.parcelId));
-      for (const { parcel } of succeeded) {
-        onParcelUpdated?.(parcel);
-      }
-      setSelectedIds((prev) => prev.filter((id) => !okIds.has(id)));
-
-      if (failCount > 0) {
-        const total = ids.length;
-        setError(
-          isRu
-            ? `Не удалось обновить ${failCount} из ${total}`
-            : isEn
-              ? `Failed to update ${failCount} of ${total} parcels`
-              : `${failCount}/${total} ამანათის სტატუსი ვერ განახლდა`,
-        );
-      }
+      setSelectedIds((prev) => prev.filter((id) => !updatedIds.has(id)));
     } catch {
       setError(t.genericError);
     } finally {
@@ -587,7 +559,7 @@ export default function ParcelsTable({
                   </div>
                 </div>
                 <div className="text-right text-[13px] text-black">
-                  <p>{parcel.createdAt}</p>
+                  <p>{formatDate(parcel.createdAt)}</p>
                   <p>{formatOriginCountryLabel(parcel.originCountry)}</p>
                 </div>
               </div>
@@ -994,7 +966,7 @@ export default function ParcelsTable({
                           )}
 
                           <span className="text-black text-[16px]">{t.date}</span>
-                          <span className="text-[16px]">{parcel.createdAt}</span>
+                          <span className="text-[16px]">{formatDate(parcel.createdAt)}</span>
 
                           {currentStatus === 'arrived' ? (
                             <>

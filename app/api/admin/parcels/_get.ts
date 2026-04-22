@@ -75,7 +75,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
   const page = parseAdminParcelPage(searchParams.get('page') ?? undefined);
   const limitRaw = parseInt(searchParams.get('limit') ?? '', 10);
   const limit = Math.min(
-    100,
+    50,
     Math.max(
       1,
       Number.isFinite(limitRaw) && limitRaw > 0 ? limitRaw : ADMIN_PARCEL_PAGE_SIZE,
@@ -94,7 +94,7 @@ export async function handleAdminParcelsGet(request: NextRequest) {
   const orderBy = adminParcelsOrderBy(status);
   try {
     const data = await cachedAdmin(
-      'parcels:list:v1',
+      'parcels:list:v2',
       // Keep params deterministic: cache key stability matters.
       {
         role: session.user.role,
@@ -113,7 +113,25 @@ export async function handleAdminParcelsGet(request: NextRequest) {
             orderBy,
             skip: (page - 1) * limit,
             take: limit,
-            include: adminParcelInclude,
+            select: {
+              id: true,
+              trackingNumber: true,
+              status: true,
+              price: true,
+              currency: true,
+              weight: true,
+              originCountry: true,
+              quantity: true,
+              customerName: true,
+              createdAt: true,
+              filePath: true,
+              courierServiceRequested: true,
+              courierFeeAmount: true,
+              payableAmount: true,
+              shippingAmount: true,
+              user: adminParcelInclude.user,
+              createdBy: adminParcelInclude.createdBy,
+            },
           }),
           prisma.parcel.groupBy({
             by: ['originCountry'],
@@ -146,7 +164,6 @@ export async function handleAdminParcelsGet(request: NextRequest) {
               : null;
             return {
               ...p,
-              createdAt: new Date(p.createdAt).toLocaleDateString('ka-GE'),
               shippingAmount: breakdown != null ? breakdown.amountGel : p.shippingAmount,
               shippingFormula: breakdown != null ? breakdown.formula : null,
             };
@@ -159,8 +176,8 @@ export async function handleAdminParcelsGet(request: NextRequest) {
         };
       },
       {
-        ttlSeconds: 20,
-        staleSeconds: 120,
+        ttlSeconds: 60,
+        staleSeconds: 300,
         tags: [AdminCacheTags.parcels, adminParcelsTag(status), AdminCacheTags.counts],
       },
     );

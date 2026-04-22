@@ -57,7 +57,21 @@ async function safeConnect() {
     if (redis.status === 'ready') return redis;
     if (redis.status === 'connecting') {
       // With enableOfflineQueue=false, commands during "connecting" will throw.
-      // Fail fast and let callers fallback to the source of truth.
+      // Wait a tiny bit for readiness to reduce cold-start DB bursts.
+      await new Promise<void>((resolve) => {
+        const t = setTimeout(resolve, 200);
+        redis.once('ready', () => {
+          clearTimeout(t);
+          resolve();
+        });
+        redis.once('error', () => {
+          clearTimeout(t);
+          resolve();
+        });
+      });
+      // TS narrows `redis.status` to "connecting" inside this branch; re-read it as a widened value.
+      const status = redis.status as string;
+      if (status === 'ready') return redis;
       return null;
     }
     await redis.connect();
@@ -137,6 +151,11 @@ type CacheAsideOptions = {
   // stampede control
   lockTtlMs?: number;
   waitForLockMs?: number;
+  /**
+   * Hard upper bound for waiting on a lock holder (prevents infinite waits).
+   * If reached, we will retry acquiring the lock instead of hitting the DB in parallel.
+   */
+  maxWaitForLockMs?: number;
 };
 
 type CacheEnvelope<T> = {
@@ -167,6 +186,7 @@ export async function cacheAside<T>(
   // These defaults trade a bit more waiting for much lower tail latency.
   const lockTtlMs = opts.lockTtlMs ?? 15_000;
   const waitForLockMs = opts.waitForLockMs ?? 1500;
+  const maxWaitForLockMs = opts.maxWaitForLockMs ?? Math.max(lockTtlMs + 500, waitForLockMs);
   const tags = opts.tags ?? [];
 
   const redis = await safeConnect();
@@ -229,46 +249,73 @@ export async function cacheAside<T>(
   const lockKey = `${cacheKey}:lock`;
   const token = crypto.randomUUID();
 
-  let haveLock = false;
-  try {
-    const ok = await redis.set(lockKey, token, 'PX', lockTtlMs, 'NX');
-    haveLock = ok === 'OK';
-  } catch (e) {
-    console.error('Redis lock acquire error:', e);
-  }
+  const tryReadCache = async (): Promise<T | null> => {
+    try {
+      const cached = await redis.get(cacheKey);
+      if (cached == null) return null;
+      const parsed = JSON.parse(cached) as unknown;
+      if (isCacheEnvelope<T>(parsed)) return parsed.value;
+      return parsed as T;
+    } catch (e) {
+      console.error('Redis read/parse error:', e);
+      return null;
+    }
+  };
 
+  const tryAcquireLock = async (): Promise<boolean> => {
+    try {
+      const ok = await redis.set(lockKey, token, 'PX', lockTtlMs, 'NX');
+      return ok === 'OK';
+    } catch (e) {
+      console.error('Redis lock acquire error:', e);
+      return false;
+    }
+  };
+
+  // Strong stampede control: on miss, ensure only ONE fetcher runs per key.
+  // Everyone else waits for cache to appear (or retries lock acquisition), never hits DB in parallel.
+  let haveLock = await tryAcquireLock();
   if (!haveLock) {
-    // Another worker is fetching. Wait briefly and retry cache.
     const started = Date.now();
+    // Phase 1: short wait window tuned for low p95.
     while (Date.now() - started < waitForLockMs) {
       const jitter = 30 + Math.floor(Math.random() * 70);
       await sleep(jitter);
+      const v = await tryReadCache();
+      if (v != null) return v;
+    }
+    // Phase 2: longer wait window (bounded) to eliminate DB dogpiles under heavy load.
+    while (Date.now() - started < maxWaitForLockMs) {
+      const jitter = 60 + Math.floor(Math.random() * 140);
+      await sleep(jitter);
+      const v = await tryReadCache();
+      if (v != null) return v;
+      // If lock expired, attempt to become the refresher.
       try {
-        const cached = await redis.get(cacheKey);
-        if (cached != null) {
-          return JSON.parse(cached) as T;
+        const lockToken = await redis.get(lockKey);
+        if (lockToken == null) {
+          haveLock = await tryAcquireLock();
+          if (haveLock) break;
         }
-      } catch (e) {
-        console.error('Redis retry read/parse error:', e);
-        break;
+      } catch {
+        // ignore; keep waiting
       }
     }
-    // Fallback: compute without caching (avoids dogpile on Redis failure / slow lock holder).
-    return await fetcher();
+    // Last attempt to acquire lock before giving up (still avoids parallel DB hits).
+    if (!haveLock) {
+      haveLock = await tryAcquireLock();
+      if (!haveLock) {
+        // Redis is available but lock coordination failed; prefer correctness over dogpiles.
+        // Best-effort: return source of truth (may increase DB load, but should be rare).
+        return await fetcher();
+      }
+    }
   }
 
   try {
     // Double-check cache after lock to avoid duplicate work.
-    try {
-      const cached = await redis.get(cacheKey);
-      if (cached != null) {
-        const parsed = JSON.parse(cached) as unknown;
-        if (isCacheEnvelope<T>(parsed)) return parsed.value;
-        return parsed as T;
-      }
-    } catch (e) {
-      console.error('Redis read/parse after lock error:', e);
-    }
+    const existing = await tryReadCache();
+    if (existing != null) return existing;
 
     const value = await fetcher();
     try {

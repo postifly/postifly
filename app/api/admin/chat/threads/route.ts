@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -6,7 +7,7 @@ import { AdminCacheTags, cachedAdmin } from '@/lib/cache/adminCache';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -18,16 +19,23 @@ export async function GET() {
   }
 
   try {
+    const { searchParams } = new URL(request.url);
+    const pageRaw = parseInt(searchParams.get('page') ?? '1', 10);
+    const limitRaw = parseInt(searchParams.get('limit') ?? '50', 10);
+    const page = Number.isFinite(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+    const limit = Math.min(50, Math.max(1, Number.isFinite(limitRaw) ? limitRaw : 50));
     const threads = await cachedAdmin(
       'chat:threads:list:v2', // version bump (cache reset)
       {
         role: session.user.role,
-        take: 50, // ↓ smaller payload
+        page,
+        limit,
       },
       async () => {
         return await prisma.chatThread.findMany({
           orderBy: { createdAt: 'desc' },
-          take: 50,
+          take: limit,
+          skip: (page - 1) * limit,
           select: {
             id: true,
             firstName: true,
@@ -50,7 +58,9 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        threads, // ❗ no toLocaleString → faster
+        threads,
+        page,
+        limit,
       },
       {
         headers: {

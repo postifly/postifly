@@ -64,7 +64,7 @@ export async function GET() {
         });
       },
       // Tariffs are invalidated explicitly on CRUD; keep cache warm for admin UI.
-      { ttlSeconds: 300, staleSeconds: 3600, tags: [AdminCacheTags.tariffs] },
+      { ttlSeconds: 3600, staleSeconds: 3600, tags: [AdminCacheTags.tariffs] },
     );
     return NextResponse.json(
       {
