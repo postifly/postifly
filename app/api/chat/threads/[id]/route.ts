@@ -33,7 +33,7 @@ export async function GET(
 
         return { thread, messages };
       },
-      { ttlSeconds: 10, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
+      { ttlSeconds: 3, staleSeconds: 9, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
     );
 
     if (!data) return NextResponse.json({ error: 'Thread not found' }, { status: 404 });

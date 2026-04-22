@@ -57,7 +57,8 @@ export async function GET() {
           payments,
         };
       },
-      { ttlSeconds: 60, staleSeconds: 300, tags: [AdminCacheTags.counts] },
+      // Keep sidebar counts very fresh (avoid ~60s delay).
+      { ttlSeconds: 3, staleSeconds: 9, tags: [AdminCacheTags.counts] },
     );
 
     return NextResponse.json(

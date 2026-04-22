@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         },
       });
     },
-    { ttlSeconds: 60, tags: [dashUserTrackingTag(userId, code)] },
+    { ttlSeconds: 3, tags: [dashUserTrackingTag(userId, code)] },
   );
 
   if (!parcel) {

@@ -30,7 +30,7 @@ export async function GET() {
         orderBy: { createdAt: 'desc' },
       });
     },
-    { ttlSeconds: 60, tags: [dashUserOrdersTag(userId)] },
+    { ttlSeconds: 3, tags: [dashUserOrdersTag(userId)] },
   );
 
   const formatted = orders.map((order) => ({

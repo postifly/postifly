@@ -40,7 +40,7 @@ export async function cachedAdmin<T>(
   opts: AdminCacheOptions = {},
 ): Promise<T> {
   const cacheKey = makeDeterministicCacheKey(`admin:${id}`, params);
-  const ttlSeconds = opts.ttlSeconds ?? 60;
+  const ttlSeconds = opts.ttlSeconds ?? 3;
   const staleSeconds = opts.staleSeconds ?? Math.min(ttlSeconds, 60);
   return await cacheAside(cacheKey, fetcher, {
     ttlSeconds,

@@ -79,7 +79,7 @@ export async function GET() {
         }
         return out;
       },
-      { ttlSeconds: 60, tags: [DashboardCacheTags.tariffs] },
+      { ttlSeconds: 3, tags: [DashboardCacheTags.tariffs] },
     );
 
     return NextResponse.json(

@@ -47,7 +47,7 @@ type DashboardCacheOptions = {
 
 /**
  * Cache-aside wrapper for dashboard reads (user-specific).
- * TTL defaults to 60s; stampede-protected via redisCache.ts.
+ * TTL defaults to 3s; stampede-protected via redisCache.ts.
  */
 export async function cachedDashboard<T>(
   id: string,
@@ -57,7 +57,7 @@ export async function cachedDashboard<T>(
 ): Promise<T> {
   const cacheKey = makeDeterministicCacheKey(`dash:${id}`, params);
   return await cacheAside(cacheKey, fetcher, {
-    ttlSeconds: opts.ttlSeconds ?? 60,
+    ttlSeconds: opts.ttlSeconds ?? 3,
     tags: opts.tags ?? [],
   });
 }

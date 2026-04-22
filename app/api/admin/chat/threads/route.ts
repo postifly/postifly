@@ -50,8 +50,9 @@ export async function GET(request: NextRequest) {
         });
       },
       {
-        ttlSeconds: 60,       // ↑ longer cache
-        staleSeconds: 300,    // serve stale while refreshing
+        // Sidebar uses this for live indicators; keep it fresh.
+        ttlSeconds: 3,
+        staleSeconds: 9,
         tags: [AdminCacheTags.chatThreads],
       },
     );

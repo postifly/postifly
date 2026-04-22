@@ -35,7 +35,7 @@ export default async function DashboardSettingsPage() {
         },
       });
     },
-    { ttlSeconds: 60, tags: [dashUserProfileTag(userId)] },
+    { ttlSeconds: 3, tags: [dashUserProfileTag(userId)] },
   );
 
   if (!user) redirect('/login');

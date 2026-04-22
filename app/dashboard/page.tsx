@@ -113,7 +113,7 @@ export default async function DashboardPage({
       return { statusCounts, totalPages, page, formattedParcels };
     },
     {
-      ttlSeconds: 60,
+      ttlSeconds: 3,
       tags: [dashUserParcelsTag(userId), dashUserParcelsStatusTag(userId, parcelTab)],
     },
   );

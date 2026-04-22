@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
           },
         });
       },
-      { ttlSeconds: 60, tags: [AdminCacheTags.users] },
+      { ttlSeconds: 3, staleSeconds: 9, tags: [AdminCacheTags.users] },
     );
 
     return NextResponse.json(

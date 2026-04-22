@@ -82,7 +82,7 @@ export async function GET(
         },
       });
     },
-    { ttlSeconds: 60, tags: [dashUserParcelIdTag(userId, id)] },
+    { ttlSeconds: 3, tags: [dashUserParcelIdTag(userId, id)] },
   );
 
   if (!parcel) return NextResponse.json({ error: 'Not found' }, { status: 404 });

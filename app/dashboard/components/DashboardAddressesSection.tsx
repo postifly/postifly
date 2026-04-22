@@ -113,7 +113,7 @@ export default async function DashboardAddressesSection() {
         select: { firstName: true, lastName: true, roomNumber: true },
       });
     },
-    { ttlSeconds: 60, tags: [dashUserAddressesTag(userId)] },
+    { ttlSeconds: 3, tags: [dashUserAddressesTag(userId)] },
   );
 
   const userFirstName = user?.firstName ?? '';

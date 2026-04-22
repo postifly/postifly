@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
           },
         });
       },
-      { ttlSeconds: 60, tags: [AdminCacheTags.orders, adminOrdersTag(status)] },
+      { ttlSeconds: 3, staleSeconds: 9, tags: [AdminCacheTags.orders, adminOrdersTag(status)] },
     );
 
     return NextResponse.json(

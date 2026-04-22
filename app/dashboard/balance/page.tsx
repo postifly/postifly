@@ -28,7 +28,7 @@ export default async function DashboardBalancePage() {
       });
       return user?.balance ?? 0;
     },
-    { ttlSeconds: 60, tags: [dashUserBalanceTag(userId)] },
+    { ttlSeconds: 3, tags: [dashUserBalanceTag(userId)] },
   );
 
   return (

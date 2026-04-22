@@ -62,7 +62,7 @@ export async function GET() {
         },
       });
     },
-    { ttlSeconds: 60, tags: [dashUserProfileTag(userId)] },
+    { ttlSeconds: 3, tags: [dashUserProfileTag(userId)] },
   );
 
   if (!user) {
