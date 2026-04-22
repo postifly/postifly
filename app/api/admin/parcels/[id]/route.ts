@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma';
 import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
+import { writeControlLog } from '@/lib/controlLog';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
 import { CURRENCY_BY_ORIGIN_ISO, FORM_TO_TARIFF_COUNTRY } from '@/lib/tariffLookup';
@@ -220,6 +221,18 @@ export async function PATCH(
     });
 
     if (statusChanged && data.status !== undefined) {
+      void writeControlLog({
+        event: 'parcel.status.patch.admin',
+        actorRole: session.user.role ?? null,
+        actorId: session.user.id ?? null,
+        method: request.method,
+        url: request.url,
+        parcelId: id,
+        trackingNumber: updatedParcel.trackingNumber,
+        fromStatus: parcel.status,
+        toStatus: data.status,
+        meta: null,
+      });
       void notifyParcelOwnerStatusSms({
         parcelId: id,
         previousStatus: parcel.status,

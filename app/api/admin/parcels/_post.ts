@@ -8,6 +8,7 @@ import { utapi } from '@/lib/uploadthing';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { AdminCacheTags, adminParcelsTag } from '@/lib/cache/adminCache';
 import { invalidateCacheTags } from '@/lib/cache/redisCache';
+import { writeControlLog } from '@/lib/controlLog';
 
 function isParcelStaff(role: string | undefined): role is 'ADMIN' | 'EMPLOYEE' | 'SUPPORT' {
   return role === 'ADMIN' || role === 'EMPLOYEE' || role === 'SUPPORT';
@@ -242,7 +243,7 @@ export async function handleAdminParcelsPost(request: NextRequest) {
       fileUrl = uploadResult.data.url;
     }
 
-    const parcel = await prisma.parcel.create({
+    const created = await prisma.parcel.create({
       data: {
         userId: user.id,
         createdById: session.user.id,
@@ -263,7 +264,32 @@ export async function handleAdminParcelsPost(request: NextRequest) {
       },
     });
 
+    // Defensive: if DB triggers/defaults override, force Incoming.
+    const parcel =
+      created.status === 'pending'
+        ? created
+        : await prisma.parcel.update({
+            where: { id: created.id },
+            data: { status: 'pending' },
+          });
+
     await recordParcelTrackingEvent(prisma, parcel.id, parcel.status);
+    void writeControlLog({
+      event: 'parcel.create',
+      actorRole: session.user.role ?? null,
+      actorId: session.user.id ?? null,
+      method: request.method,
+      url: request.url,
+      parcelId: parcel.id,
+      trackingNumber: parcel.trackingNumber,
+      fromStatus: null,
+      toStatus: parcel.status,
+      meta: {
+        originCountry: parcel.originCountry ?? null,
+        createdStatus: created.status,
+        forcedToPending: created.status !== 'pending',
+      },
+    });
 
     await invalidateCacheTags([
       AdminCacheTags.parcels,

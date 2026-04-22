@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma';
 import { AdminCacheTags } from '@/lib/cache/adminCache';
 import { invalidateCacheTags } from '@/lib/cache/redisCache';
 import { Prisma } from '@/app/generated/prisma/client';
+import { writeControlLog } from '@/lib/controlLog';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,6 +76,21 @@ export async function POST(request: NextRequest) {
     }
 
     void invalidateCacheTags([AdminCacheTags.parcels, AdminCacheTags.counts]);
+    void writeControlLog({
+      event: 'parcel.status.bulk.admin',
+      actorRole: session.user.role ?? null,
+      actorId: session.user.id ?? null,
+      method: request.method,
+      url: request.url,
+      parcelId: null,
+      trackingNumber: null,
+      fromStatus: null,
+      toStatus: status,
+      meta: {
+        updatedCount: changed.updatedCount,
+        updatedIds: changed.updatedIds,
+      },
+    });
 
     return NextResponse.json(
       {
