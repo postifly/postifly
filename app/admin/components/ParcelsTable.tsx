@@ -72,11 +72,22 @@ export default function ParcelsTable({
   const locale = useLocale();
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
+  // Avoid SSR/CSR hydration mismatches caused by different timezones.
+  // Force a fixed timezone so server and browser render identical strings.
+  const dateFormatter = React.useMemo(() => {
+    const l = locale === 'ka' ? 'ka-GE' : locale;
+    return new Intl.DateTimeFormat(l, {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  }, [locale]);
+
   const formatDate = (v: string) => {
     const d = new Date(v);
     if (Number.isNaN(d.getTime())) return v;
-    const l = locale === 'ka' ? 'ka-GE' : locale;
-    return d.toLocaleDateString(l);
+    return dateFormatter.format(d);
   };
   const t = {
     pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'მოლოდინში',
