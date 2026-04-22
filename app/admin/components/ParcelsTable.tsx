@@ -475,7 +475,9 @@ export default function ParcelsTable({
         method: 'DELETE',
       });
 
-      const data = await res.json().catch(() => ({} as any));
+      const data = (await res
+        .json()
+        .catch(() => ({}))) as { error?: string };
 
       // If it was already deleted, treat as success.
       if (res.status === 404) {

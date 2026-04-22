@@ -10,6 +10,8 @@ import { writeControlLog } from '@/lib/controlLog';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
 import { CURRENCY_BY_ORIGIN_ISO, FORM_TO_TARIFF_COUNTRY } from '@/lib/tariffLookup';
+import { AdminCacheTags, adminParcelsTag } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 const allowedStatuses = [
   'pending',
@@ -220,6 +222,18 @@ export async function PATCH(
       return next;
     });
 
+    // Ensure admin lists update immediately (Redis tag cache aside).
+    // Best-effort: don't block response on Redis issues.
+    {
+      const tags = new Set<string>([
+        AdminCacheTags.parcels,
+        AdminCacheTags.counts,
+        adminParcelsTag(parcel.status),
+        adminParcelsTag(updatedParcel.status),
+      ]);
+      void invalidateCacheTags(Array.from(tags));
+    }
+
     if (statusChanged && data.status !== undefined) {
       void writeControlLog({
         event: 'parcel.status.patch.admin',
@@ -309,6 +323,16 @@ export async function DELETE(
     await prisma.parcel.delete({
       where: { id },
     });
+
+    // Keep admin lists consistent immediately after deletion.
+    {
+      const tags = new Set<string>([
+        AdminCacheTags.parcels,
+        AdminCacheTags.counts,
+        adminParcelsTag(parcel.status),
+      ]);
+      void invalidateCacheTags(Array.from(tags));
+    }
 
     return NextResponse.json(
       { message: 'ამანათი წარმატებით წაიშალა' },
