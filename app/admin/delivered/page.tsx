@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import AdminShell from '../components/AdminShell';
 import ParcelsManager from '../components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
