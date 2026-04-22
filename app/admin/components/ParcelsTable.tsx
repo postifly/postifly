@@ -187,6 +187,7 @@ export default function ParcelsTable({
   const [error, setError] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [feeDraftById, setFeeDraftById] = useState<Record<string, string>>({});
   const [courierFeeSavingId, setCourierFeeSavingId] = useState<string | null>(null);
   const [payableDraftById, setPayableDraftById] = useState<Record<string, string>>({});
@@ -197,6 +198,19 @@ export default function ParcelsTable({
   const [bulkTargetStatus, setBulkTargetStatus] = useState('');
   const [bulkUpdating, setBulkUpdating] = useState(false);
   const selectAllRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Keep table in sync with parent polling / refresh.
+    startTransition(() =>
+      setParcels(initialParcels.filter((p) => !deletedIds.includes(p.id))),
+    );
+  }, [initialParcels, deletedIds]);
+
+  useEffect(() => {
+    // Prevent deletedIds from growing forever (keep only ids that still exist in props).
+    const existing = new Set(initialParcels.map((p) => p.id));
+    setDeletedIds((prev) => prev.filter((id) => existing.has(id)));
+  }, [initialParcels]);
 
   const allSelected =
     parcels.length > 0 && selectedIds.length === parcels.length;
@@ -447,24 +461,37 @@ export default function ParcelsTable({
       return;
     }
 
+    const snapshot = parcels;
+
     setDeletingId(parcelId);
     setError('');
+
+    // Optimistic UI: hide immediately; rollback on failure.
+    setParcels((prev) => prev.filter((p) => p.id !== parcelId));
+    setDeletedIds((prev) => (prev.includes(parcelId) ? prev : [...prev, parcelId]));
 
     try {
       const res = await fetch(`/api/admin/parcels/${parcelId}`, {
         method: 'DELETE',
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({} as any));
 
-      if (!res.ok) {
-        setError(data.error || t.deleteError);
+      // If it was already deleted, treat as success.
+      if (res.status === 404) {
         return;
       }
 
-      setParcels((prev) => prev.filter((p) => p.id !== parcelId));
+      if (!res.ok) {
+        setError(data.error || t.deleteError);
+        setParcels(snapshot);
+        setDeletedIds((prev) => prev.filter((id) => id !== parcelId));
+        return;
+      }
     } catch {
       setError(t.genericError);
+      setParcels(snapshot);
+      setDeletedIds((prev) => prev.filter((id) => id !== parcelId));
     } finally {
       setDeletingId(null);
     }
