@@ -249,9 +249,10 @@ export function getPageSeoMetadata(locale: string, path: string): Metadata {
     acc[lng] = `/${lng}${path === '/' ? '' : path}`;
     return acc;
   }, {});
+  const metadataBase = new URL(siteUrl);
 
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase,
     title: localized.title,
     description: localized.description,
     keywords: localized.keywords,
@@ -271,7 +272,7 @@ export function getPageSeoMetadata(locale: string, path: string): Metadata {
       type: 'website',
       images: [
         {
-          url: '/logo2.jpg',
+          url: new URL('/opengraph-image', metadataBase).toString(),
           width: 1200,
           height: 630,
           alt: 'Postifly',
@@ -282,7 +283,7 @@ export function getPageSeoMetadata(locale: string, path: string): Metadata {
       card: 'summary_large_image',
       title: localized.title,
       description: localized.description,
-      images: ['/logo2.jpg'],
+      images: [new URL('/twitter-image', metadataBase).toString()],
     },
   };
 }

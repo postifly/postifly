@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SessionProvider from "./providers/SessionProvider";
+import { getSiteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: "Postifly",
   description: "Postifly international shipping and parcel forwarding platform.",
 };
