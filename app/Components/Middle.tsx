@@ -29,8 +29,8 @@ const Middle = () => {
         className="h-[900px]"
       >
         {[
-          { src: '/hero/Artboard6.jpg', alt: 'pricing background 1' },
-          { src: '/hero/Artboard7.jpg', alt: 'pricing background 2' },
+          { src: '/hero/resized_image.jpg', alt: 'pricing background 1' },
+          { src: '/hero/resized_image.jpg', alt: 'pricing background 2' },
         ].map((slide, idx) => (
           <SwiperSlide key={`${slide.src}-${idx}`} className="h-[700px]">
             <div className="relative  w-full h-[700px] ">
