@@ -76,7 +76,7 @@ export default function Hero() {
           </div>
         </div>
       )}
-      <div className="absolute right-5 top-1/2 z-20 flex -translate-y-1/2 flex-col items-center gap-3">
+      <div className="absolute right-5 lg:left-10 lg:right-auto xl:left-16 top-1/2 z-20 flex -translate-y-1/2 flex-col items-center gap-3">
         {[0, 1].map((slideIndex) => (
           <button
             key={slideIndex}
