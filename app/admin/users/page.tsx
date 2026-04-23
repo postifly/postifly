@@ -4,6 +4,9 @@ import prisma from '../../../lib/prisma';
 import UsersTable from './components/UsersTable';
 import { getLocale } from 'next-intl/server';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export default async function AdminUsersPage() {
   const locale = await getLocale();
   const text = locale === 'ru'
