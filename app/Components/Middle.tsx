@@ -62,7 +62,7 @@ const Middle = () => {
                           POSTIFLY
                         </h2>
                         <p className="mt-2 text-[clamp(1.15rem,3.6vw,2.25rem)] font-extrabold leading-tight tracking-tight text-[#8f35ff]">
-                          როცა სისწრაფე მნიშვნელოვანია
+                          {t('heroMiddleSlide1Tagline')}
                         </p>
                       </>
                     ) : idx === 1 ? (
@@ -71,8 +71,8 @@ const Middle = () => {
                           POSTIFLY
                         </h2>
                         <p className="mt-1 text-[clamp(1.55rem,4.6vw,2.9rem)] font-extrabold leading-[1.05] tracking-tight text-[#8f35ff]">
-                          <span className="block">გლობალური მიწოდება</span>
-                          <span className="block">ლოკალური სისწრაფით</span>
+                          <span className="block">{t('heroMiddleSlide2Line1')}</span>
+                          <span className="block">{t('heroMiddleSlide2Line2')}</span>
                         </p>
                       </>
                     ) : (
@@ -91,16 +91,16 @@ const Middle = () => {
                     {idx === 0 ? (
                       <div className="mt-6 inline-flex md:mt-14 max-w-full flex-col rounded-full bg-[#8f35ff] px-6 py-3 text-white sm:px-7 sm:py-4">
                         <span className="text-[clamp(0.95rem,2.6vw,1.25rem)] text-center md:text-[18px] text-[16px] font-extrabold leading-tight">
-                          მიღება ამანათები საფრანგეთიდან
+                          {t('heroMiddleSlide1PillTop')}
                         </span>
                         <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] text-center md:text-left md:text-[18px] text-[14px] font-extrabold leading-none">
-                          1-3 დღეში
+                          {t('heroMiddleSlide1PillBottom')}
                         </span>
                       </div>
                     ) : idx === 1 ? (
                       <div className="mt-6 inline-flex md:mt-14 max-w-full items-center justify-center rounded-full bg-[#2563eb] px-6 py-3 text-center text-white ring-2 ring-white/90 ring-offset-2 ring-offset-transparent sm:px-8 sm:py-4">
                         <span className="text-[clamp(1rem,3.4vw,1.6rem)]  md:text-[18px] text-[16px]font-extrabold leading-snug">
-                          შეუკვეთე მარტივად მიიღე სწრაფად
+                          {t('heroMiddleSlide2Pill')}
                         </span>
                       </div>
                     ) : null}
