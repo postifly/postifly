@@ -5,6 +5,21 @@ import prisma from './prisma';
 import { loginSchema } from './validations';
 
 export const authOptions: NextAuthOptions = {
+  debug: process.env.NODE_ENV !== 'production',
+  logger: {
+    error(code, metadata) {
+      // surface NextAuth internal failures during local dev
+      console.error('[next-auth][error]', code, metadata);
+    },
+    warn(code) {
+      console.warn('[next-auth][warn]', code);
+    },
+    debug(code, metadata) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug('[next-auth][debug]', code, metadata);
+      }
+    },
+  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -13,53 +28,61 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('ელ-ფოსტა და პაროლი აუცილებელია');
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error('ელ-ფოსტა და პაროლი აუცილებელია');
+          }
+
+          // Validate input
+          const validatedData = loginSchema.parse({
+            email: credentials.email,
+            password: credentials.password,
+          });
+
+          // Find user
+          const user = await prisma.user.findUnique({
+            where: { email: validatedData.email },
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              role: true,
+              phoneVerified: true,
+              password: true,
+              roomNumber: true,
+            },
+          });
+
+          if (!user) {
+            throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
+          }
+
+          if (!user.password) {
+            throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
+          }
+
+          // Verify password
+          const isPasswordValid = await bcrypt.compare(validatedData.password, user.password);
+
+          if (!isPasswordValid) {
+            throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name:
+              `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+              user.email,
+            role: user.role,
+            phoneVerified: user.phoneVerified ?? false,
+            roomNumber: user.roomNumber,
+          };
+        } catch (err) {
+          console.error('[next-auth][authorize] failed', err);
+          throw err;
         }
-
-        // Validate input
-        const validatedData = loginSchema.parse({
-          email: credentials.email,
-          password: credentials.password,
-        });
-
-        // Find user
-        const user = await prisma.user.findUnique({
-          where: { email: validatedData.email },
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-            phoneVerified: true,
-            password: true,
-            roomNumber: true,
-          },
-        });
-
-        if (!user) {
-          throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
-        }
-
-        // Verify password
-        const isPasswordValid = await bcrypt.compare(
-          validatedData.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          throw new Error('ელ-ფოსტა ან პაროლი არასწორია');
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-          role: user.role,
-          phoneVerified: user.phoneVerified ?? false,
-          roomNumber: user.roomNumber,
-        };
       },
     }),
   ],
