@@ -93,7 +93,7 @@ const Middle = () => {
                         <span className="text-[clamp(0.95rem,2.6vw,1.25rem)] text-center md:text-[18px] text-[16px] font-extrabold leading-tight">
                           მიღება ამანათები საფრანგეთიდან
                         </span>
-                        <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] text-center md:text-[18px] text-[14px] font-extrabold leading-none">
+                        <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] text-center md:text-left md:text-[18px] text-[14px] font-extrabold leading-none">
                           1-3 დღეში
                         </span>
                       </div>
