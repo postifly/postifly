@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const Page = () => {
   return (
     <div>
-      <div className="relative md:pb-28">
+      <div className="relative ">
        <Middle />
-        <Why />
       </div>
+        <Why />
        
   
       <Works />
