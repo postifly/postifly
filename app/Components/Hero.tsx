@@ -45,11 +45,11 @@ export default function Hero() {
         />
       </div>
       {activeSlide === 0 && (
-        <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-center justify-center px-4 sm:px-6 lg:px-5">
-          <div className="relative z-10 flex w-full max-w-2xl flex-col items-center rounded-2xl p-6 sm:p-8">
+        <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-center justify-start px-4 sm:px-6 lg:px-5">
+          <div className="relative z-10 flex w-full max-w-2xl translate-y-6 flex-col items-start rounded-2xl p-6 sm:p-8 sm:translate-y-8">
             <Link
               href="#tariffs"
-              className="mt-5 inline-flex w-[150px] items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff] mx-auto"
+              className="mt-32 inline-flex w-[150px] items-center justify-center rounded-xl bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"
             >
               {t("tariffsTitle")}
             </Link>
@@ -57,9 +57,9 @@ export default function Hero() {
         </div>
       )}
       {activeSlide === 1 && (
-        <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-center justify-center px-4 sm:px-6 lg:px-5">
-          <div className="relative z-10 flex w-full max-w-2xl flex-col items-center rounded-2xl p-6 sm:p-8">
-            <div className="mt-5 flex w-full items-center justify-center gap-3">
+        <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-center justify-start px-4 sm:px-6 lg:px-5">
+          <div className="relative z-10 flex w-full max-w-2xl translate-y-6 flex-col items-start rounded-2xl pt- p-6 sm:p-8 sm:translate-y-8">
+            <div className="mt-32 flex w-full items-center justify-start gap-3">
             <Link
               href="/register"
               className="w-[150px] rounded-xl inline-flex items-center justify-center text-center bg-[#3a5bff] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-[#3a5bff]"
@@ -76,7 +76,7 @@ export default function Hero() {
           </div>
         </div>
       )}
-      <div className="absolute right-5 lg:left-10 lg:right-auto xl:left-16 top-1/2 z-20 flex -translate-y-1/2 flex-col items-center gap-3">
+      <div className="absolute right-5 lg:right-10 xl:right-16 top-1/2 z-20 flex -translate-y-1/2 flex-col items-center gap-3">
         {[0, 1].map((slideIndex) => (
           <button
             key={slideIndex}
