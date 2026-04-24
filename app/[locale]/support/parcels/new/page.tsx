@@ -1,2 +1,7 @@
-export { default } from '@/app/support/parcels/new/page';
+import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
+export default async function SupportParcelsNewRedirect() {
+  redirect('/support/incoming/new');
+}

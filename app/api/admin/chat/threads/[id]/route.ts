@@ -12,22 +12,22 @@ const replySchema = z.object({
   message: z.string().min(1),
 });
 
-async function requireAdmin() {
+async function requireStaff() {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return { ok: false as const, res: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
   }
-  if (session.user.role !== 'ADMIN') {
+  if (session.user.role !== 'ADMIN' && session.user.role !== 'SUPPORT') {
     return { ok: false as const, res: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
   }
-  return { ok: true as const };
+  return { ok: true as const, role: session.user.role };
 }
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -38,7 +38,7 @@ export async function GET(
   try {
     const data = await cachedAdmin(
       'chat:thread:get:v1',
-      { role: auth.ok ? 'ADMIN' : 'unknown', id },
+      { role: auth.role, id },
       async () => {
         const thread = await prisma.chatThread.findUnique({
           where: { id },
@@ -83,7 +83,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -146,7 +146,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -184,7 +184,7 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
