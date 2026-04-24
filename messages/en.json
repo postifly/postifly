@@ -746,5 +746,35 @@
   },
   "stores": {
     "title": "Online stores"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "items": [
+      {
+        "name": "Valerian Margalitadze",
+        "rating": 5,
+        "text": "My parcels always arrive on time and the packaging is very good."
+      },
+      {
+        "name": "Davit Chkhartishvili",
+        "rating": 5,
+        "text": "The calculator shows the exact price and the service is very fast."
+      },
+      {
+        "name": "Nino Chkonia",
+        "rating": 4,
+        "text": "The support team responds quickly and explains everything in detail."
+      },
+      {
+        "name": "Giorgi Gabunia",
+        "rating": 5,
+        "text": "Shipments from Europe arrived without any issues — I recommend it."
+      },
+      {
+        "name": "Nino Davidadze",
+        "rating": 5,
+        "text": "Excellent quality — I’ve used it several times and I’m satisfied."
+      }
+    ]
   }
 }

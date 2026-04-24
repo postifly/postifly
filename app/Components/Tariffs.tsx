@@ -118,38 +118,19 @@ const item = {
     transition: { duration: 0.45, ease: 'easeOut' as const },
   },
 };
-const REVIEWS = [
-  {
-    name: 'ვალერიან მარგალიტაძე',
-    rating: 5,
-    text: 'ამანათები ყოველთვის დროულად მომდის და შეფუთვაც ძალიან კარგი აქვთ.',
-  },
-  {
-    name: 'დავით ჩხარტიშვილი',
-    rating: 5,
-    text: 'კალკულატორი ზუსტ ფასს მაჩვენებს და სერვისიც ძალიან სწრაფია.',
-  },
-  {
-    name: 'ნინო ჭყონია',
-    rating: 4,
-    text: 'მხარდაჭერის გუნდი ოპერატიულად მპასუხობს და დეტალურად მიხსნის ყველაფერს.',
-  },
-  {
-    name: 'გიორგი გაბუნია',
-    rating: 5,
-    text: 'ევროპიდან გზავნილები პრობლემის გარეშე ჩამომივიდა, რეკომენდაციას ვუწევ.',
-  },
-  {
-    name: 'ნინო დავითაძე',
-    rating: 5,
-    text: 'ხარისხი საუკეთესოა, უკვე რამდენჯერმე გამოვიყენე და კმაყოფილი ვარ.',
-  },
-];
+
+type ReviewItem = {
+  name: string;
+  rating: number;
+  text: string;
+};
 export default function Tariffs() {
   const t = useTranslations('home');
+  const tReviews = useTranslations('reviews');
   const tAddr = useTranslations('addresses');
   const tCalc = useTranslations('calculator');
   const tCommon = useTranslations('common');
+  const reviews = (tReviews.raw('items') as ReviewItem[]) ?? [];
   const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
   const [weightKg, setWeightKg] = React.useState<string>('1');
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -158,12 +139,13 @@ export default function Tariffs() {
   const [shippingCalcUnavailable, setShippingCalcUnavailable] = React.useState(false);
 
   React.useEffect(() => {
+    if (reviews.length === 0) return;
     const timerId = window.setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % REVIEWS.length);
+      setActiveIndex((prev) => (prev + 1) % reviews.length);
     }, 4200);
 
     return () => window.clearInterval(timerId);
-  }, []);
+  }, [reviews.length]);
 
   React.useEffect(() => {
     const ac = new AbortController();
@@ -429,22 +411,22 @@ export default function Tariffs() {
             </motion.aside>
             <section className="w-full">
             <h2 className="mb-3 text-center text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
-              მიმოხილვები
+              {tReviews('title')}
             </h2>
 
             <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[20px] p-1.5 sm:rounded-[24px] sm:p-2">
               <article className="min-h-[160px] rounded-2xl border border-gray-200 bg-white/95 p-4 shadow-md sm:min-h-[170px] sm:p-6">
                 <div className="mb-3 text-lg tracking-[2px] text-amber-500 sm:text-xl">
-                  {'★'.repeat(REVIEWS[activeIndex].rating)}
+                  {'★'.repeat(reviews[activeIndex]?.rating ?? 0)}
                 </div>
                 <p className="text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">
-                  &ldquo;{REVIEWS[activeIndex].text}&rdquo;
+                  &ldquo;{reviews[activeIndex]?.text ?? ''}&rdquo;
                 </p>
-                <p className="mt-4 text-[14px] md:text-[16px] font-bold text-violet-700">{REVIEWS[activeIndex].name}</p>
+                <p className="mt-4 text-[14px] md:text-[16px] font-bold text-violet-700">{reviews[activeIndex]?.name ?? ''}</p>
               </article>
 
               <div className="mt-5 flex items-center justify-center gap-2">
-                {REVIEWS.map((review, index) => (
+                {reviews.map((review, index) => (
                   <button
                     key={review.name}
                     type="button"
