@@ -10,6 +10,12 @@ import {
   parseDashboardParcelTab,
 } from '@/lib/dashboardParcelList';
 import {
+  cachedDashboard,
+  dashUserParcelsStatusTag,
+  dashUserParcelsTag,
+  dashUserProfileTag,
+} from '@/lib/cache/dashboardCache';
+import {
   buildDashboardTariffRows,
   formKeyForTariffIso,
 } from '@/lib/tariffLookup';
@@ -44,50 +50,87 @@ export default async function DashboardPage({ params, searchParams }: Props) {
 
   const userId = session.user.id;
 
-  const [statusGroups, totalForTab, tariffs, user, nbgRates] = await Promise.all([
-    prisma.parcel.groupBy({
-      by: ['status'],
-      where: { userId },
-      _count: { _all: true },
-    }),
-    prisma.parcel.count({
-      where: { userId, status: parcelTab },
-    }),
-    getCachedActiveTariffsForGeorgia(),
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { balance: true, firstName: true, lastName: true, roomNumber: true },
-    }),
-    fetchNbgRates().catch(() => null),
-  ]);
+  const data = await cachedDashboard(
+    'dashboard:page:v2',
+    { userId, status: parcelTab, pageRequested, pageSize: DASHBOARD_PARCEL_PAGE_SIZE },
+    async () => {
+      const [statusGroups, totalForTab, tariffs, user, nbgRates] = await Promise.all([
+        prisma.parcel.groupBy({
+          by: ['status'],
+          where: { userId },
+          _count: { _all: true },
+        }),
+        prisma.parcel.count({
+          where: { userId, status: parcelTab },
+        }),
+        getCachedActiveTariffsForGeorgia(),
+        prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            balance: true,
+            firstName: true,
+            lastName: true,
+            roomNumber: true,
+          },
+        }),
+        fetchNbgRates().catch(() => null),
+      ]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(totalForTab / DASHBOARD_PARCEL_PAGE_SIZE),
+      const statusCounts: Partial<Record<string, number>> = {};
+      for (const row of statusGroups) statusCounts[row.status] = row._count._all;
+
+      const totalPages = Math.max(
+        1,
+        Math.ceil(totalForTab / DASHBOARD_PARCEL_PAGE_SIZE),
+      );
+      const page = Math.min(pageRequested, totalPages);
+
+      const parcels = await prisma.parcel.findMany({
+        where: { userId, status: parcelTab },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * DASHBOARD_PARCEL_PAGE_SIZE,
+        take: DASHBOARD_PARCEL_PAGE_SIZE,
+        select: {
+          id: true,
+          trackingNumber: true,
+          status: true,
+          price: true,
+          onlineShop: true,
+          description: true,
+          comment: true,
+          shippingAmount: true,
+          weight: true,
+          originCountry: true,
+          quantity: true,
+          customerName: true,
+          createdAt: true,
+          courierServiceRequested: true,
+          courierFeeAmount: true,
+          payableAmount: true,
+        },
+      });
+
+      return { statusCounts, totalPages, page, parcels, tariffs, user, nbgRates };
+    },
+    {
+      ttlSeconds: 3,
+      tags: [
+        dashUserParcelsTag(userId),
+        dashUserParcelsStatusTag(userId, parcelTab),
+        dashUserProfileTag(userId),
+      ],
+    },
   );
-  const page = Math.min(pageRequested, totalPages);
-
-  const parcels = await prisma.parcel.findMany({
-    where: { userId, status: parcelTab },
-    orderBy: { createdAt: 'desc' },
-    skip: (page - 1) * DASHBOARD_PARCEL_PAGE_SIZE,
-    take: DASHBOARD_PARCEL_PAGE_SIZE,
-  });
-
-  const statusCounts: Partial<Record<string, number>> = {};
-  for (const row of statusGroups) {
-    statusCounts[row.status] = row._count._all;
-  }
 
   const intlLocale =
     locale === 'ka' ? 'ka-GE' : locale === 'ru' ? 'ru-RU' : 'en-US';
 
   const userDisplayName =
-    [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+    [data.user?.firstName, data.user?.lastName].filter(Boolean).join(' ').trim() ||
     session.user.email ||
     '';
 
-  const balanceGel = user?.balance ?? 0;
+  const balanceGel = data.user?.balance ?? 0;
   const balanceFormatted = new Intl.NumberFormat(intlLocale, {
     style: 'currency',
     currency: 'GEL',
@@ -95,7 +138,7 @@ export default async function DashboardPage({ params, searchParams }: Props) {
     maximumFractionDigits: 2,
   }).format(balanceGel);
 
-  const dashboardTariffRows = buildDashboardTariffRows(tariffs).map((row) => {
+  const dashboardTariffRows = buildDashboardTariffRows(data.tariffs).map((row) => {
     const fk = formKeyForTariffIso(row.originIso);
     const label = fk
       ? tParcels(`originCountryLabels.${fk}`)
@@ -114,11 +157,13 @@ export default async function DashboardPage({ params, searchParams }: Props) {
     };
   });
 
-  const formattedParcels: UserParcel[] = parcels.map((parcel) => {
+  const dateFormatter = new Intl.DateTimeFormat(intlLocale);
+
+  const formattedParcels: UserParcel[] = data.parcels.map((parcel) => {
     const breakdown = computeShippingGelBreakdown(
       { originCountry: parcel.originCountry, weight: parcel.weight },
-      tariffs,
-      nbgRates,
+      data.tariffs,
+      data.nbgRates,
     );
     return {
       id: parcel.id,
@@ -137,7 +182,7 @@ export default async function DashboardPage({ params, searchParams }: Props) {
       originCountry: parcel.originCountry || null,
       quantity: parcel.quantity,
       customerName: parcel.customerName,
-      createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
+      createdAt: dateFormatter.format(new Date(parcel.createdAt)),
       courierServiceRequested: parcel.courierServiceRequested,
       courierFeeAmount: parcel.courierFeeAmount,
       payableAmount: parcel.payableAmount,
@@ -161,7 +206,7 @@ export default async function DashboardPage({ params, searchParams }: Props) {
                   <p className="mt-2 text-[14px] md:text-[15px] text-slate-600">
                     <span className="text-slate-500">{tDashboard('roomNumber')}</span>{' '}
                     <span className="font-medium tabular-nums text-slate-900">
-                      {user?.roomNumber?.trim() ? user.roomNumber : '—'}
+                      {data.user?.roomNumber?.trim() ? data.user.roomNumber : '—'}
                     </span>
                   </p>
                 </div>
@@ -196,10 +241,10 @@ export default async function DashboardPage({ params, searchParams }: Props) {
           
           <UserParcelsTabs
             parcels={formattedParcels}
-            statusCounts={statusCounts}
+            statusCounts={data.statusCounts}
             selectedStatus={parcelTab}
-            page={page}
-            totalPages={totalPages}
+            page={data.page}
+            totalPages={data.totalPages}
             dashboardBasePath="/dashboard"
           />
         </main>

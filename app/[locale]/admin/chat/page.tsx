@@ -1,2 +1,18 @@
-export { default } from '@/app/admin/chat/page';
+import AdminShell from '@/app/admin/components/AdminShell';
+import ChatAdmin from '@/app/admin/chat/ChatAdmin';
+import { getLocale } from 'next-intl/server';
 
+export default async function AdminChatPage() {
+  const locale = await getLocale();
+  const text =
+    locale === 'ru'
+      ? { title: 'Чат', description: 'Сообщения с внешнего экрана и ответы.' }
+      : locale === 'en'
+        ? { title: 'Chat', description: 'Messages from external screen and replies.' }
+        : { title: 'ჩეთი', description: 'გარე ეკრანიდან მოსული შეტყობინებები და პასუხები.' };
+  return (
+    <AdminShell title={text.title} description={text.description}>
+      <ChatAdmin />
+    </AdminShell>
+  );
+}
