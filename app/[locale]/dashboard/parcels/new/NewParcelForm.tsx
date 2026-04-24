@@ -73,7 +73,7 @@ export default function NewParcelForm({ resolvedCustomerName }: Props) {
   );
   const pdfLabel = useMemo(() => {
     const base = tDeclaration('pdfFile').replace(/\s*\*$/, '');
-    return requiresInvoicePdf ? `${base} *` : `${base} (არასავალდებულო)`;
+    return requiresInvoicePdf ? `${base} *` : `${base} ${tCommon('optional')}`;
   }, [tDeclaration, requiresInvoicePdf]);
   const trackingLabel = useMemo(() => `${t('trackingCode').replace(/\s*\*$/, '')} *`, [t]);
   const onlineShopLabel = useMemo(() => `${t('onlineShop').replace(/\s*\*$/, '')} *`, [t]);
@@ -311,7 +311,7 @@ export default function NewParcelForm({ resolvedCustomerName }: Props) {
 
             <div>
               <label htmlFor="quantity" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
-                {quantityLabel} (არასავალდებულო)
+                {quantityLabel} {tCommon('optional')}
               </label>
               <input
                 id="quantity"
@@ -406,7 +406,7 @@ export default function NewParcelForm({ resolvedCustomerName }: Props) {
 
             <div>
               <label htmlFor="weight" className="mb-1 block text-[15px] md:text-[18px] font-bold text-[#3a5bff]">
-                {weightLabel} (არასავალდებულო)
+                {weightLabel} {tCommon('optional')}
               </label>
               <input
                 id="weight"
