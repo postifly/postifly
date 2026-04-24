@@ -39,7 +39,7 @@ const Middle = () => {
         loop
         pagination={{ clickable: true }}
         autoplay={{ delay: 5500, disableOnInteraction: false }}
-        className="h-[420px] sm:h-[520px] lg:h-[600px]"
+        className="h-[600px] sm:h-[600px]  lg:h-[750px]"
       >
         {slides.map((slide, idx) => (
           <SwiperSlide key={`${slide.src}-${idx}`} className="h-full">
@@ -51,7 +51,7 @@ const Middle = () => {
                 priority={idx === 0}
                 quality={85}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-                className="object-cover object-center"
+                className="object-cover "
               />
               <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-end px-4 pb-10 sm:items-start sm:px-6 sm:pb-0 sm:pt-20 lg:pt-24 lg:px-5 xl:pt-32">
                 <div className="relative z-10 w-full max-w-2xl">
