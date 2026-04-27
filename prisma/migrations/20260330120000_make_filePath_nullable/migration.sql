@@ -1,3 +1,0 @@
-ALTER TABLE "parcels"
-ALTER COLUMN "filePath" DROP NOT NULL;
-
