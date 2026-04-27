@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
 import { utapi } from '../../../../lib/uploadthing';
+import { dashUserParcelsTag } from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,7 +51,7 @@ export async function POST(request: NextRequest) {
     }
     if (!file || file.size === 0) {
       return NextResponse.json(
-        { error: 'PDF ფაილის ატვირთვა აუცილებელია' },
+        { error: 'ინვოისისPDF ფაილის ატვირთვა აუცილებელია' },
         { status: 400 }
       );
     }
@@ -91,6 +93,9 @@ export async function POST(request: NextRequest) {
         filePath: fileUrl,
       },
     });
+
+    // Declaration is usually tied to a tracking code and affects user's workflow; keep dashboard fresh.
+    void invalidateCacheTags([dashUserParcelsTag(userId)]);
 
     return NextResponse.json(
       {

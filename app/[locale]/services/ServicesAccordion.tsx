@@ -84,7 +84,7 @@ export default function ServicesAccordion({ isKa, activeServiceId }: Props) {
             <motion.div
               key={service.id}
               id={service.id}
-              className="relative overflow-hidden rounded-3xl border border-pink-200/60 bg-gradient-to-br from-white via-pink-50 to-indigo-50 shadow-xl p-5 md:p-8"
+              className="relative overflow-hidden rounded-3xl  bg-white shadow-xl p-5 md:p-8"
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}

@@ -177,7 +177,7 @@ const RegisterPage = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full mt-14 space-y-8">
         <div className="text-center mx-auto gap-4 flex flex-col items-center justify-center">
-          <h2 className="mt-6 text-center text-3xl font-bold text-black">{t('title')}</h2>
+          <h2 className=" text-center text-3xl font-bold text-black">{t('title')}</h2>
           
         </div>
 
@@ -191,7 +191,7 @@ const RegisterPage = () => {
           <div className="rounded-md space-y-4">
             <div>
               <label htmlFor="firstName" className="block text-[18px] font-medium text-black mb-1">{t('firstName')}</label>
-              <p className="mb-1 text-[15px] text-gray-600">{t('nameLatinHint')}</p>
+              <p className="mb-1 text-[14px] md:text-[16px] text-gray-600">{t('nameLatinHint')}</p>
               <input
                 id="firstName"
                 name="firstName"
@@ -217,7 +217,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="lastName" className="block text-[18px] font-medium text-black mb-1">{t('lastName')}</label>
-              <p className="mb-1 text-[15px] text-gray-600">{t('nameLatinHint')}</p>
+              <p className="mb-1 text-[14px] md:text-[16px] text-gray-600">{t('nameLatinHint')}</p>
               <input
                 id="lastName"
                 name="lastName"
@@ -300,7 +300,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="city" className="block text-[18px] font-medium text-black mb-1">{t('city')}</label>
-              <p className="mb-1 text-[15px] text-gray-600">{t('cityDropdownHint')}</p>
+              <p className="mb-1 text-[14px] md:text-[16px] text-gray-600">{t('cityDropdownHint')}</p>
               <select
                 id="city"
                 name="city"
@@ -344,7 +344,7 @@ const RegisterPage = () => {
 
             <div>
               <label htmlFor="address" className="block text-[18px] font-medium text-black mb-1">{t('address')}</label>
-              <p className="mb-1 text-[15px] text-gray-600">{t('georgianFieldHint')}</p>
+              <p className="mb-1 text-[14px] md:text-[16px] text-gray-600">{t('georgianFieldHint')}</p>
               <input
                 id="address"
                 name="address"

@@ -213,7 +213,7 @@ function TrackingSearch() {
         <button
           type="submit"
           disabled={loading}
-          className="min-h-[48px] shrink-0 rounded-xl bg-[#3a5bff] px-8 text-[17px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+          className="min-h-[48px] shrink-0 rounded-xl bg-[#3a5bff] px-8 text-[16px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
         >
           {loading ? t('searching') : t('search')}
         </button>

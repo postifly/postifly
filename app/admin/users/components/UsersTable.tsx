@@ -70,7 +70,7 @@ type UsersTableProps = {
 
 const ROLE_OPTIONS = ['USER', 'EMPLOYEE', 'SUPPORT', 'ADMIN'] as const;
 
-const COUNTRY_OPTIONS = ['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR'] as const;
+const COUNTRY_OPTIONS = ['GB', 'US', 'CN', 'GR', 'FR', 'TR'] as const;
 
 const PAGE_SIZE = 12;
 
@@ -185,11 +185,8 @@ export default function UsersTable({
     GB: isRu ? 'Великобритания' : isEn ? 'United Kingdom' : 'დიდი ბრიტანეთი',
     US: isRu ? 'США' : isEn ? 'USA' : 'აშშ',
     CN: isRu ? 'Китай' : isEn ? 'China' : 'ჩინეთი',
-    IT: isRu ? 'Италия' : isEn ? 'Italy' : 'იტალია',
     GR: isRu ? 'Греция' : isEn ? 'Greece' : 'საბერძნეთი',
-    ES: isRu ? 'Испания' : isEn ? 'Spain' : 'ესპანეთი',
     FR: isRu ? 'Франция' : isEn ? 'France' : 'საფრანგეთი',
-    DE: isRu ? 'Германия' : isEn ? 'Germany' : 'გერმანია',
     TR: isRu ? 'Турция' : isEn ? 'Turkey' : 'თურქეთი',
   };
   const statusLabels: Record<string, string> = {

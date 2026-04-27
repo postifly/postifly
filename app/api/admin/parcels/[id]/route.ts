@@ -6,9 +6,12 @@ import prisma from '@/lib/prisma';
 import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
+import { writeControlLog } from '@/lib/controlLog';
 import { convertToGel, fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
 import { CURRENCY_BY_ORIGIN_ISO, FORM_TO_TARIFF_COUNTRY } from '@/lib/tariffLookup';
+import { AdminCacheTags, adminParcelsTag } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 const allowedStatuses = [
   'pending',
@@ -93,6 +96,10 @@ async function resolveShippingAfterWeightChange(
       OR: [{ maxWeight: null }, { maxWeight: { gte: weight } }],
     },
     orderBy: { minWeight: 'desc' },
+    select: {
+      pricePerKg: true,
+      currency: true,
+    },
   });
   if (!tariff) {
     return {
@@ -135,6 +142,11 @@ export async function PATCH(
 
     const parcel = await prisma.parcel.findUnique({
       where: { id },
+      select: {
+        id: true,
+        status: true,
+        originCountry: true,
+      },
     });
 
     if (!parcel) {
@@ -210,7 +222,31 @@ export async function PATCH(
       return next;
     });
 
+    // Ensure admin lists update immediately (Redis tag cache aside).
+    // Best-effort: don't block response on Redis issues.
+    {
+      const tags = new Set<string>([
+        AdminCacheTags.parcels,
+        AdminCacheTags.counts,
+        adminParcelsTag(parcel.status),
+        adminParcelsTag(updatedParcel.status),
+      ]);
+      void invalidateCacheTags(Array.from(tags));
+    }
+
     if (statusChanged && data.status !== undefined) {
+      void writeControlLog({
+        event: 'parcel.status.patch.admin',
+        actorRole: session.user.role ?? null,
+        actorId: session.user.id ?? null,
+        method: request.method,
+        url: request.url,
+        parcelId: id,
+        trackingNumber: updatedParcel.trackingNumber,
+        fromStatus: parcel.status,
+        toStatus: data.status,
+        meta: null,
+      });
       void notifyParcelOwnerStatusSms({
         parcelId: id,
         previousStatus: parcel.status,
@@ -287,6 +323,16 @@ export async function DELETE(
     await prisma.parcel.delete({
       where: { id },
     });
+
+    // Keep admin lists consistent immediately after deletion.
+    {
+      const tags = new Set<string>([
+        AdminCacheTags.parcels,
+        AdminCacheTags.counts,
+        adminParcelsTag(parcel.status),
+      ]);
+      void invalidateCacheTags(Array.from(tags));
+    }
 
     return NextResponse.json(
       { message: 'ამანათი წარმატებით წაიშალა' },

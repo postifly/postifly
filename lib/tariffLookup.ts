@@ -3,11 +3,8 @@ export const FORM_TO_TARIFF_COUNTRY: Record<string, string> = {
   uk: 'GB',
   us: 'US',
   cn: 'CN',
-  it: 'IT',
   gr: 'GR',
-  es: 'ES',
   fr: 'FR',
-  de: 'DE',
   tr: 'TR',
 };
 
@@ -20,11 +17,8 @@ export const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'USD',
-  IT: 'EUR',
   GR: 'EUR',
-  ES: 'EUR',
   FR: 'EUR',
-  DE: 'EUR',
   TR: 'USD',
 };
 
@@ -80,13 +74,13 @@ const DASHBOARD_TARIFF_ORIGIN_ORDER = [
   'GB',
   'US',
   'CN',
-  'IT',
   'GR',
-  'ES',
   'FR',
-  'DE',
   'TR',
 ] as const;
+
+/** Dashboard-ზე არ ვაჩვენებთ ამ origin ISO-ებს (მიუხედავად იმისა, რომ DB-ში შეიძლება არსებობდეს). */
+const DASHBOARD_TARIFF_ORIGIN_BLOCKLIST = new Set(['DE', 'ES', 'IT']);
 
 export function formKeyForTariffIso(iso: string): string | null {
   const u = iso.toUpperCase();
@@ -99,7 +93,7 @@ export function formKeyForTariffIso(iso: string): string | null {
 export function buildDashboardTariffRows(tariffs: TariffPick[]) {
   const origins = [
     ...new Set(tariffs.map((t) => t.originCountry.toUpperCase())),
-  ];
+  ].filter((iso) => !DASHBOARD_TARIFF_ORIGIN_BLOCKLIST.has(iso));
   const preferred = DASHBOARD_TARIFF_ORIGIN_ORDER as readonly string[];
   const ordered = [
     ...preferred.filter((iso) => origins.includes(iso)),

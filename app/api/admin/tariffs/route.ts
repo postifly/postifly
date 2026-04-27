@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { revalidateActiveTariffsCache } from '@/lib/cachedTariffs';
+import { AdminCacheTags, cachedAdmin } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 // All tariff data is stored only in Prisma (PostgreSQL). No other storage.
 
@@ -13,11 +15,8 @@ const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'USD',
-  IT: 'EUR',
   GR: 'EUR',
-  ES: 'EUR',
   FR: 'EUR',
-  DE: 'EUR',
   TR: 'USD',
 };
 
@@ -56,9 +55,17 @@ export async function GET() {
   if (!auth.ok) return auth.res;
 
   try {
-    const tariffs = await prisma.tariff.findMany({
-      orderBy: [{ isActive: 'desc' }, { originCountry: 'asc' }, { minWeight: 'asc' }],
-    });
+    const tariffs = await cachedAdmin(
+      'tariffs:list:v1',
+      { role: 'ADMIN_READ' },
+      async () => {
+        return await prisma.tariff.findMany({
+          orderBy: [{ isActive: 'desc' }, { originCountry: 'asc' }, { minWeight: 'asc' }],
+        });
+      },
+      // Tariffs are invalidated explicitly on CRUD; keep cache warm for admin UI.
+      { ttlSeconds: 3600, staleSeconds: 3600, tags: [AdminCacheTags.tariffs] },
+    );
     return NextResponse.json(
       {
         tariffs: tariffs.map((t) => ({
@@ -104,6 +111,7 @@ export async function POST(request: NextRequest) {
       },
     });
     revalidateActiveTariffsCache();
+    void invalidateCacheTags([AdminCacheTags.tariffs]);
     return NextResponse.json({ message: 'ტარიფი დაემატა', tariff }, { status: 201 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -148,6 +156,7 @@ export async function PUT(request: NextRequest) {
     });
 
     revalidateActiveTariffsCache();
+    void invalidateCacheTags([AdminCacheTags.tariffs]);
     return NextResponse.json({ message: 'შენახულია', tariff }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -173,6 +182,7 @@ export async function DELETE(request: NextRequest) {
     const { id } = z.object({ id: z.string().min(1) }).parse(body);
     await prisma.tariff.delete({ where: { id } });
     revalidateActiveTariffsCache();
+    void invalidateCacheTags([AdminCacheTags.tariffs]);
     return NextResponse.json({ message: 'ტარიფი წაიშალა' }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {

@@ -1,7 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
+import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ADMIN_PARCEL_PAGE_SIZE } from '@/lib/adminParcelList';
@@ -9,7 +8,7 @@ import { parcelOriginKey } from '@/lib/parcelOriginKey';
 import ParcelsTable from './ParcelsTable';
 import IncomingCountryHub from './IncomingCountryHub';
 
-type Parcel = {
+export type Parcel = {
   id: string;
   trackingNumber: string;
   status: string;
@@ -70,6 +69,7 @@ function ParcelsManagerWithCountryUrl(props: ParcelsManagerProps) {
     const p = new URLSearchParams(searchParams.toString());
     p.set('country', key);
     p.set('page', '1');
+    p.delete('cursor');
     router.replace(`${pathname}?${p.toString()}`, { scroll: false });
   };
 
@@ -77,6 +77,7 @@ function ParcelsManagerWithCountryUrl(props: ParcelsManagerProps) {
     const p = new URLSearchParams(searchParams.toString());
     p.delete('country');
     p.delete('page');
+    p.delete('cursor');
     const qs = p.toString();
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
@@ -111,10 +112,12 @@ function ParcelsManagerContent({
   const locale = useLocale();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const page = Math.max(
     1,
     parseInt(searchParams.get('page') || '1', 10) || 1,
   );
+  const cursor = searchParams.get('cursor')?.trim() || null;
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
   const backLabel =
@@ -135,27 +138,48 @@ function ParcelsManagerContent({
     number
   > | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
+  const lastSuccessfulFetchAtRef = useRef<number>(Date.now());
+  const refetchOnFocusStaleMs = 30_000;
 
-  const buildPageHref = (nextPage: number) => {
+  const setPageAndCursor = (nextPage: number, nextCursorValue: string | null) => {
     const p = new URLSearchParams(searchParams.toString());
     p.set('page', String(nextPage));
-    return `${pathname}?${p.toString()}`;
+    if (nextCursorValue) p.set('cursor', nextCursorValue);
+    else p.delete('cursor');
+    router.replace(`${pathname}?${p.toString()}`, { scroll: false });
   };
+
+  useEffect(() => {
+    // If we're on the first page, a persisted `cursor` in the URL will make the
+    // client fetch older pages and "lose" newly created parcels after refresh.
+    if (page === 1 && cursor) {
+      const p = new URLSearchParams(searchParams.toString());
+      p.delete('cursor');
+      router.replace(`${pathname}?${p.toString()}`, { scroll: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchParcels = async (showLoading = true) => {
       if (showLoading) {
         setIsLoading(true);
       }
+      setLoadError(null);
       try {
         const params = new URLSearchParams();
         params.set('status', currentStatus);
-        params.set('page', String(page));
         params.set('limit', String(ADMIN_PARCEL_PAGE_SIZE));
         if (countryFilter) {
           params.set('country', countryFilter);
+        }
+        // Only use cursor for forward pagination; page=1 must always show newest.
+        if (cursor && page > 1) {
+          params.set('cursor', cursor);
         }
         const res = await fetch(`/api/admin/parcels?${params.toString()}`, {
           cache: 'no-store',
@@ -164,17 +188,32 @@ function ParcelsManagerContent({
             Pragma: 'no-cache',
           },
         });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.parcels) {
-          setParcels(data.parcels);
+        if (!res.ok) {
+          const text = await res.text().catch(() => '');
+          setLoadError(
+            `Failed to load parcels (${res.status}). ${text ? text.slice(0, 200) : ''}`.trim()
+          );
+          return;
         }
+        const data = await res.json().catch(() => null);
+        if (!data) {
+          setLoadError('Failed to load parcels (invalid response).');
+          return;
+        }
+        if (data.parcels) {
+          // Polling updates are non-urgent; keep INP snappy.
+          startTransition(() => setParcels(data.parcels));
+        }
+        startTransition(() => setNextCursor(typeof data.nextCursor === 'string' ? data.nextCursor : null));
         if (typeof data.totalPages === 'number') {
-          setTotalPages(Math.max(1, data.totalPages));
+          startTransition(() => setTotalPages(Math.max(1, data.totalPages)));
         }
         if (data.originCounts && typeof data.originCounts === 'object') {
-          setOriginCounts(data.originCounts as Record<string, number>);
+          startTransition(() =>
+            setOriginCounts(data.originCounts as Record<string, number>)
+          );
         }
+        lastSuccessfulFetchAtRef.current = Date.now();
       } catch (error) {
         console.error('Failed to fetch parcels:', error);
       } finally {
@@ -184,7 +223,9 @@ function ParcelsManagerContent({
       }
     };
 
-    fetchParcels(!isInitialMount.current);
+    const shouldShowLoading =
+      isInitialMount.current && initialParcels.length === 0;
+    fetchParcels(shouldShowLoading || !isInitialMount.current);
     isInitialMount.current = false;
 
     const startPolling = () => {
@@ -195,7 +236,7 @@ function ParcelsManagerContent({
         if (!document.hidden) {
           fetchParcels(false);
         }
-      }, 3000);
+      }, 8000);
     };
 
     startPolling();
@@ -207,7 +248,12 @@ function ParcelsManagerContent({
           intervalRef.current = null;
         }
       } else {
-        fetchParcels();
+        // Avoid "refreshing" UI on quick tab switches; only refetch if data is stale.
+        const isStale =
+          Date.now() - lastSuccessfulFetchAtRef.current > refetchOnFocusStaleMs;
+        if (isStale) {
+          fetchParcels(false);
+        }
         startPolling();
       }
     };
@@ -220,7 +266,10 @@ function ParcelsManagerContent({
       }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [currentStatus, page, countryFilter]);
+  }, [currentStatus, page, countryFilter, cursor]);
+
+  // NOTE: prev-page navigation with pure keyset pagination requires cursor history.
+  // We currently keep UX simple: "Previous" jumps back to first page.
 
   const handleParcelUpdated = (updatedParcel: Parcel) => {
     if (updatedParcel.status !== currentStatus) {
@@ -252,6 +301,11 @@ function ParcelsManagerContent({
           </div>
         </div>
       )}
+      {loadError && !isLoading && (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-800">
+          {loadError}
+        </div>
+      )}
       {showMainHub ? (
         <IncomingCountryHub
           parcels={parcels}
@@ -280,13 +334,15 @@ function ParcelsManagerContent({
           {totalPages > 1 && (
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-[14px] text-gray-800">
               {page > 1 ? (
-                <Link
-                  href={buildPageHref(page - 1)}
-                  scroll={false}
+                // Cursor-based prev requires knowing the cursor of the previous page.
+                // We keep UX simple: fall back to first page when going back.
+                <button
+                  type="button"
+                  onClick={() => setPageAndCursor(1, null)}
                   className="rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium hover:bg-gray-50"
                 >
                   {prevLabel}
-                </Link>
+                </button>
               ) : (
                 <span className="rounded-lg border border-transparent px-4 py-2 text-gray-400">
                   {prevLabel}
@@ -295,14 +351,14 @@ function ParcelsManagerContent({
               <span className="tabular-nums text-[15px] font-medium text-gray-700">
                 {pageLabel(page, totalPages)}
               </span>
-              {page < totalPages ? (
-                <Link
-                  href={buildPageHref(page + 1)}
-                  scroll={false}
+              {page < totalPages && nextCursor ? (
+                <button
+                  type="button"
+                  onClick={() => setPageAndCursor(page + 1, nextCursor)}
                   className="rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium hover:bg-gray-50"
                 >
                   {nextLabel}
-                </Link>
+                </button>
               ) : (
                 <span className="rounded-lg border border-transparent px-4 py-2 text-gray-400">
                   {nextLabel}

@@ -3,6 +3,11 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '../../../../lib/auth';
 import prisma from '../../../../lib/prisma';
+import {
+  cachedDashboard,
+  dashUserBalanceTag,
+} from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,11 +29,18 @@ export async function GET() {
 
   const userId = session.user.id;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { balance: true },
-  });
-  const balance = user?.balance ?? 0;
+  const balance = await cachedDashboard(
+    'balance:get:v1',
+    { userId },
+    async () => {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { balance: true },
+      });
+      return user?.balance ?? 0;
+    },
+    { ttlSeconds: 3, tags: [dashUserBalanceTag(userId)] },
+  );
 
   return NextResponse.json(
     { balance, currency: 'GEL' },
@@ -52,7 +64,7 @@ export async function POST(request: NextRequest) {
     const data = topUpSchema.parse(body);
     const userId = session.user.id;
 
-    await prisma.$transaction([
+    const [, updatedUser] = await prisma.$transaction([
       prisma.payment.create({
         data: {
           userId,
@@ -68,14 +80,13 @@ export async function POST(request: NextRequest) {
       prisma.user.update({
         where: { id: userId },
         data: { balance: { increment: data.amount } },
+        select: { balance: true },
       }),
     ]);
 
-    const updated = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { balance: true },
-    });
-    const newBalance = updated?.balance ?? 0;
+    const newBalance = updatedUser?.balance ?? 0;
+
+    void invalidateCacheTags([dashUserBalanceTag(userId)]);
 
     return NextResponse.json(
       {

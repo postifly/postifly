@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import { recordParcelTrackingEvent } from '@/lib/parcelTrackingLog';
 import { notifyParcelOwnerStatusSms } from '@/lib/parcelStatusSms';
+import { writeControlLog } from '@/lib/controlLog';
 
 /** თანამშრომელს შეუძლია მხოლოდ მოლოდინი / გზაში */
 const allowedStatuses = ['pending', 'in_transit'] as const;
@@ -71,6 +72,18 @@ export async function PATCH(
     });
 
     if (statusChanged) {
+      void writeControlLog({
+        event: 'parcel.status.patch.employee',
+        actorRole: session.user.role ?? null,
+        actorId: session.user.id ?? null,
+        method: request.method,
+        url: request.url,
+        parcelId: parcel.id,
+        trackingNumber: parcel.trackingNumber,
+        fromStatus: parcel.status,
+        toStatus: nextStatus,
+        meta: null,
+      });
       void notifyParcelOwnerStatusSms({
         parcelId: parcel.id,
         previousStatus: parcel.status,

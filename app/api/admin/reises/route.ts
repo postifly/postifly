@@ -3,10 +3,12 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { AdminCacheTags, cachedAdmin } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
-const ORIGIN_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 
 function parseOptionalDate(v: unknown): Date | null {
   if (v == null || v === '') return null;
@@ -39,17 +41,45 @@ async function requireAdmin() {
   return { ok: true as const };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
   if (!auth.ok) return auth.res;
 
   try {
-    const reises = await prisma.reis.findMany({
-      orderBy: [{ departureAt: 'desc' }, { createdAt: 'desc' }],
-      include: { _count: { select: { parcels: true } } },
-    });
+    // Pagination (keeps payload bounded under growth)
+    const { searchParams } = new URL(request.url);
+    const pageRaw = parseInt(searchParams.get('page') ?? '1', 10);
+    const limitRaw = parseInt(searchParams.get('limit') ?? '50', 10);
+    const page = Number.isFinite(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+    const limit = Math.min(50, Math.max(1, Number.isFinite(limitRaw) ? limitRaw : 50));
+    const reises = await cachedAdmin(
+      'reises:list:v2',
+      { role: 'ADMIN', page, limit },
+      async () => {
+        return await prisma.reis.findMany({
+          orderBy: [{ departureAt: 'desc' }, { createdAt: 'desc' }],
+          take: limit,
+          skip: (page - 1) * limit,
+          select: {
+            id: true,
+            name: true,
+            originCountry: true,
+            destinationCountry: true,
+            departureAt: true,
+            arrivalAt: true,
+            status: true,
+            notes: true,
+            createdAt: true,
+            updatedAt: true,
+            _count: { select: { parcels: true } },
+          },
+        });
+      },
+      // Reises update occasionally; prioritize stable admin UX under load.
+      { ttlSeconds: 120, staleSeconds: 600, tags: [AdminCacheTags.reises] },
+    );
     return NextResponse.json(
-      { reises },
+      { reises, page, limit },
       {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -82,6 +112,7 @@ export async function POST(request: NextRequest) {
         notes: data.notes?.trim() ? data.notes.trim() : null,
       },
     });
+    void invalidateCacheTags([AdminCacheTags.reises]);
     return NextResponse.json({ message: 'რეისი დაემატა', reis }, { status: 201 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -119,6 +150,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    void invalidateCacheTags([AdminCacheTags.reises]);
     return NextResponse.json({ message: 'შენახულია', reis }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -143,6 +175,7 @@ export async function DELETE(request: NextRequest) {
     const body = await request.json();
     const { id } = z.object({ id: z.string().min(1) }).parse(body);
     await prisma.reis.delete({ where: { id } });
+    void invalidateCacheTags([AdminCacheTags.reises]);
     return NextResponse.json({ message: 'რეისი წაიშალა' }, { status: 200 });
   } catch (e) {
     if (e instanceof z.ZodError) {

@@ -11,8 +11,11 @@ import {
   generateNextRoomNumber,
   withRetryOnDuplicateRoomNumber,
 } from '../../../../lib/roomNumber';
+import { cachedAdmin, AdminCacheTags } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const t0 = Date.now();
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -24,28 +27,61 @@ export async function GET() {
   }
 
   try {
-    const users = await prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        address: true,
-        role: true,
-        employeeCountry: true,
-        createdAt: true,
-        roomNumber: true,
-      },
-    });
+    const url = new URL(request.url);
+    const pageRaw = url.searchParams.get('page') ?? '1';
+    const pageSizeRaw = url.searchParams.get('pageSize') ?? url.searchParams.get('take') ?? '50';
 
-    return NextResponse.json({ users }, { status: 200 });
+    const page = Math.max(1, Number.parseInt(pageRaw, 10) || 1);
+    const pageSize = Math.min(200, Math.max(1, Number.parseInt(pageSizeRaw, 10) || 50));
+    const skip = (page - 1) * pageSize;
+
+    // IMPORTANT: use a stable string key (no object params) so cache hits reliably.
+    const cacheParams = `role=${session.user.role}|page=${page}|pageSize=${pageSize}`;
+
+    const users = await cachedAdmin(
+      'users:list:v2',
+      cacheParams,
+      async () => {
+        return await prisma.user.findMany({
+          skip,
+          take: pageSize,
+          // Add id tie-breaker to keep pagination stable when createdAt collisions happen.
+          orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            address: true,
+            role: true,
+            employeeCountry: true,
+            createdAt: true,
+            roomNumber: true,
+          },
+        });
+      },
+      { ttlSeconds: 3, staleSeconds: 9, tags: [AdminCacheTags.users] },
+    );
+
+    return NextResponse.json(
+      {
+        users,
+        page,
+        pageSize,
+        nextPage: users.length === pageSize ? page + 1 : null,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Get users error:', error);
     return NextResponse.json(
       { error: 'შეცდომა მონაცემების წამოღებისას' },
       { status: 500 }
     );
+  } finally {
+    if (process.env.REQUEST_TIMING_DEBUG === '1') {
+      console.log('[timing]', 'GET /api/admin/users', { ms: Date.now() - t0 });
+    }
   }
 }
 
@@ -148,6 +184,9 @@ export async function POST(request: NextRequest) {
         },
       });
     }
+
+    // Best-effort: keep admin lists/counters fresh.
+    void invalidateCacheTags([AdminCacheTags.users, AdminCacheTags.counts]);
 
     return NextResponse.json(
       {

@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-
+load-test.js
 # next.js
 /.next/
 /out/
@@ -32,6 +32,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+control.log
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -44,3 +45,7 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+touch locustfile.py
+__pycache__/touch locustfile.cpython-313.pyc
+locustfile.py
+__pycache__/locustfile.cpython-313.pyc

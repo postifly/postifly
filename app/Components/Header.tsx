@@ -36,7 +36,7 @@ const conditionsLinks: NavLinkItem[] = [
 
 const faqLinks: NavLinkItem[] = [
   { href: '/faq', labelKey: 'header.faq' },
-  { href: '/contact', labelKey: 'header.contact' },
+  
   { href: '/help#guide', labelKey: 'header.onlineGuide' },
 ];
 
@@ -248,7 +248,6 @@ const Header = () => {
             height={130}
             className="rounded-full"
             priority
-            unoptimized
             style={{
               opacity: 1,
               display: 'block',
@@ -258,7 +257,7 @@ const Header = () => {
               objectFit: 'contain',
             }}
           />
-          <h1 className="text-white md:text-[25px] text-[18px] font-bold drop-shadow-sm">Postifly</h1>
+          <span className="text-white md:text-[25px] text-[18px] font-bold drop-shadow-sm">Postifly</span>
         </Link>
 
         {/* Desktop nav in the top row */}

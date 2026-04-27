@@ -9,7 +9,16 @@ import { adminUpdateUserSchema } from '../../../../../lib/validations';
 import { normalizePhone } from '../../../../../lib/sms';
 import { Prisma } from '../../../../../app/generated/prisma/client';
 
-const EMPLOYEE_COUNTRIES = ['GB', 'US', 'CN', 'IT', 'GR', 'ES', 'FR', 'DE', 'TR'] as const;
+function isPrismaNotFound(e: unknown): boolean {
+  return (
+    typeof e === 'object' &&
+    e !== null &&
+    'code' in e &&
+    (e as { code?: unknown }).code === 'P2025'
+  );
+}
+
+const EMPLOYEE_COUNTRIES = ['GB', 'US', 'CN', 'GR', 'FR', 'TR'] as const;
 type EmployeeCountry = (typeof EMPLOYEE_COUNTRIES)[number];
 
 export async function GET(
@@ -133,15 +142,6 @@ export async function DELETE(
       );
     }
 
-    // Check if user exists
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'მომხმარებელი ვერ მოიძებნა' }, { status: 404 });
-    }
-
     // Delete user (cascade will handle related records)
     await prisma.user.delete({
       where: { id },
@@ -152,6 +152,9 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
+    if (isPrismaNotFound(error)) {
+      return NextResponse.json({ error: 'მომხმარებელი ვერ მოიძებნა' }, { status: 404 });
+    }
     console.error('Delete user error:', error);
     return NextResponse.json(
       { error: 'მომხმარებლის წაშლისას მოხდა შეცდომა' },

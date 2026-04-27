@@ -52,13 +52,13 @@ const Why = () => {
 
   return (
     <section
-      className="pointer-events-none relative bottom-0 left-0 right-0 z-30 mt-14 w-full translate-y-0 px-4 pb-0 md:absolute md:mt-0 md:-translate-y-1/2 md:px-5"
+      className="relative w-full px-4 py-12 sm:py-14 md:px-5"
       aria-labelledby="why-heading"
     >
       
 
       <motion.div
-        className="pointer-events-auto mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-[#e8eaf0] bg-[#f5f7fa] shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+        className="mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-md"
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.25 }}

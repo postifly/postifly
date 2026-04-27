@@ -6,10 +6,16 @@ export const ADMIN_PARCEL_PAGE_SIZE = 15;
 export function adminParcelsOrderBy(
   status: string,
 ): Prisma.ParcelOrderByWithRelationInput | Prisma.ParcelOrderByWithRelationInput[] {
-  if (status === 'region') {
-    return { createdAt: 'desc' };
+  // Incoming page should show newest parcels first.
+  if (status === 'pending') {
+    return [{ createdAt: 'desc' }, { id: 'desc' }];
   }
-  return [{ originCountry: 'asc' }, { createdAt: 'desc' }];
+  if (status === 'region') {
+    // Stable ordering for keyset pagination
+    return [{ createdAt: 'desc' }, { id: 'desc' }];
+  }
+  // Stable ordering for keyset pagination
+  return [{ originCountry: 'asc' }, { createdAt: 'desc' }, { id: 'desc' }];
 }
 
 export function parseAdminParcelPage(raw: string | undefined): number {

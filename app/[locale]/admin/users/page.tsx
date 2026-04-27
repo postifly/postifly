@@ -3,6 +3,9 @@ import { formatDateDMY } from '@/lib/formatDate';
 import prisma from '@/lib/prisma';
 import UsersTable from '@/app/admin/users/components/UsersTable';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 type Props = { params: Promise<{ locale: string }> };
 
 export default async function AdminUsersPageLocale(_props: Props) {

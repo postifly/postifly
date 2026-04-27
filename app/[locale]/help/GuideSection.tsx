@@ -17,23 +17,14 @@ export default function GuideSection({ title, text }: Props) {
     
 
       <motion.div
-        className="relative overflow-hidden rounded-3xl border border-pink-200/60 bg-gradient-to-br from-white via-pink-50 to-indigo-50 shadow-xl p-5 md:p-8"
+        className="relative overflow-hidden rounded-3xl  bg-white shadow-xl p-5 md:p-8"
         initial={{ opacity: 0, scale: 0.96 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <motion.div
-          className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-pink-400/20 blur-2xl"
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute -left-10 -bottom-10 h-32 w-32 rounded-full bg-indigo-400/20 blur-2xl"
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-
+    
+   
         <div className="relative z-10 grid gap-6 md:gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] items-center">
           <motion.div
             className="relative overflow-hidden rounded-2xl "

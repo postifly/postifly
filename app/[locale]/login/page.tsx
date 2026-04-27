@@ -88,7 +88,7 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center mx-auto gap-4 flex flex-col items-center justify-center">
-          <h2 className="mt-6 text-center text-3xl font-bold text-black">
+          <h2 className=" text-center text-3xl font-bold text-black">
             {t('title')}
           </h2>
          
@@ -163,7 +163,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[16px] font-medium rounded-md text-white bg-[#3a5bff]  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-[14px] md:text-[16px] font-medium rounded-md text-white bg-[#3a5bff]  focus:outline-none  focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? tCommon('loading') : t('signIn')}
             </button>

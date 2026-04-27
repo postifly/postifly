@@ -132,7 +132,7 @@ export default function AdminCreateUserForm({
             required
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
-          {errors.email && <p className="mt-1 text-[13px] text-red-600">{errors.email}</p>}
+          {errors.email && <p className="mt-1 text-[16px] text-red-600">{errors.email}</p>}
         </div>
         <div>
           <label className="mb-1 block text-[14px] font-semibold text-black">{t.password}</label>
@@ -145,7 +145,7 @@ export default function AdminCreateUserForm({
             minLength={6}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
-          {errors.password && <p className="mt-1 text-[13px] text-red-600">{errors.password}</p>}
+          {errors.password && <p className="mt-1 text-[16px] text-red-600">{errors.password}</p>}
         </div>
         <div>
           <label className="mb-1 block text-[14px] font-semibold text-black">{t.confirmPassword}</label>
@@ -157,10 +157,10 @@ export default function AdminCreateUserForm({
             required
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
-          {errors.confirmPassword && <p className="mt-1 text-[13px] text-red-600">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="mt-1 text-[16px] text-red-600">{errors.confirmPassword}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
+        <div className="flex flex-wrap gap-3">
+          <div className="w-full md:w-[calc(50%-0.375rem)]">
             <label className="mb-1 block text-[14px] font-semibold text-black">{t.firstName}</label>
             <input
               type="text"
@@ -170,7 +170,7 @@ export default function AdminCreateUserForm({
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
-          <div>
+          <div className="w-full md:w-[calc(50%-0.375rem)]">
             <label className="mb-1 block text-[14px] font-semibold text-black">{t.lastName}</label>
             <input
               type="text"
@@ -191,7 +191,7 @@ export default function AdminCreateUserForm({
             placeholder="5XXXXXXXX"
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
-          {errors.phone && <p className="mt-1 text-[13px] text-red-600">{errors.phone}</p>}
+          {errors.phone && <p className="mt-1 text-[16px] text-red-600">{errors.phone}</p>}
         </div>
         <div>
           <label className="mb-1 block text-[14px] font-semibold text-black">{t.personalId}</label>
@@ -205,7 +205,7 @@ export default function AdminCreateUserForm({
             placeholder={t.personalIdPlaceholder}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
-          {errors.personalIdNumber && <p className="mt-1 text-[13px] text-red-600">{errors.personalIdNumber}</p>}
+          {errors.personalIdNumber && <p className="mt-1 text-[16px] text-red-600">{errors.personalIdNumber}</p>}
         </div>
         <div>
           <label className="mb-1 block text-[14px] font-semibold text-black">{t.city}</label>
@@ -234,7 +234,7 @@ export default function AdminCreateUserForm({
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-[15px] text-black tabular-nums focus:outline-none focus:ring-2 focus:ring-gray-400"
             placeholder="0108"
           />
-          {errors.postalIndex && <p className="mt-1 text-[13px] text-red-600">{errors.postalIndex}</p>}
+          {errors.postalIndex && <p className="mt-1 text-[16px] text-red-600">{errors.postalIndex}</p>}
         </div>
         <div>
           <label className="mb-1 block text-[14px] font-semibold text-black">{t.address}</label>

@@ -8,10 +8,7 @@ import {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
-  DE,
   TR,
 } from 'country-flag-icons/react/3x2';
 import { CURRENCY_BY_ORIGIN_ISO } from '@/lib/tariffLookup';
@@ -21,10 +18,7 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
-  DE,
   TR,
 };
 
@@ -73,33 +67,9 @@ const TARIFF_ROWS: TariffRow[] = [
     deliveryNoteKey: 'tariffAirShipping',
   },
   {
-    countryKey: 'italy' as const,
-    countryCode: 'IT',
-    pricePerKg: 7,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
     countryKey: 'greece' as const,
     countryCode: 'GR',
     pricePerKg: 7,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
-    countryKey: 'spain' as const,
-    countryCode: 'ES',
-    pricePerKg: 8,
-    deliveryDaysPrefix: '1-3',
-    currencySymbol: '€',
-    deliveryNoteKey: 'tariffAirShipping',
-  },
-  {
-    countryKey: 'germany' as const,
-    countryCode: 'DE',
-    pricePerKg: 8,
     deliveryDaysPrefix: '1-3',
     currencySymbol: '€',
     deliveryNoteKey: 'tariffAirShipping',
@@ -148,62 +118,44 @@ const item = {
     transition: { duration: 0.45, ease: 'easeOut' as const },
   },
 };
-const REVIEWS = [
-  {
-    name: 'ვალერიან მარგალიტაძე',
-    rating: 5,
-    text: 'ამანათები ყოველთვის დროულად მომდის და შეფუთვაც ძალიან კარგი აქვთ.',
-  },
-  {
-    name: 'დავით ჩხარტიშვილი',
-    rating: 5,
-    text: 'კალკულატორი ზუსტ ფასს მაჩვენებს და სერვისიც ძალიან სწრაფია.',
-  },
-  {
-    name: 'ნინო ჭყონია',
-    rating: 4,
-    text: 'მხარდაჭერის გუნდი ოპერატიულად მპასუხობს და დეტალურად მიხსნის ყველაფერს.',
-  },
-  {
-    name: 'გიორგი გაბუნია',
-    rating: 5,
-    text: 'ევროპიდან გზავნილები პრობლემის გარეშე ჩამომივიდა, რეკომენდაციას ვუწევ.',
-  },
-  {
-    name: 'ნინო დავითაძე',
-    rating: 5,
-    text: 'ხარისხი საუკეთესოა, უკვე რამდენჯერმე გამოვიყენე და კმაყოფილი ვარ.',
-  },
-]
+
+type ReviewItem = {
+  name: string;
+  rating: number;
+  text: string;
+};
 export default function Tariffs() {
   const t = useTranslations('home');
+  const tReviews = useTranslations('reviews');
   const tAddr = useTranslations('addresses');
   const tCalc = useTranslations('calculator');
   const tCommon = useTranslations('common');
+  const reviews = (tReviews.raw('items') as ReviewItem[]) ?? [];
   const [selectedCountryCode, setSelectedCountryCode] = React.useState<string>(TARIFF_ROWS[0].countryCode);
   const [weightKg, setWeightKg] = React.useState<string>('1');
-  const [tariffPage, setTariffPage] = React.useState<number>(0);
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [shippingCalc, setShippingCalc] = React.useState<{ amountGel: number } | null>(null);
   const [shippingCalcLoading, setShippingCalcLoading] = React.useState(true);
   const [shippingCalcUnavailable, setShippingCalcUnavailable] = React.useState(false);
 
   React.useEffect(() => {
+    if (reviews.length === 0) return;
     const timerId = window.setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % REVIEWS.length);
+      setActiveIndex((prev) => (prev + 1) % reviews.length);
     }, 4200);
 
     return () => window.clearInterval(timerId);
-  }, []);
+  }, [reviews.length]);
 
   React.useEffect(() => {
     const ac = new AbortController();
+    const abort = () => ac.abort('Tariffs effect cleanup');
     const w = Number.parseFloat(weightKg.replace(',', '.'));
     if (!Number.isFinite(w) || w <= 0) {
       setShippingCalc(null);
       setShippingCalcLoading(false);
       setShippingCalcUnavailable(false);
-      return () => ac.abort();
+      return abort;
     }
 
     setShippingCalcLoading(true);
@@ -249,7 +201,17 @@ export default function Tariffs() {
           }
         }
       } catch (err: unknown) {
-        if (err instanceof Error && err.name === 'AbortError') return;
+        // Abort is an expected control-flow (route change, input change, unmount).
+        // Different runtimes throw different shapes (Error vs DOMException), so be permissive.
+        if (
+          ac.signal.aborted ||
+          (typeof err === 'object' &&
+            err !== null &&
+            'name' in err &&
+            (err as { name?: unknown }).name === 'AbortError')
+        ) {
+          return;
+        }
         if (!ac.signal.aborted) {
           setShippingCalc(null);
           setShippingCalcUnavailable(true);
@@ -259,23 +221,8 @@ export default function Tariffs() {
       }
     })();
 
-    return () => ac.abort();
+    return abort;
   }, [selectedCountryCode, weightKg]);
-  const tariffChunks = React.useMemo(() => {
-    const splitIndex = Math.ceil(TARIFF_ROWS.length / 2);
-    return [TARIFF_ROWS.slice(0, splitIndex), TARIFF_ROWS.slice(splitIndex)];
-  }, []);
-  const activeTariffRows = tariffChunks[tariffPage] ?? tariffChunks[0];
-
-  React.useEffect(() => {
-    if (tariffChunks.length <= 1) return;
-
-    const intervalId = window.setInterval(() => {
-      setTariffPage((prev) => (prev + 1) % tariffChunks.length);
-    }, 3500);
-
-    return () => window.clearInterval(intervalId);
-  }, [tariffChunks.length]);
 
   const selectedTariff = React.useMemo(
     () => TARIFF_ROWS.find((row) => row.countryCode === selectedCountryCode) ?? TARIFF_ROWS[0],
@@ -307,7 +254,7 @@ export default function Tariffs() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-6 text-center sm:mb-8 md:mb-14"
         >
-          <h2 className="text-[20px] font-extrabold tracking-tight text-black sm:text-[22px] md:text-[34px]">
+          <h2 className="text-center text-2xl font-semibold text-slate-900 sm:text-3xl">
             {t('tariffsSectionTitle')}
           </h2>
         </motion.div>
@@ -319,7 +266,7 @@ export default function Tariffs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewport}
             transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-            className="overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-white via-indigo-50/40 to-pink-50/50 shadow-[0_20px_60px_-15px_rgba(58,91,255,0.18),0_8px_24px_-12px_rgba(255,79,216,0.12)] sm:rounded-2xl"
+            className="overflow-hidden rounded-xl border border-gray-200 bg-gray-50 shadow-md sm:rounded-2xl"
           >
             <div className="-mx-px overflow-x-auto">
               <table className="w-full min-w-[340px] sm:min-w-[280px]">
@@ -331,21 +278,20 @@ export default function Tariffs() {
                     <th className="px-2 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffDelivery')}
                     </th>
-                    <th className="px-2 py-2.5 text-right text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
+                    <th className="px-2 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wider text-[#3a5bff] sm:px-4 sm:py-4 sm:text-xs md:px-8 md:py-5 md:text-[18px] md:normal-case md:tracking-normal">
                       {t('tariffPrice')}
                     </th>
                   </tr>
                 </thead>
 
                 <motion.tbody
-                  key={tariffPage}
+                  key="tariffs-all"
                   variants={container}
                   initial="hidden"
                   whileInView="visible"
                   viewport={viewport}
                 >
-                  {activeTariffRows.map((row, i) => {
-                    const rowIndex = tariffPage * Math.ceil(TARIFF_ROWS.length / 2) + i;
+                  {TARIFF_ROWS.map((row, rowIndex) => {
                     const countryName = tAddr(row.countryKey);
                     const deliveryDaysLabel = t('tariffDeliveryDays').trim();
                     const deliveryDays = `${row.deliveryDaysPrefix} ${deliveryDaysLabel}`;
@@ -354,10 +300,10 @@ export default function Tariffs() {
                       <motion.tr
                         key={row.countryCode}
                         variants={item}
-                        className={`border-b border-indigo-100/60 transition-colors duration-200 last:border-b-0 hover:bg-indigo-50/70 ${rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-indigo-50/35'
+                        className={`border-b border-gray-200 transition-colors duration-200 last:border-b-0  ${rowIndex % 2 === 0 ? 'bg-white/80' : 'bg-white/80'
                           }`}
                       >
-                        <td className="px-2 py-2 text-[11px] font-medium text-gray-800 sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
+                        <td className="px-2 py-2 text-[16px] font-medium text-gray-800 sm:px-4 sm:py-3 sm:text-sm md:px-8 md:py-4 md:text-[18px]">
                           <span className="inline-flex items-center gap-1.5 sm:gap-3">
                             {(() => {
                               const Flag = FLAGS[row.countryCode];
@@ -390,7 +336,7 @@ export default function Tariffs() {
                           )}
                         </td>
 
-                        <td className="whitespace-nowrap px-2 py-2 text-right font-semibold tabular-nums text-black text-[14px] md:text-[16px]">
+                        <td className="whitespace-nowrap px-2 py-2 text-center font-semibold tabular-nums text-black text-[14px] md:text-[16px]">
                           {row.currencySymbol} {row.pricePerKg.toFixed(2)}
                         </td>
                       </motion.tr>
@@ -398,22 +344,6 @@ export default function Tariffs() {
                   })}
                 </motion.tbody>
               </table>
-            </div>
-            <div className="flex items-center justify-center border-t border-indigo-100/80 bg-white/70 px-3 py-2 sm:px-4">
-
-              <div className="flex justify-center items-center gap-3">
-                {tariffChunks.map((_, index) => (
-                  <button
-                    key={`tariff-page-${index}`}
-                    type="button"
-                    onClick={() => setTariffPage(index)}
-                    className={`h-3 w-3 rounded-full transition ${tariffPage === index ? 'bg-indigo-500' : 'bg-indigo-200 hover:bg-indigo-300'
-                      }`}
-                    aria-label={`Go to tariff page ${index + 1}`}
-                  />
-                ))}
-              </div>
-
             </div>
           </motion.div>
 
@@ -424,9 +354,9 @@ export default function Tariffs() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={viewport}
               transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
-              className="rounded-[18px] bg-sky-100 p-3.5 shadow-[0_20px_40px_-24px_rgba(130,76,255,0.7)] sm:rounded-[20px] sm:p-4"
+              className="rounded-[18px] bg-sky-100 p-3.5 shadow-md sm:rounded-[20px] sm:p-4"
             >
-            <p className="mb-2 text-sm font-semibold text-[#3a5bff]">{t('tariffCountry')}</p>
+            <p className="mb-2 text-[16px] md:text-[18px] font-semibold text-[#3a5bff]">{t('tariffCountry')}</p>
             <div className="relative">
               {SelectedCountryFlag ? (
                 <SelectedCountryFlag
@@ -437,7 +367,7 @@ export default function Tariffs() {
               <select
                 value={selectedCountryCode}
                 onChange={(event) => setSelectedCountryCode(event.target.value)}
-                className="h-10 w-full rounded-xl border border-violet-100 bg-white pl-10 pr-3 text-sm font-medium text-gray-800 outline-none ring-0 focus:border-violet-300 sm:h-11 sm:pl-11 sm:text-[15px]"
+                className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-3 text-[16px] md:text-[18px] font-medium text-gray-800 outline-none ring-0 focus:border-violet-300 sm:h-11 sm:pl-11 sm:text-[15px]"
               >
                 {TARIFF_ROWS.map((row) => (
                   <option key={row.countryCode} value={row.countryCode}>
@@ -455,7 +385,7 @@ export default function Tariffs() {
                 step="0.1"
                 value={weightKg}
                 onChange={(event) => setWeightKg(event.target.value)}
-                className="h-10 w-full rounded-xl border border-violet-100 bg-white px-3 text-[18px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none sm:h-11 sm:text-[20px]"
+                className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-[16px] md:text-[18px] font-semibold text-violet-800 outline-none focus:border-violet-300 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none sm:h-11 sm:text-[20px]"
                 aria-label={tCalc('weight')}
               />
               <div className="flex h-10 items-center justify-end rounded-xl bg-gradient-to-r from-[#8f48ff] to-[#b24dff] px-3 text-right text-base font-extrabold leading-none text-white sm:h-11 sm:px-4 sm:text-[18px]">
@@ -481,22 +411,22 @@ export default function Tariffs() {
             </motion.aside>
             <section className="w-full">
             <h2 className="mb-3 text-center text-xl font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
-              მიმოხილვები
+              {tReviews('title')}
             </h2>
 
             <div className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[20px] p-1.5 sm:rounded-[24px] sm:p-2">
-              <article className="min-h-[160px] rounded-2xl border border-violet-100/80 bg-white/95 p-4 shadow-[0_12px_30px_-20px_rgba(94,37,208,0.65)] sm:min-h-[170px] sm:p-6">
+              <article className="min-h-[160px] rounded-2xl border border-gray-200 bg-white/95 p-4 shadow-md sm:min-h-[170px] sm:p-6">
                 <div className="mb-3 text-lg tracking-[2px] text-amber-500 sm:text-xl">
-                  {'★'.repeat(REVIEWS[activeIndex].rating)}
+                  {'★'.repeat(reviews[activeIndex]?.rating ?? 0)}
                 </div>
                 <p className="text-sm leading-6 text-gray-700 sm:text-base sm:leading-7">
-                  &ldquo;{REVIEWS[activeIndex].text}&rdquo;
+                  &ldquo;{reviews[activeIndex]?.text ?? ''}&rdquo;
                 </p>
-                <p className="mt-4 text-xs font-bold text-violet-700 sm:text-sm">{REVIEWS[activeIndex].name}</p>
+                <p className="mt-4 text-[14px] md:text-[16px] font-bold text-violet-700">{reviews[activeIndex]?.name ?? ''}</p>
               </article>
 
               <div className="mt-5 flex items-center justify-center gap-2">
-                {REVIEWS.map((review, index) => (
+                {reviews.map((review, index) => (
                   <button
                     key={review.name}
                     type="button"

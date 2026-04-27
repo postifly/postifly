@@ -8,6 +8,8 @@ import { recordParcelTrackingEvent } from '../../../../lib/parcelTrackingLog';
 import { resolveTariffForParcel } from '../../../../lib/tariffLookup';
 import { utapi } from '../../../../lib/uploadthing';
 import { convertToGel, fetchNbgRates } from '../../../../lib/nbgRates';
+import { dashUserParcelsTag, dashUserParcelsStatusTag } from '@/lib/cache/dashboardCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 function isPrismaClientKnownRequestError(
   err: unknown,
@@ -25,7 +27,7 @@ export const dynamic = 'force-dynamic';
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPE = 'application/pdf';
 
-const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'] as const;
+const ORIGIN_COUNTRY_CODES = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'] as const;
 
 const optionalNumberFromString = (emptyMessage: string) =>
   z.preprocess(
@@ -208,6 +210,16 @@ export async function POST(request: NextRequest) {
     });
 
     await recordParcelTrackingEvent(prisma, parcel.id, parcel.status);
+
+    void invalidateCacheTags([
+      dashUserParcelsTag(userId),
+      dashUserParcelsStatusTag(userId, 'pending'),
+      dashUserParcelsStatusTag(userId, 'in_warehouse'),
+      dashUserParcelsStatusTag(userId, 'in_transit'),
+      dashUserParcelsStatusTag(userId, 'arrived'),
+      dashUserParcelsStatusTag(userId, 'stopped'),
+      dashUserParcelsStatusTag(userId, 'delivered'),
+    ]);
 
     return NextResponse.json(
       {

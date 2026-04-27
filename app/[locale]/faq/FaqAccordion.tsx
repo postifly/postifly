@@ -96,7 +96,7 @@ export default function FaqAccordion({ locale }: Props) {
           return (
             <motion.div
               key={item.question}
-              className="relative overflow-hidden rounded-3xl border border-pink-200/60 bg-gradient-to-br from-white via-pink-50 to-indigo-50 shadow-xl p-5 md:p-8"
+              className="relative overflow-hidden rounded-3xl  bg-white shadow-xl p-5 md:p-8"
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
@@ -142,7 +142,7 @@ export default function FaqAccordion({ locale }: Props) {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-left  text-black md:text-[18px] text-[14px]  border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
+                    <div className="px-4 md:px-6 pb-4 md:pb-5 pt-0 md:pt-2 text-left  text-black md:text-[16px] text-[14px]  border-t border-gray-100 bg-gradient-to-b from-white to-purple-50/40">
                       {item.answer}
                     </div>
                   </motion.div>

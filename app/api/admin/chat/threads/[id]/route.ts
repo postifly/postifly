@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { AdminCacheTags, adminChatThreadTag, cachedAdmin } from '@/lib/cache/adminCache';
+import { invalidateCacheTags } from '@/lib/cache/redisCache';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,22 +12,22 @@ const replySchema = z.object({
   message: z.string().min(1),
 });
 
-async function requireAdmin() {
+async function requireStaff() {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return { ok: false as const, res: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
   }
-  if (session.user.role !== 'ADMIN') {
+  if (session.user.role !== 'ADMIN' && session.user.role !== 'SUPPORT') {
     return { ok: false as const, res: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) };
   }
-  return { ok: true as const };
+  return { ok: true as const, role: session.user.role };
 }
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -34,24 +36,36 @@ export async function GET(
   }
 
   try {
-    const thread = await prisma.chatThread.findUnique({
-      where: { id },
-    });
-    if (!thread) {
+    const data = await cachedAdmin(
+      'chat:thread:get:v1',
+      { role: auth.role, id },
+      async () => {
+        const thread = await prisma.chatThread.findUnique({
+          where: { id },
+        });
+        if (!thread) return null;
+
+        const messages = await prisma.chatMessage.findMany({
+          where: { threadId: id },
+          orderBy: { createdAt: 'asc' },
+        });
+
+        return { thread, messages };
+      },
+      // Prefer fast UI even if a few seconds stale while messages update.
+      { ttlSeconds: 3, staleSeconds: 9, tags: [AdminCacheTags.chatThreads, adminChatThreadTag(id)] },
+    );
+
+    if (!data) {
       return NextResponse.json({ error: 'Thread not found' }, { status: 404 });
     }
 
-    const messages = await prisma.chatMessage.findMany({
-      where: { threadId: id },
-      orderBy: { createdAt: 'asc' },
-    });
-
     return NextResponse.json({
       thread: {
-        ...thread,
-        createdAt: new Date(thread.createdAt).toLocaleString('ka-GE'),
+        ...data.thread,
+        createdAt: new Date(data.thread.createdAt).toLocaleString('ka-GE'),
       },
-      messages: messages.map((m) => ({
+      messages: data.messages.map((m) => ({
         ...m,
         createdAt: new Date(m.createdAt).toLocaleString('ka-GE'),
       })),
@@ -69,7 +83,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -97,6 +111,7 @@ export async function POST(
     });
 
     // Optionally, could notify external system here via webhook call.
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
 
     return NextResponse.json(
       {
@@ -131,7 +146,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -148,6 +163,7 @@ export async function PATCH(
       data: { status },
     });
 
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
     return NextResponse.json(
       {
         message: 'დიალოგის სტატუსი განახლდა',
@@ -168,7 +184,7 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin();
+  const auth = await requireStaff();
   if (!auth.ok) return auth.res;
 
   const { id } = await params;
@@ -181,6 +197,7 @@ export async function DELETE(
       where: { id },
     });
 
+    void invalidateCacheTags([AdminCacheTags.chatThreads, adminChatThreadTag(id)]);
     return NextResponse.json(
       { message: 'დიალოგი წაიშალა' },
       { status: 200 }

@@ -4,15 +4,13 @@ import prisma from '@/lib/prisma';
 import type React from 'react';
 import { getTranslations } from 'next-intl/server';
 import CopyableText from './CopyableText';
+import { cachedDashboard, dashUserAddressesTag } from '@/lib/cache/dashboardCache';
 import {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 } from 'country-flag-icons/react/3x2';
 
@@ -20,23 +18,17 @@ const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: st
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 };
 
-const COUNTRY_KA: Record<string, string> = {
+const COUNTRY_KEY_BY_CODE: Record<string, string> = {
   GB: 'დიდი ბრიტანეთი',
   US: 'ამერიკა',
   CN: 'ჩინეთი',
-  IT: 'იტალია',
   GR: 'საბერძნეთი',
-  ES: 'ესპანეთი',
   FR: 'საფრანგეთი',
-  DE: 'გერმანია',
   TR: 'თურქეთი',
 };
 
@@ -94,34 +86,8 @@ const ADDRESS_ROWS: AddressRow[] = [
   },
 
   {
-    countryKey: 'it',
-    countryCode: 'IT',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
-
-  {
     countryKey: 'gr',
     countryCode: 'GR',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
-  {
-    countryKey: 'es',
-    countryCode: 'ES',
-    cityKey: 'paris',
-    adress: '7 bis rue decres',
-    postalCode: '75014',
-    phone: '+33 7 53 19 86 83',
-  },
-
-  {
-    countryKey: 'de',
-    countryCode: 'DE',
     cityKey: 'paris',
     adress: '7 bis rue decres',
     postalCode: '75014',
@@ -137,10 +103,18 @@ export default async function DashboardAddressesSection() {
 
   const tAddr = await getTranslations('addresses');
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { firstName: true, lastName: true, roomNumber: true },
-  });
+  const userId = session.user.id;
+  const user = await cachedDashboard(
+    'addresses:userBasics:v1',
+    { userId },
+    async () => {
+      return await prisma.user.findUnique({
+        where: { id: userId },
+        select: { firstName: true, lastName: true, roomNumber: true },
+      });
+    },
+    { ttlSeconds: 3, tags: [dashUserAddressesTag(userId)] },
+  );
 
   const userFirstName = user?.firstName ?? '';
   const userLastName = user?.lastName ?? '';
@@ -185,150 +159,28 @@ export default async function DashboardAddressesSection() {
       id="dashboard-addresses"
       className="mt-8 scroll-mt-28 border-t border-gray-200 pt-8 text-neutral-900"
     >
-     
-      <h2 className="mb-4 text-lg font-semibold text-neutral-900 sm:mb-6 sm:text-xl">{tAddr('title')}</h2>
+      <h2 className="mb-4 w-full text-center text-lg font-semibold text-neutral-900 sm:mb-6 sm:w-auto sm:text-left sm:text-xl">
+        {tAddr('title')}
+      </h2>
 
-      <div className="space-y-3 md:hidden">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
         {addressList.map((row, i) => (
-          <div key={i}>
-            <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-sm">
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  {(() => {
-                    const Flag = FLAGS[row.countryCode];
-                    return Flag ? (
-                      <Flag
-                        title={row.country}
-                        className="h-8 w-auto rounded object-cover shadow-md ring-1 ring-black/10"
-                      />
-                    ) : null;
-                  })()}
-                  <span className="whitespace-nowrap text-[15px] font-semibold text-[#3a5bff]">
-                    {COUNTRY_KA[row.countryCode] ?? row.country}
-                  </span>
-                </div>
-              </div>
-              {hasUserName ? (
-                <>
-                  <div className="mb-1 flex justify-between gap-2">
-                    <span className="shrink-0 font-semibold text-neutral-800">{tAddr('name')}</span>
-                    <CopyableText
-                      text={userFirstName}
-                      ariaLabel="Copy first name"
-                      className="break-all text-right text-neutral-800"
-                    >
-                      {userFirstName}{' '}
-                    </CopyableText>
-                  </div>
-                  <div className="mb-1 flex justify-between gap-2">
-                    <span className="shrink-0 font-semibold text-neutral-800">{tAddr('lastname')}</span>
-                    <CopyableText
-                      text={userLastName}
-                      ariaLabel="Copy last name"
-                      className="break-all text-right text-neutral-800"
-                    >
-                      {userLastName}{' '}
-                    </CopyableText>
-                  </div>
-                </>
-              ) : null}
-              {row.fullAddress ? (
-                
-                <div className="mb-1 flex justify-between gap-2">
-                
-                  <span className="shrink-0 font-semibold text-neutral-800">{fullAddressLabel}</span>
-                  <CopyableText
-                    text={fullAddressValue(row)}
-                    ariaLabel="Copy full address"
-                    className="break-all text-right text-neutral-800"
-                  >
-                    {fullAddressValue(row)}
-                  </CopyableText>
-                </div>
-              ) : null}
-              <div className="mb-1 flex justify-between gap-2">
-                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street')}</span>
-                <CopyableText text={row.adress} ariaLabel="Copy street" className="break-all text-right text-neutral-800">
-                  {row.adress}
-                </CopyableText>
-              </div>
-              <div className="mb-1 flex justify-between gap-2">
-                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('street2')}</span>
-                <CopyableText
-                  text={street2Value(row)}
-                  ariaLabel="Copy street 2"
-                  className="break-words text-right text-neutral-800"
-                >
-                  {street2Value(row)}
-                </CopyableText>
-              </div>
-              <div className="mb-2 flex items-start justify-between gap-2">
-                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('country')}</span>
-
-                <CopyableText
-                  text={row.country}
-                  ariaLabel="Copy country"
-                  className="text-[14px] font-semibold text-neutral-800"
-                >
-                  {row.country}
-                </CopyableText>
-              </div>
-              <div className="mb-1 flex justify-between gap-2">
-                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('city')}</span>
-                <CopyableText text={row.city} ariaLabel="Copy city" className="text-right text-neutral-800">
-                  {row.city}
-                </CopyableText>
-              </div>
-
-              {row.state ? (
-                <div className="mb-1 flex justify-between gap-2">
-                  <span className="shrink-0 font-semibold text-neutral-800">
-                    {row.countryCode === 'CN' ? tAddr('province') : tAddr('state')}
-                  </span>
-                  <CopyableText text={row.state} ariaLabel="Copy state" className="text-right text-neutral-800">
-                    {row.state}
-                  </CopyableText>
-                </div>
-              ) : null}
-
-              <div className="flex justify-between gap-2">
-                <span className="shrink-0 font-semibold text-neutral-800">{tAddr('postalCode')}</span>
-                <CopyableText
-                  text={row.postalCode}
-                  ariaLabel="Copy postal code"
-                  className="font-medium text-neutral-800"
-                >
-                  {row.postalCode}
-                </CopyableText>
-              </div>
-              {row.phone ? (
-                <div className="mt-1 flex justify-between gap-2">
-                  <span className="shrink-0 font-semibold text-neutral-800">{tAddr('phone')}</span>
-                  <CopyableText text={row.phone} ariaLabel="Copy phone" className="font-medium text-neutral-800">
-                    {row.phone}
-                  </CopyableText>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="hidden gap-4  md:grid md:grid-cols-3">
-        {addressList.map((row, i) => (
-          <div key={i} className="rounded-lg  border border-black bg-neutral-50 p-4">
+          <div key={i} className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
             <div className="mb-3 flex items-center justify-center gap-3">
               {(() => {
                 const Flag = FLAGS[row.countryCode];
+                const countryKey = COUNTRY_KEY_BY_CODE[row.countryCode];
+                const flagTitle =
+                  countryKey && tAddr.has(countryKey) ? tAddr(countryKey) : row.country;
                 return Flag ? (
                   <Flag
-                    title={COUNTRY_KA[row.countryCode] ?? row.country}
+                  title={COUNTRY_KEY_BY_CODE[row.countryCode] ?? row.country}
                     className="h-10 w-auto rounded object-cover shadow-md ring-1 ring-black/10"
                   />
                 ) : null;
               })()}
               <div className="whitespace-nowrap text-[15px] font-semibold text-[#3a5bff]">
-                {COUNTRY_KA[row.countryCode] ?? row.country}
+              {COUNTRY_KEY_BY_CODE[row.countryCode] ?? row.country}
               </div>
             </div>
             {hasUserName ? (

@@ -4,6 +4,15 @@ import { z } from 'zod';
 import { authOptions } from '../../../../../lib/auth';
 import prisma from '../../../../../lib/prisma';
 
+function isPrismaNotFound(e: unknown): boolean {
+  return (
+    typeof e === 'object' &&
+    e !== null &&
+    'code' in e &&
+    (e as { code?: unknown }).code === 'P2025'
+  );
+}
+
 const updateOrderStatusSchema = z.object({
   status: z.enum(['in_transit', 'warehouse', 'stopped', 'delivered', 'pending', 'processing', 'completed', 'cancelled']),
 });
@@ -37,22 +46,24 @@ export async function PATCH(
     const body = await request.json();
     const data = updateOrderStatusSchema.parse(body);
 
-    // Check if order exists
-    const order = await prisma.order.findUnique({
-      where: { id },
-    });
-
-    if (!order) {
-      return NextResponse.json({ error: 'Order ვერ მოიძებნა' }, { status: 404 });
-    }
-
     // Update order status
     const updatedOrder = await prisma.order.update({
       where: { id },
       data: {
         status: data.status,
       },
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        type: true,
+        status: true,
+        totalAmount: true,
+        currency: true,
+        weight: true,
+        smsSent: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
         user: {
           select: {
             id: true,
@@ -72,6 +83,9 @@ export async function PATCH(
       { status: 200 }
     );
   } catch (error) {
+    if (isPrismaNotFound(error)) {
+      return NextResponse.json({ error: 'Order ვერ მოიძებნა' }, { status: 404 });
+    }
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
@@ -112,15 +126,6 @@ export async function PUT(
     const body = await request.json();
     const data = updateOrderSchema.parse(body);
 
-    // Check if order exists
-    const order = await prisma.order.findUnique({
-      where: { id },
-    });
-
-    if (!order) {
-      return NextResponse.json({ error: 'Order ვერ მოიძებნა' }, { status: 404 });
-    }
-
     // Verify user exists if userId is being updated
     if (data.userId) {
       const user = await prisma.user.findUnique({
@@ -144,7 +149,18 @@ export async function PUT(
         ...(data.weight !== undefined && { weight: data.weight }),
         ...(data.notes !== undefined && { notes: data.notes }),
       },
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        type: true,
+        status: true,
+        totalAmount: true,
+        currency: true,
+        weight: true,
+        smsSent: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
         user: {
           select: {
             id: true,
@@ -164,6 +180,9 @@ export async function PUT(
       { status: 200 }
     );
   } catch (error) {
+    if (isPrismaNotFound(error)) {
+      return NextResponse.json({ error: 'Order ვერ მოიძებნა' }, { status: 404 });
+    }
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
@@ -202,15 +221,6 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    // Check if order exists
-    const order = await prisma.order.findUnique({
-      where: { id },
-    });
-
-    if (!order) {
-      return NextResponse.json({ error: 'Order ვერ მოიძებნა' }, { status: 404 });
-    }
-
     // Delete order
     await prisma.order.delete({
       where: { id },
@@ -221,6 +231,9 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
+    if (isPrismaNotFound(error)) {
+      return NextResponse.json({ error: 'Order ვერ მოიძებნა' }, { status: 404 });
+    }
     console.error('Delete order error:', error);
     return NextResponse.json(
       { error: 'Order-ის წაშლისას მოხდა შეცდომა' },

@@ -3,17 +3,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
-import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
+import { GB, US, CN, GR, FR, TR } from 'country-flag-icons/react/3x2';
 
 const FLAGS: Record<string, React.ComponentType<{ title?: string; className?: string }>> = {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 };
 
@@ -21,11 +18,8 @@ const CURRENCY_BY_ORIGIN_ISO: Record<string, string> = {
   GB: 'GBP',
   US: 'USD',
   CN: 'USD',
-  IT: 'EUR',
   GR: 'EUR',
-  ES: 'EUR',
   FR: 'EUR',
-  DE: 'EUR',
   TR: 'USD',
 };
 
@@ -34,11 +28,8 @@ const ORIGIN_COUNTRIES: { code: string; formCode: string }[] = [
   { code: 'GB', formCode: 'uk' },
   { code: 'US', formCode: 'us' },
   { code: 'CN', formCode: 'cn' },
-  { code: 'IT', formCode: 'it' },
   { code: 'GR', formCode: 'gr' },
-  { code: 'ES', formCode: 'es' },
   { code: 'FR', formCode: 'fr' },
-  { code: 'DE', formCode: 'de' },
   { code: 'TR', formCode: 'tr' },
 ];
 

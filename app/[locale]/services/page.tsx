@@ -17,7 +17,7 @@ export default async function ServicesPage({ params, searchParams }: Props) {
   return (
     <section
       id="services"
-      className="w-full pt-14 mt-14 md:mt-32 md:pt-20 pb-16 md:pb-34 "
+      className="w-full pt-14 mt-14 md:pt-20 pb-16 md:pb-24 bg-gray-50 "
     >
       <div className="mx-auto w-full max-w-5xl px-4 pb-6 text-center">
         <h1 className="text-2xl font-semibold text-slate-900 sm:text-3xl">{seo.title}</h1>

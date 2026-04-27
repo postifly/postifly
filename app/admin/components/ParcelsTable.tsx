@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { startTransition, useEffect, useRef, useState } from 'react';
 import { formatOriginCountryLabel } from '@/lib/formatOriginCountry';
 import { employeeCountryLabel } from '@/lib/employeeCountryLabel';
 import { useLocale } from 'next-intl';
-
+import {TrashIcon} from 'lucide-react';
 type Parcel = {
   id: string;
   trackingNumber: string;
@@ -72,6 +72,23 @@ export default function ParcelsTable({
   const locale = useLocale();
   const isEn = locale === 'en';
   const isRu = locale === 'ru';
+  // Avoid SSR/CSR hydration mismatches caused by different timezones.
+  // Force a fixed timezone so server and browser render identical strings.
+  const dateFormatter = React.useMemo(() => {
+    const l = locale === 'ka' ? 'ka-GE' : locale;
+    return new Intl.DateTimeFormat(l, {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  }, [locale]);
+
+  const formatDate = (v: string) => {
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return v;
+    return dateFormatter.format(d);
+  };
   const t = {
     pending: isRu ? 'Склад' : isEn ? 'Warehouse' : 'მოლოდინში',
     inWarehouse: isRu ? 'На складе' : isEn ? 'In warehouse' : 'საწყობში',
@@ -152,14 +169,14 @@ export default function ParcelsTable({
     const name = [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || u.email;
     return (
       <div className="mt-2 border-t border-gray-100 pt-2 text-[12px] text-gray-700">
-        <p className="font-semibold text-gray-900">{t.uploadedBy}</p>
-        <p className="text-black">{name}</p>
+        <p className="font-semibold text-[16px] text-gray-900">{t.uploadedBy}</p>
+        <p className="text-black text-[16px]">{name}</p>
         {u.role === 'EMPLOYEE' ? (
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-[16px]">
             {t.uploadedByCountry}: {employeeCountryLabel(u.employeeCountry, locale)}
           </p>
         ) : (
-          <p className="text-gray-600">{t.uploaderAdmin}</p>
+          <p className="text-gray-600 text-[16px]">{t.uploaderAdmin}</p>
         )}
       </div>
     );
@@ -170,6 +187,7 @@ export default function ParcelsTable({
   const [error, setError] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [feeDraftById, setFeeDraftById] = useState<Record<string, string>>({});
   const [courierFeeSavingId, setCourierFeeSavingId] = useState<string | null>(null);
   const [payableDraftById, setPayableDraftById] = useState<Record<string, string>>({});
@@ -180,6 +198,19 @@ export default function ParcelsTable({
   const [bulkTargetStatus, setBulkTargetStatus] = useState('');
   const [bulkUpdating, setBulkUpdating] = useState(false);
   const selectAllRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Keep table in sync with parent polling / refresh.
+    startTransition(() =>
+      setParcels(initialParcels.filter((p) => !deletedIds.includes(p.id))),
+    );
+  }, [initialParcels, deletedIds]);
+
+  useEffect(() => {
+    // Prevent deletedIds from growing forever (keep only ids that still exist in props).
+    const existing = new Set(initialParcels.map((p) => p.id));
+    setDeletedIds((prev) => prev.filter((id) => existing.has(id)));
+  }, [initialParcels]);
 
   const allSelected =
     parcels.length > 0 && selectedIds.length === parcels.length;
@@ -197,16 +228,18 @@ export default function ParcelsTable({
   }, [someSelected]);
 
   const toggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    startTransition(() => {
+      setSelectedIds((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+      );
+    });
   };
 
   const toggleSelectAll = () => {
     if (allSelected) {
-      setSelectedIds([]);
+      startTransition(() => setSelectedIds([]));
     } else {
-      setSelectedIds(parcels.map((p) => p.id));
+      startTransition(() => setSelectedIds(parcels.map((p) => p.id)));
     }
   };
 
@@ -223,61 +256,27 @@ export default function ParcelsTable({
 
     const ids = [...selectedIds];
     try {
-      const results = await Promise.allSettled(
-        ids.map(async (parcelId) => {
-          const res = await fetch(`/api/admin/parcels/${parcelId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus }),
-          });
-          const data = await res.json();
-          if (!res.ok) {
-            throw new Error(
-              typeof data.error === 'string' ? data.error : t.statusUpdateError,
-            );
-          }
-          return { parcelId, parcel: data.parcel as Parcel };
-        }),
-      );
-
-      const succeeded: { parcelId: string; parcel: Parcel }[] = [];
-      let failCount = 0;
-      for (const r of results) {
-        if (r.status === 'fulfilled') {
-          succeeded.push(r.value);
-        } else {
-          failCount++;
-        }
+      const res = await fetch('/api/admin/parcels/bulk-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids, status: newStatus }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || t.statusUpdateError);
+        return;
       }
+
+      const updatedIds = new Set<string>(Array.isArray(data.updatedIds) ? data.updatedIds : ids);
 
       setParcels((prev) => {
-        let next = [...prev];
-        for (const { parcelId, parcel } of succeeded) {
-          if (parcel.status !== currentStatus) {
-            next = next.filter((p) => p.id !== parcelId);
-          } else {
-            next = next.map((p) => (p.id === parcelId ? parcel : p));
-          }
+        if (newStatus !== currentStatus) {
+          return prev.filter((p) => !updatedIds.has(p.id));
         }
-        return next;
+        return prev.map((p) => (updatedIds.has(p.id) ? { ...p, status: newStatus } : p));
       });
 
-      const okIds = new Set(succeeded.map((s) => s.parcelId));
-      for (const { parcel } of succeeded) {
-        onParcelUpdated?.(parcel);
-      }
-      setSelectedIds((prev) => prev.filter((id) => !okIds.has(id)));
-
-      if (failCount > 0) {
-        const total = ids.length;
-        setError(
-          isRu
-            ? `Не удалось обновить ${failCount} из ${total}`
-            : isEn
-              ? `Failed to update ${failCount} of ${total} parcels`
-              : `${failCount}/${total} ამანათის სტატუსი ვერ განახლდა`,
-        );
-      }
+      setSelectedIds((prev) => prev.filter((id) => !updatedIds.has(id)));
     } catch {
       setError(t.genericError);
     } finally {
@@ -462,24 +461,39 @@ export default function ParcelsTable({
       return;
     }
 
+    const snapshot = parcels;
+
     setDeletingId(parcelId);
     setError('');
+
+    // Optimistic UI: hide immediately; rollback on failure.
+    setParcels((prev) => prev.filter((p) => p.id !== parcelId));
+    setDeletedIds((prev) => (prev.includes(parcelId) ? prev : [...prev, parcelId]));
 
     try {
       const res = await fetch(`/api/admin/parcels/${parcelId}`, {
         method: 'DELETE',
       });
 
-      const data = await res.json();
+      const data = (await res
+        .json()
+        .catch(() => ({}))) as { error?: string };
 
-      if (!res.ok) {
-        setError(data.error || t.deleteError);
+      // If it was already deleted, treat as success.
+      if (res.status === 404) {
         return;
       }
 
-      setParcels((prev) => prev.filter((p) => p.id !== parcelId));
+      if (!res.ok) {
+        setError(data.error || t.deleteError);
+        setParcels(snapshot);
+        setDeletedIds((prev) => prev.filter((id) => id !== parcelId));
+        return;
+      }
     } catch {
       setError(t.genericError);
+      setParcels(snapshot);
+      setDeletedIds((prev) => prev.filter((id) => id !== parcelId));
     } finally {
       setDeletingId(null);
     }
@@ -559,6 +573,11 @@ export default function ParcelsTable({
             <div
               key={parcel.id}
               className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+              style={{
+                // Skip rendering work for offscreen cards (big INP win on long lists).
+                contentVisibility: 'auto',
+                containIntrinsicSize: '900px',
+              }}
             >
               <div className="mb-2 flex items-center justify-between gap-2">
                 <div className="flex min-w-0 flex-1 items-start gap-2">
@@ -580,21 +599,21 @@ export default function ParcelsTable({
                   </div>
                 </div>
                 <div className="text-right text-[13px] text-black">
-                  <p>{parcel.createdAt}</p>
+                  <p>{formatDate(parcel.createdAt)}</p>
                   <p>{formatOriginCountryLabel(parcel.originCountry)}</p>
                 </div>
               </div>
 
                 <div className="mb-3 grid grid-cols-2 gap-2 text-[13px] text-black">
-                <span className="text-black">{t.tracking}</span>
-                <span className="text-black">{parcel.trackingNumber}</span>
+                <span className="text-black text-[16px]">{t.tracking}</span>
+                <span className="text-black text-[16px]">{parcel.trackingNumber}</span>
 
-                <span className="text-black">{t.quantity}</span>
-                <span className="text-black">{parcel.quantity}</span>
+                <span className="text-black text-[16px]">{t.quantity}</span>
+                <span className="text-black text-[16px]">{parcel.quantity}</span>
 
-                <span className="text-black">{t.weight}</span>
+                <span className="text-black text-[16px]">{t.weight}</span>
                 {currentStatus === 'arrived' || currentStatus === 'in_warehouse' ? (
-                  <span className="flex flex-wrap items-center gap-2 text-black">
+                  <span className="flex flex-wrap items-center gap-2 text-black text-[16px]">
                     <input
                       type="text"
                       inputMode="decimal"
@@ -625,20 +644,20 @@ export default function ParcelsTable({
                     </button>
                   </span>
                 ) : (
-                  <span className="text-black">
+                  <span className="text-black text-[16px]">
                     {parcel.weight != null ? `${parcel.weight} kg` : '—'}
                   </span>
                 )}
 
-                <span className="text-black">{t.itemValue}</span>
-                <span className="text-black">
+                <span className="text-black text-[16px]">{t.itemValue}</span>
+                <span className="text-black text-[16px]">
                   {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
                 </span>
 
                 {currentStatus === 'arrived' || currentStatus === 'delivered' ? (
                   <>
-                    <span className="text-black">{t.amount}</span>
-                    <span className="text-black">
+                    <span className="text-black text-[16px]">{t.amount}</span>
+                    <span className="text-black text-[16px]">
                       {parcel.shippingAmount != null
                         ? `${parcel.shippingAmount.toFixed(2)} GEL${
                             parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
@@ -695,7 +714,7 @@ export default function ParcelsTable({
                         type="button"
                         disabled={payableSavingId === parcel.id}
                         onClick={() => handleSavePayable(parcel)}
-                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                       >
                         {payableSavingId === parcel.id ? '...' : t.save}
                       </button>
@@ -734,7 +753,7 @@ export default function ParcelsTable({
                         type="button"
                         disabled={courierFeeSavingId === parcel.id}
                         onClick={() => handleSaveCourierFee(parcel)}
-                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                        className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                       >
                         {courierFeeSavingId === parcel.id ? '...' : t.save}
                       </button>
@@ -811,7 +830,14 @@ export default function ParcelsTable({
              
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody
+            className="divide-y divide-gray-100 bg-white"
+            style={{
+         
+              contentVisibility: 'auto',
+              containIntrinsicSize: '1200px',
+            }}
+          >
             {parcels.length === 0 ? (
               <tr>
                 <td
@@ -852,10 +878,13 @@ export default function ParcelsTable({
                     <td className="px-4 py-2 text-right text-[14px] text-blue-600">
                       <button
                         type="button"
-                        onClick={() =>
-                          setExpandedId(expandedId === parcel.id ? null : parcel.id)
-                        }
-                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 hover:bg-blue-50"
+                        onClick={() => {
+                          // Expanding renders a large DOM subtree; keep interaction paint fast.
+                          startTransition(() =>
+                            setExpandedId(expandedId === parcel.id ? null : parcel.id)
+                          );
+                        }}
+                        className="inline-flex text-[16px] items-center gap-1 rounded-md px-2 py-1 hover:bg-blue-50"
                       >
                         <span>{t.details}</span>
                         <span
@@ -872,21 +901,21 @@ export default function ParcelsTable({
                     <tr className="bg-gray-50">
                       <td colSpan={2} className="px-4 pb-4 pt-0 text-black text-[14px] md:text-[18px]">
                         <div className="grid grid-cols-2 gap-2 pt-2">
-                            <span className="text-black">{t.user}</span>
-                          <span>{parcel.customerName}</span>
+                            <span className="text-black text-[16px]">{t.user}</span>
+                          <span className="text-[16px]">{parcel.customerName}</span>
 
-                          <div className="col-span-2">{renderUploaderBlock(parcel)}</div>
+                    
 
-                          <span className="text-black">{t.tracking}</span>
-                          <span>{parcel.trackingNumber}</span>
+                          <span className="text-black text-[16px]">{t.tracking}</span>
+                          <span className="text-[16px]">{parcel.trackingNumber}</span>
 
-                          <span className="text-black">{t.quantity}</span>
-                          <span>{parcel.quantity}</span>
+                          <span className="text-black text-[16px]">{t.quantity}</span>
+                          <span className="text-[16px]">{parcel.quantity}</span>
 
-                          <span className="text-black">{t.country}</span>
-                          <span>{formatOriginCountryLabel(parcel.originCountry)}</span>
+                          <span className="text-black text-[16px]">{t.country}</span>
+                          <span className="text-[16px]">{formatOriginCountryLabel(parcel.originCountry)}</span>
 
-                          <span className="text-black">{t.weight}</span>
+                          <span className="text-black text-[16px]">{t.weight}</span>
                           {currentStatus === 'arrived' || currentStatus === 'in_warehouse' ? (
                             <span className="flex flex-wrap items-center gap-2">
                               <input
@@ -908,33 +937,33 @@ export default function ParcelsTable({
                                 }
                                 className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
                               />
-                              <span className="text-black">kg</span>
+                              <span className="text-black text-[16px]">kg</span>
                               <button
                                 type="button"
                                 disabled={weightSavingId === parcel.id}
                                 onClick={() => handleSaveWeight(parcel)}
-                                className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                               >
                                 {weightSavingId === parcel.id ? t.saving : t.save}
                               </button>
                             </span>
                           ) : (
-                            <span>
+                            <span className="text-[16px]">
                               {parcel.weight != null
                                 ? `${parcel.weight} kg`
                                 : '—'}
                             </span>
                           )}
 
-                          <span className="text-black">{t.itemValue}</span>
-                          <span>
-                            {parcel.price.toFixed(2)} {parcel.currency || 'GEL'}
+                          <span className="text-black text-[16px]">{t.itemValue}</span>
+                          <span className="text-[16px]">
+                            <span className="text-[16px]">{parcel.price.toFixed(2)} {parcel.currency || 'GEL'}</span>
                           </span>
 
                           {currentStatus === 'arrived' || currentStatus === 'delivered' ? (
                             <>
-                              <span className="text-black">{t.amount}</span>
-                              <span>
+                              <span className="text-black text-[16px]">{t.amount}</span>
+                              <span className="text-[16px]">
                                 {parcel.shippingAmount != null
                                   ? `${parcel.shippingAmount.toFixed(2)} GEL${
                                       parcel.shippingFormula ? ` (${parcel.shippingFormula})` : ''
@@ -944,16 +973,16 @@ export default function ParcelsTable({
                             </>
                           ) : null}
 
-                          <span className="text-black">{t.phone}</span>
-                          <span>{formatPhone(parcel.user.phone)}</span>
+                          <span className="text-black text-[16px]">{t.phone}</span>
+                          <span className="text-[16px]">{formatPhone(parcel.user.phone)}</span>
 
-                          <span className="text-black">{t.city}</span>
-                          <span>{parcel.user.city || '—'}</span>
+                          <span className="text-black text-[16px]">{t.city}</span>
+                          <span className="text-[16px]">{parcel.user.city || '—'}</span>
 
-                          <span className="text-black">{t.street}</span>
-                          <span>{parcel.user.address || '—'}</span>
+                          <span className="text-black text-[16px]">{t.street}</span>
+                          <span className="text-[16px]">{parcel.user.address || '—'}</span>
 
-                          <span className="text-black">{t.file}</span>
+                          <span className="text-black text-[16px]">{t.file}</span>
                           {parcel.filePath ? (
                             <span className="flex flex-wrap gap-2">
                               <a
@@ -973,15 +1002,15 @@ export default function ParcelsTable({
                               </a>
                             </span>
                           ) : (
-                            <span>—</span>
+                            <span className="text-[16px]">—</span>
                           )}
 
-                          <span className="text-black">{t.date}</span>
-                          <span>{parcel.createdAt}</span>
+                          <span className="text-black text-[16px]">{t.date}</span>
+                          <span className="text-[16px]">{formatDate(parcel.createdAt)}</span>
 
                           {currentStatus === 'arrived' ? (
                             <>
-                              <span className="text-black">{t.payable}</span>
+                              <span className="text-black text-[16px]">{t.payable}</span>
                               <span className="flex flex-wrap items-center gap-2">
                                 <input
                                   type="text"
@@ -1002,18 +1031,18 @@ export default function ParcelsTable({
                                   }
                                   className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
                                 />
-                                <span className="text-black">{parcel.currency || 'GEL'}</span>
+                                <span className="text-black text-[16px]">{parcel.currency || 'GEL'}</span>
                                 <button
                                   type="button"
                                   disabled={payableSavingId === parcel.id}
                                   onClick={() => handleSavePayable(parcel)}
-                                  className="rounded-md bg-[#3a5bff] px-2 py-1 text-[12px] font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+                                  className="rounded-md bg-[#3a5bff] px-2 py-1 text-[15px] font-medium text-white  disabled:opacity-50"
                                 >
                                   {payableSavingId === parcel.id ? t.saving : t.save}
                                 </button>
                               </span>
 
-                              <span className="text-black">{t.courier}</span>
+                              <span className="text-black text-[16px]">{t.courier}</span>
                               <span className="flex flex-col gap-1">
                                 {parcel.courierServiceRequested ? (
                                   <span className="text-[12px] text-amber-900">
@@ -1040,7 +1069,7 @@ export default function ParcelsTable({
                                     }
                                     className="w-32 rounded-md border border-gray-300 px-2 py-1 text-[14px] text-black"
                                   />
-                                  <span className="text-black">{parcel.currency || 'GEL'}</span>
+                                  <span className="text-black text-[16px]">{parcel.currency || 'GEL'}</span>
                                   <button
                                     type="button"
                                     disabled={courierFeeSavingId === parcel.id}
@@ -1054,7 +1083,7 @@ export default function ParcelsTable({
                             </>
                           ) : null}
 
-                          <span className="text-black">{t.status}</span>
+                          <span className="text-black text-[16px]">{t.status}</span>
                           <span className="flex items-center gap-2">
                             <select
                               value={parcel.status}
@@ -1079,9 +1108,9 @@ export default function ParcelsTable({
                                 type="button"
                                 onClick={() => handleDelete(parcel.id)}
                                 disabled={deletingId === parcel.id}
-                                className="mt-1 rounded-md bg-red-600 px-2 py-1 text-[12px] font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                                className="mt-1 rounded-md  p-1 text-[16px] font-medium  disabled:opacity-50"
                               >
-                                {deletingId === parcel.id ? t.deleting : t.delete}
+                                {<TrashIcon className="w-6 h-6 text-red-600" />}
                               </button>
                             ) : null}
                           </span>

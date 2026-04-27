@@ -22,6 +22,8 @@ export default function OrdersManager({ initialOrders }: OrdersManagerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
+  const lastSuccessfulFetchAtRef = useRef<number>(Date.now());
+  const refetchOnFocusStaleMs = 30_000;
   const currentStatus = 'in_transit';
 
   const fetchOrders = useCallback(async (showLoading = true, preserveOptimisticOrder?: string) => {
@@ -61,6 +63,7 @@ export default function OrdersManager({ initialOrders }: OrdersManagerProps) {
           return data.orders;
         });
       }
+      lastSuccessfulFetchAtRef.current = Date.now();
     } catch (error) {
       console.error('[OrdersManager] Failed to fetch orders:', error);
     } finally {
@@ -128,7 +131,12 @@ export default function OrdersManager({ initialOrders }: OrdersManagerProps) {
           intervalRef.current = null;
         }
       } else {
-        fetchOrders(true); // Fetch immediately when page becomes visible
+        // Avoid "refreshing" UI on quick tab switches; only refetch if data is stale.
+        const isStale =
+          Date.now() - lastSuccessfulFetchAtRef.current > refetchOnFocusStaleMs;
+        if (isStale) {
+          fetchOrders(false); // don't show loading overlay on focus
+        }
         startPolling();
       }
     };

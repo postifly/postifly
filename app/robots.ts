@@ -13,9 +13,12 @@ const privatePaths = [
 ];
 
 export default function robots(): MetadataRoute.Robots {
-  const disallow = routing.locales.flatMap((locale) =>
+  const disallowLocalized = routing.locales.flatMap((locale) =>
     privatePaths.map((path) => `/${locale}${path}`)
   );
+  // Also disallow the non-locale variants (these exist in build output)
+  const disallowNonLocalized = [...privatePaths];
+  const disallow = [...disallowLocalized, ...disallowNonLocalized, '/api/'];
 
   return {
     rules: {

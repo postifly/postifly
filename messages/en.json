@@ -38,11 +38,25 @@
     "close": "Close",
     "save": "Save",
     "cancel": "Cancel",
+    "optional": "(optional)",
     "account": "Account",
     "myCabinet": "My Cabinet",
     "adminPanel": "Admin Panel",
     "employeePanel": "Employee panel",
     "supportPanel": "Support panel"
+  },
+  "contact": {
+    "addressesTitle": "Contact Addresses",
+    "workingHoursTitle": "Working hours",
+    "days": {
+      "everyday": "Every day",
+      "online": "Online",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri"
+    }
   },
   "adminsidebar": {
     "users": "Users",
@@ -159,7 +173,7 @@
     "calculator": "Calculator",
     "stores": "Stores",
     "pricing": "Pricing",
-    "faq": "FAQ",
+    "faq": "Frequently Asked Questions",
     "conditions": "Conditions",
     "howToSubscribe": "How to subscribe?",
     "customsRules": "Customs rules",
@@ -241,7 +255,7 @@
   },
   "about": {
     "title": "About us",
-    "intro1": "Postifly is a brand of LLC “Express Logistic Service”, which transports air parcels from the following countries: United Kingdom, United States, China, Italy, Greece, Spain, France, Germany and Turkey.",
+    "intro1": "Postifly is a brand of LLC “Express Logistic Service”, which transports air parcels from the following countries: United Kingdom, United States, China, Greece, France and Turkey.",
     "intro2": "With the help of the company’s online guide, customers can get information about discounts and simplify the process of finding and purchasing desired items.",
     "intro3": "Our goal is to deliver parcels to Georgia quickly and to maintain the best service quality on the market.",
     "intro4": "With us, shopping is cheap, simple and comfortable.",
@@ -250,6 +264,7 @@
     "requisitesContent": "Brand name: Postifly\nCompany name: LLC “Express Logistic Service”\nIdentification code: 436258381\nAddress: Tbilisi, Gagarin 4-4 A\n\nTBC Bank\nBank code: TBCBGE22\nAccount: GE47TB7653936080100018\n\nBank of Georgia\nBank code: BAGAGE22\nAccount: GE56BG0000000549889504"
   },
   "home": {
+    "h1": "Postifly parcel delivery and tracking in Georgia",
     "guideLine1": "Is the ordering process difficult?",
     "guideLine2": "Call us and hand it over.",
     "heroSpeedLine1": "When speed",
@@ -265,9 +280,15 @@
     "hero1Line4": "Receive fast from your home",
     "hero2Line1": "Receive your parcel at the office hassle-free",
     "hero2Line2": "We deliver your parcel to your address quickly and safely across Georgia",
+    "heroMiddleSlide1Tagline": "When speed matters",
+    "heroMiddleSlide2Line1": "Global delivery",
+    "heroMiddleSlide2Line2": "With local speed",
+    "heroMiddleSlide1PillTop": "Receive parcels from France",
+    "heroMiddleSlide1PillBottom": "In 1–3 days",
+    "heroMiddleSlide2Pill": "Order easily, receive fast",
     "servicesTitle": "S E R V I C E S",
     "service1": "Online shopping",
-    "service1Content": " Postifly offers online shopping in 9 countries: the United Kingdom, the United States, China, Italy, Greece, Spain, France, Germany, and Turkey.\n\nSimplify your shopping with Postifly's online guide. Use the Online Guide service to purchase your desired items with big discounts. The Online Guide service is free of charge.\n\nWith us, shopping is cheap, simple, and comfortable.\n\nWe wish you pleasant shopping.",
+    "service1Content": " Postifly offers online shopping in 6 countries: the United Kingdom, the United States, China, Greece, France, and Turkey.\n\nSimplify your shopping with Postifly's online guide. Use the Online Guide service to purchase your desired items with big discounts. The Online Guide service is free of charge.\n\nWith us, shopping is cheap, simple, and comfortable.\n\nWe wish you pleasant shopping.",
     "service2": "Courier service",
     "service2Content": "Postifly offers fast and secure courier delivery.\n\nParcel delivery in Tbilisi to any address takes place on the same day.\n\nCourier service pricing in Tbilisi:\nUp to 13 kg — 7 GEL;\nOver 13 kg — 14 GEL.\n\nCourier service pricing in the regions:\nUp to 10 kg — 10 GEL;\nOver 10 kg — 15 GEL. The parcel will be delivered to the region within 2 business days of arrival.",
     "service2ListIntro": "Courier service includes:",
@@ -517,17 +538,11 @@
     "usa": "USA",
     "cn": "China",
     "china": "China",
-    "it": "France",
-    "italy": "Italy",
     "gr": "France",
     "greece": "Greece",
-    "es": "France",
-    "spain": "Spain",
     "fr": "France",
     "turkey": "Turkey",
     "france": "France",
-    "de": "France",
-    "germany": "Germany",
     "tr": "Turkey",
     "ge": "Georgia",
     "london": "London",
@@ -634,11 +649,8 @@
       "uk": "United Kingdom",
       "us": "USA",
       "cn": "China",
-      "it": "Italy",
       "gr": "Greece",
-      "es": "Spain",
       "fr": "France",
-      "de": "Germany",
       "tr": "Turkey"
     },
     "descriptionRequired": "Category is required",
@@ -713,7 +725,7 @@
     "userEmailNotRegistered": "This email is not registered. Use a registered customer’s email or create the user first.",
     "originCountryRequired": "Origin country is required",
     "descriptionRequired": "Category is required",
-    "pdfRequired": "PDF file is required",
+    "pdfRequired": "Invoice PDF file is required",
     "onlyPdf": "Only PDF files are allowed",
     "maxSize": "File size must not exceed 5 MB",
     "priceInvalid": "Price is invalid",
@@ -722,6 +734,21 @@
     "createError": "Failed to create parcel",
     "createSuccess": "Parcel created successfully"
   },
+  "dates": {
+    "title": "Upcoming flights",
+    "subtitle": "Choose a flight and check dates easily.",
+    "empty": "No flights have been added yet.",
+    "flightLabel": "Flight",
+    "departure": "Departure",
+    "arrival": "Arrival",
+    "direction": "Route",
+    "routeSeparator": "→",
+    "notSpecified": "Not specified",
+    "status": {
+      "open": "Active",
+      "closed": "Closed"
+    }
+  },
   "locale": {
     "ka": "ქართ",
     "en": "Eng",
@@ -729,5 +756,43 @@
   },
   "stores": {
     "title": "Online stores"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "items": [
+      {
+        "name": "Valerian Margalitadze",
+        "rating": 5,
+        "text": "My parcels always arrive on time and the packaging is very good."
+      },
+      {
+        "name": "Davit Chkhartishvili",
+        "rating": 5,
+        "text": "The calculator shows the exact price and the service is very fast."
+      },
+      {
+        "name": "Nino Chkonia",
+        "rating": 4,
+        "text": "The support team responds quickly and explains everything in detail."
+      },
+      {
+        "name": "Giorgi Gabunia",
+        "rating": 5,
+        "text": "Shipments from Europe arrived without any issues — I recommend it."
+      },
+      {
+        "name": "Nino Davidadze",
+        "rating": 5,
+        "text": "Excellent quality — I’ve used it several times and I’m satisfied."
+      }
+    ]
+  },
+  "adminUsersNew": {
+    "title": "New user",
+    "description": "Fill out the form to manually register a new user."
+  },
+  "supportUsersNew": {
+    "title": "New user",
+    "description": "Fill out the form to manually register a new user."
   }
 }

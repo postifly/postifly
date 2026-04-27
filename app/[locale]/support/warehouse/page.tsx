@@ -1,2 +1,53 @@
-export { default } from '@/app/support/warehouse/page';
+import SupportShell from '@/app/support/components/SupportShell';
+import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
+import ParcelsManager from '@/app/admin/components/ParcelsManager';
+import { getLocale } from 'next-intl/server';
+import { fetchNbgRates } from '@/lib/nbgRates';
+import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
+import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function SupportWarehousePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
+  const locale = await getLocale();
+  const text =
+    locale === 'ru'
+      ? { title: 'Прибывшие', description: 'Управление прибывшими посылками.' }
+      : locale === 'en'
+        ? { title: 'Arrived', description: 'Manage arrived parcels.' }
+        : { title: 'ჩამოსული', description: 'ჩამოსული ამანათების მართვა.' };
+
+  const [{ parcels }, tariffs, nbgRates] = await Promise.all([
+    fetchAdminParcelsSsr('arrived', sp),
+    getCachedActiveTariffsForGeorgia(),
+    fetchNbgRates().catch(() => null),
+  ]);
+
+  const formattedParcels = parcels.map((parcel) => {
+    const breakdown = computeShippingGelBreakdown(
+      { originCountry: parcel.originCountry, weight: parcel.weight },
+      tariffs,
+      nbgRates,
+    );
+    return {
+      ...parcel,
+      createdAt: new Date(parcel.createdAt).toLocaleDateString('ka-GE'),
+      shippingAmount: breakdown != null ? breakdown.amountGel : parcel.shippingAmount,
+      shippingFormula: breakdown != null ? breakdown.formula : null,
+    };
+  });
+
+  return (
+    <SupportShell title={text.title} description={text.description}>
+      <div className="space-y-6">
+        <ParcelsManager initialParcels={formattedParcels} currentStatus="arrived" countryHub />
+      </div>
+    </SupportShell>
+  );
+}

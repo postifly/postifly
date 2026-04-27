@@ -2,7 +2,7 @@
 
 import { useMemo, type ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { GB, US, CN, IT, GR, ES, FR, DE, TR } from 'country-flag-icons/react/3x2';
+import { GB, US, CN, GR, FR, TR } from 'country-flag-icons/react/3x2';
 import { parcelOriginLabelKey } from '@/lib/parcelOriginLabels';
 import {
   UNKNOWN_COUNTRY_KEY,
@@ -15,11 +15,8 @@ const FLAGS: Record<string, FlagComponent> = {
   GB,
   US,
   CN,
-  IT,
   GR,
-  ES,
   FR,
-  DE,
   TR,
 };
 
@@ -27,15 +24,12 @@ const CODE_TO_FLAG: Record<string, string> = {
   uk: 'GB',
   us: 'US',
   cn: 'CN',
-  it: 'IT',
   gr: 'GR',
-  es: 'ES',
   fr: 'FR',
-  de: 'DE',
   tr: 'TR',
 };
 
-const ORIGIN_ORDER = ['uk', 'us', 'cn', 'it', 'gr', 'es', 'fr', 'de', 'tr'];
+const ORIGIN_ORDER = ['uk', 'us', 'cn', 'gr', 'fr', 'tr'];
 
 function sortCountryKeys(keys: string[]): string[] {
   return [...keys].sort((a, b) => {

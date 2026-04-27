@@ -7,22 +7,20 @@ const intlMiddleware = createMiddleware(routing);
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Force locale-prefixed URLs for all non-file, non-API routes.
+  // This keeps the app "locale-only" even if non-locale routes exist in `/app`.
+  const [maybeLocale] = pathname.split('/').filter(Boolean);
+  const hasLocalePrefix =
+    !!maybeLocale && (routing.locales as readonly string[]).includes(maybeLocale);
 
- 
-
-  if (pathname === '/' ) {
+  if (!hasLocalePrefix) {
     const url = request.nextUrl.clone();
-    url.pathname = '/ka';
+    url.pathname = `/${routing.defaultLocale}${pathname === '/' ? '' : pathname}`;
     return NextResponse.redirect(url);
   }
 
-  
-
-
   return intlMiddleware(request);
 }
-
-
 
 export const config = {
   matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)'],
