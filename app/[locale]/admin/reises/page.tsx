@@ -1,5 +1,5 @@
-import AdminShell from '@/app/admin/components/AdminShell';
-import ReisesManager from '@/app/admin/reises/ReisesManager';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import ReisesManager from '@/app/[locale]/admin/reises/ReisesManager';
 import { getLocale } from 'next-intl/server';
 
 export default async function AdminReisesPage() {

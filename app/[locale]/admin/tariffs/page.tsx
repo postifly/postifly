@@ -1,5 +1,5 @@
-import AdminShell from '@/app/admin/components/AdminShell';
-import TariffsManager from '@/app/admin/tariffs/tariffsManager';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import TariffsManager from '@/app/[locale]/admin/tariffs/tariffsManager';
 import { getLocale } from 'next-intl/server';
 
 export default async function AdminTariffsPage() {

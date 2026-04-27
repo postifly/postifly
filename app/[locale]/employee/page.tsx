@@ -3,10 +3,10 @@ import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import EmployeeSidebar from '@/app/employee/components/EmployeeSidebar';
+import EmployeeSidebar from '@/app/[locale]/employee/components/EmployeeSidebar';
 import EmployeeMyParcelsTable, {
   type EmployeeParcelRow,
-} from '@/app/employee/components/EmployeeMyParcelsTable';
+} from '@/app/[locale]/employee/components/EmployeeMyParcelsTable';
 import { Link } from '@/i18n/navigation';
 
 export const dynamic = 'force-dynamic';

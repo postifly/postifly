@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import EmployeeSidebar from '@/app/employee/components/EmployeeSidebar';
-import AdminCreateParcelForm from '@/app/admin/components/AdminCreateParcelForm';
+import EmployeeSidebar from '@/app/[locale]/employee/components/EmployeeSidebar';
+import AdminCreateParcelForm from '@/app/[locale]/admin/components/AdminCreateParcelForm';
 
 export const dynamic = 'force-dynamic';
 

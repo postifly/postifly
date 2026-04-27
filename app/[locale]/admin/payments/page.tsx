@@ -1,5 +1,5 @@
-import AdminShell from '@/app/admin/components/AdminShell';
-import PaymentsTable from '@/app/admin/payments/paymentsTable';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import PaymentsTable from '@/app/[locale]/admin/payments/paymentsTable';
 import { getLocale } from 'next-intl/server';
 
 export default async function AdminPaymentsPage() {

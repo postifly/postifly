@@ -1,5 +1,5 @@
-import AdminShell from '@/app/admin/components/AdminShell';
-import ChatAdmin from '@/app/admin/chat/ChatAdmin';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import ChatAdmin from '@/app/[locale]/admin/chat/ChatAdmin';
 import { getLocale } from 'next-intl/server';
 
 export default async function AdminChatPage() {

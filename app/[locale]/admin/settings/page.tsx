@@ -1,5 +1,5 @@
-import AdminShell from '@/app/admin/components/AdminShell';
-import AdminSettingsForm from '@/app/admin/components/AdminSettingsForm';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import AdminSettingsForm from '@/app/[locale]/admin/components/AdminSettingsForm';
 import { getLocale } from 'next-intl/server';
 
 export default async function AdminSettingsPage() {

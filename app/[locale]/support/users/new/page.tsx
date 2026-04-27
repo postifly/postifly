@@ -1,5 +1,5 @@
-import SupportShell from '@/app/support/components/SupportShell';
-import AdminCreateUserForm from '@/app/admin/users/components/AdminCreateUserForm';
+import SupportShell from '@/app/[locale]/support/components/SupportShell';
+import AdminCreateUserForm from '@/app/[locale]/admin/users/components/AdminCreateUserForm';
 import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';

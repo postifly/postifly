@@ -1,5 +1,5 @@
-import SupportShell from '@/app/support/components/SupportShell';
-import ParcelsManager from '@/app/admin/components/ParcelsManager';
+import SupportShell from '@/app/[locale]/support/components/SupportShell';
+import ParcelsManager from '@/app/[locale]/admin/components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
 import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 

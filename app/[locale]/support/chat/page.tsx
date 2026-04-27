@@ -1,5 +1,5 @@
-import SupportShell from '@/app/support/components/SupportShell';
-import ChatAdmin from '@/app/admin/chat/ChatAdmin';
+import SupportShell from '@/app/[locale]/support/components/SupportShell';
+import ChatAdmin from '@/app/[locale]/admin/chat/ChatAdmin';
 import { getLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';

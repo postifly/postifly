@@ -1,4 +1,4 @@
-import SupportShell from '@/app/support/components/SupportShell';
+import SupportShell from '@/app/[locale]/support/components/SupportShell';
 import { Link } from '@/i18n/navigation';
 import { getLocale } from 'next-intl/server';
 

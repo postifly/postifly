@@ -1,5 +1,5 @@
-import SupportShell from '@/app/support/components/SupportShell';
-import AdminCreateParcelForm from '@/app/admin/components/AdminCreateParcelForm';
+import SupportShell from '@/app/[locale]/support/components/SupportShell';
+import AdminCreateParcelForm from '@/app/[locale]/admin/components/AdminCreateParcelForm';
 import { getLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';

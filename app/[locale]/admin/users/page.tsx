@@ -1,7 +1,7 @@
-import AdminShell from '@/app/admin/components/AdminShell';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
 import { formatDateDMY } from '@/lib/formatDate';
 import prisma from '@/lib/prisma';
-import UsersTable from '@/app/admin/users/components/UsersTable';
+import UsersTable from '@/app/[locale]/admin/users/components/UsersTable';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

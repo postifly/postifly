@@ -1,5 +1,5 @@
-import AdminShell from '@/app/admin/components/AdminShell';
-import ParcelsManager, { type Parcel } from '@/app/admin/components/ParcelsManager';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import ParcelsManager, { type Parcel } from '@/app/[locale]/admin/components/ParcelsManager';
 import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
 import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';

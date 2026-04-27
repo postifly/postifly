@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import AdminShell from '@/app/admin/components/AdminShell';
-import ParcelsManager from '@/app/admin/components/ParcelsManager';
+import AdminShell from '@/app/[locale]/admin/components/AdminShell';
+import ParcelsManager from '@/app/[locale]/admin/components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
 import { fetchAdminParcelsSsr } from '@/lib/adminParcelSsr';
 

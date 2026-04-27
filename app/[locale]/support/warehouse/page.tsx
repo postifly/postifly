@@ -1,6 +1,6 @@
-import SupportShell from '@/app/support/components/SupportShell';
+import SupportShell from '@/app/[locale]/support/components/SupportShell';
 import { getCachedActiveTariffsForGeorgia } from '@/lib/cachedTariffs';
-import ParcelsManager from '@/app/admin/components/ParcelsManager';
+import ParcelsManager from '@/app/[locale]/admin/components/ParcelsManager';
 import { getLocale } from 'next-intl/server';
 import { fetchNbgRates } from '@/lib/nbgRates';
 import { computeShippingGelBreakdown } from '@/lib/parcelShippingGel';
