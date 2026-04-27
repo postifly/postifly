@@ -6,6 +6,7 @@ import { getLocale } from 'next-intl/server';
 
 export default async function AdminUsersPage() {
   const locale = await getLocale();
+  console.log(locale);
   const text = locale === 'ru'
     ? { title: 'Пользователи', description: 'Список пользователей и ролей.' }
     : locale === 'en'
