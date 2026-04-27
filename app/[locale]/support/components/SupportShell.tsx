@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '../../../lib/auth';
+import { authOptions } from '@/lib/auth';
 import SupportSidebar from './SupportSidebar';
 
 export default async function SupportShell({
