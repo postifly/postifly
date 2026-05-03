@@ -53,24 +53,24 @@ const Middle = () => {
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
                 className="object-cover "
               />
-              <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl items-end px-4 pb-10 sm:items-start sm:px-6 sm:pb-0 sm:pt-20 lg:pt-24 lg:px-5 xl:pt-32">
+              <div className="absolute inset-0 mx-auto flex h-full w-full max-w-screen-1xl flex-col items-center justify-center px-4 py-10 sm:px-6 sm:py-12 lg:px-5 xl:py-16">
                 <div className="relative z-10 w-full max-w-2xl">
-                  <div className="rounded-2xl p-6 sm:p-8">
+                  <div className="flex flex-col items-center rounded-2xl p-6 text-center sm:p-8">
                     {idx === 0 ? (
                       <>
-                        <h2 className="text-[clamp(2.75rem,9vw,6.25rem)] font-extrabold leading-none tracking-tight text-[#8f35ff]">
+                        <h2 className="text-[clamp(2.35rem,7vw,5.25rem)] text-center font-extrabold leading-none tracking-tight text-[#8f35ff]">
                           POSTIFLY
                         </h2>
-                        <p className="mt-2 text-[clamp(1.15rem,3.6vw,2.25rem)] text-center md:text-left font-extrabold leading-tight tracking-tight text-[#8f35ff]">
+                        <p className="mt-2 text-[clamp(1.15rem,3.6vw,2.25rem)] text-center font-extrabold leading-tight tracking-tight text-[#8f35ff]">
                           {t('heroMiddleSlide1Tagline')}
                         </p>
                       </>
                     ) : idx === 1 ? (
                       <>
-                        <h2 className="text-[clamp(2.35rem,7vw,5.25rem)] text-center md:text-left font-extrabold leading-none tracking-tight text-[#8f35ff]">
+                        <h2 className="text-[clamp(2.35rem,7vw,5.25rem)] text-center font-extrabold leading-none tracking-tight text-[#8f35ff]">
                           POSTIFLY
                         </h2>
-                        <p className="mt-1 text-[clamp(1.15rem,3.6vw,2.25rem)] font-extrabold leading-[1.05] tracking-tight text-[#8f35ff]">
+                        <p className="mt-1 text-center text-[clamp(1.15rem,3.6vw,2.25rem)] font-extrabold leading-[1.05] tracking-tight text-[#8f35ff]">
                           <span className="block">{t('heroMiddleSlide2Line1')}</span>
                           <span className="block">{t('heroMiddleSlide2Line2')}</span>
                         </p>
@@ -93,13 +93,13 @@ const Middle = () => {
                         <span className="text-[clamp(0.95rem,2.6vw,1.25rem)] text-center md:text-[18px] text-[16px] font-extrabold leading-tight">
                           {t('heroMiddleSlide1PillTop')}
                         </span>
-                        <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] text-center md:text-left md:text-[18px] text-[14px] font-extrabold leading-none">
+                        <span className="text-[clamp(1.6rem,4.8vw,2.75rem)] text-center md:text-[18px] text-[14px] font-extrabold leading-none">
                           {t('heroMiddleSlide1PillBottom')}
                         </span>
                       </div>
                     ) : idx === 1 ? (
                       <div className="mt-6 inline-flex md:mt-14 max-w-full items-center justify-center rounded-full bg-[#2563eb] px-6 py-3 text-center text-white ring-2 ring-white/90 ring-offset-2 ring-offset-transparent sm:px-8 sm:py-4">
-                        <span className="text-[clamp(1rem,3.4vw,1.6rem)]  md:text-[18px] text-[16px]font-extrabold leading-snug">
+                        <span className="text-[clamp(1rem,3.4vw,1.6rem)] md:text-[18px] text-[16px] font-extrabold leading-snug">
                           {t('heroMiddleSlide2Pill')}
                         </span>
                       </div>
